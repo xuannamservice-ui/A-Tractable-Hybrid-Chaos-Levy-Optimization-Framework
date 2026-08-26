@@ -89,6 +89,35 @@ The per-cycle success indicators and median latencies are campaign outputs; what
 these scripts audit is the arithmetic built on top of them, which is the part a
 reader can check independently.
 
+## Reference implementation of the closed loop
+
+`code/` also contains a runnable assembly of the architecture as specified in
+the manuscript. It is a **reference implementation**, not the campaign driver
+that produced Tables 9–12, and the numbers it reports are its own.
+
+| Module | Implements |
+|---|---|
+| `channel.py` | MNLT correlated gamma–gamma scintillation (Appendix A), Beckmann pointing loss, sway process, beam geometry |
+| `rtodt_fast.py` | vectorised float64 interpolation-free kernel, eq. (21); agrees with the arbitrary-precision `rtodt.py` to 7e-14 relative |
+| `hclpso_ga.py` | the solver of Section V: logistic-map initialisation, Mantegna Lévy jumps, PSO core, GA elite crossover, monotone anytime incumbent, per-candidate fidelity ladder |
+| `mpc_loop.py` | steady-state Kalman predictor, receding-horizon trajectory cost with slew coupling, envelope guard |
+| `run_campaign.py` | A/B driver: ablations × guard forms, everything held fixed but one component |
+
+**What it does not do.** It does not reproduce the ablation ordering of
+Table 11. Several components make little difference in this implementation and
+removing chaotic initialisation can even help. The likely reason is that the
+manuscript does not specify the slew limit, the penalty weight `lambda_u`, the
+decision box or the stage weighting, so this implementation had to choose them;
+the ordering is sensitive to those choices. It is stated here rather than
+tuned away.
+
+**Why the guard is split.** Tests (i) `z <= z_max` and (ii) `0 <= Pe <= 1/2` are
+per-branch quantities and run inside the swarm loop. Test (iii) `Pe < eps_safe`
+is a post-EGC system threshold — `eps_safe = 1e-3` against a per-branch
+quantity of order `1e-1` at the operating SNR — so it applies once, to the
+selected command, via `egc_system.py`. Applying it inside the loop rejects every
+candidate; that is a real property of the two quantities, not a bug.
+
 ## Regenerating
 
 ```

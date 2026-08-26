@@ -17,7 +17,12 @@
       "status": "complete",
       "records": 5166,
       "seconds": 4.5
+    },
+    "05_eq22_validation": {
+      "status": "complete",
+      "records": 132,
+      "seconds": 2401.0
     }
   },
-  "finished": "2026-08-26T20:03:50"
+  "finished": "2026-08-26T20:43:51"
 }
