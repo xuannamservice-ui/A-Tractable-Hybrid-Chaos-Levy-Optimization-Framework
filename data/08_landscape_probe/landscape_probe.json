@@ -1,0 +1,517 @@
+{
+  "alpha": 1.2,
+  "beta": 1.1,
+  "gbar_db": 38.0,
+  "sigma_s": 0.1,
+  "horizon": 20,
+  "theta0": [
+    -4.757435030924688e-05,
+    -0.00011791009209983636
+  ],
+  "results": [
+    {
+      "label": "A. as implemented: divergence-only, wide box, nansum",
+      "dim": 20,
+      "n_blocks": 1,
+      "block0_grid_points": 4001,
+      "block0_finite_frac": 0.42389402649337665,
+      "block0_local_minima": 1,
+      "block0_argmin": 0.35244499999999995,
+      "block0_min": 0.28470211411519114,
+      "block0_max_finite": 0.42433735507712456,
+      "block0_dynamic_range": 1.4904608502676473,
+      "box_admissible_fraction": 0.42389402649337665,
+      "box_admissible_upper_edge": 1.3029437499999998,
+      "h_pred_first5": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "h_pred_std": 0.0,
+      "stage_weight_range": [
+        1.0,
+        1.0
+      ],
+      "stage_weight_uniform": true,
+      "h_enters_aber_argument": false,
+      "per_stage_argmins_range": [
+        0.35244499999999995,
+        0.35244499999999995
+      ],
+      "per_stage_argmins_spread": 0.0,
+      "degeneracy": {
+        "best_admissible": 0.2847076111107623,
+        "best_overall": 0.02121886371135771,
+        "nan_stages_at_best": 19,
+        "exploit_gain": 13.417665289888655,
+        "scanned": 80400
+      },
+      "separable_lower_bound": 0.2847021141151906,
+      "starts_requested": 40,
+      "starts_infeasible": 0,
+      "descents_converged": 40,
+      "distinct_minima": 2,
+      "distinct_minima_1e-3": 2,
+      "global_min": 0.02117184516544311,
+      "minima_values_top5": [
+        0.02117184516544311,
+        0.2847021109373452
+      ],
+      "minima_counts_top5": [
+        5,
+        35
+      ],
+      "frac_reaching_global": 0.075,
+      "frac_within_1pct": 0.125,
+      "worst_excess_over_global": 12.447203524898244,
+      "below_separable_bound": true,
+      "repaired_distinct_minima": 32,
+      "repaired_distinct_minima_1e-3": 32,
+      "repaired_global_min": 0.02117180660089368,
+      "repaired_minima_values_top5": [
+        0.02117180660089368,
+        0.2847021109373455,
+        0.285479052115191,
+        0.285606225999997,
+        0.2857231328913343
+      ],
+      "repaired_minima_counts_top5": [
+        5,
+        5,
+        1,
+        1,
+        1
+      ],
+      "repaired_frac_reaching_global": 0.05,
+      "repaired_frac_within_1pct": 0.125,
+      "repaired_worst_excess_over_global": 12.607375302057813,
+      "repaired_below_separable_bound": true,
+      "optimum_blockwise": [
+        {
+          "block": 0,
+          "name": "w_z",
+          "lo": 1.2819015073721278,
+          "hi": 1.3063977839745688,
+          "stage_spread": 0.024496276602441025,
+          "max_abs_step": 0.021718802314412144,
+          "slew_limit": 0.05,
+          "slew_utilisation": 0.4343760462882429
+        }
+      ],
+      "random_lines": 200,
+      "random_line_points": 801,
+      "random_line_minima_total": 369,
+      "random_line_minima_mean": 1.845,
+      "random_line_minima_max": 19,
+      "random_line_frac_unimodal": 0.835
+    },
+    {
+      "label": "B. A + strict admissibility (an inadmissible stage is not free)",
+      "dim": 20,
+      "n_blocks": 1,
+      "block0_grid_points": 4001,
+      "block0_finite_frac": 0.42389402649337665,
+      "block0_local_minima": 1,
+      "block0_argmin": 0.35244499999999995,
+      "block0_min": 0.28470211411519114,
+      "block0_max_finite": 0.42433735507712456,
+      "block0_dynamic_range": 1.4904608502676473,
+      "box_admissible_fraction": 0.42389402649337665,
+      "box_admissible_upper_edge": 1.3029437499999998,
+      "h_pred_first5": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "h_pred_std": 0.0,
+      "stage_weight_range": [
+        1.0,
+        1.0
+      ],
+      "stage_weight_uniform": true,
+      "h_enters_aber_argument": false,
+      "per_stage_argmins_range": [
+        0.35244499999999995,
+        0.35244499999999995
+      ],
+      "per_stage_argmins_spread": 0.0,
+      "degeneracy": {
+        "best_admissible": 0.2847076111107623,
+        "best_overall": 0.2847076111107623,
+        "nan_stages_at_best": 0,
+        "exploit_gain": 1.0,
+        "scanned": 80400
+      },
+      "separable_lower_bound": 0.2847021141151906,
+      "starts_requested": 40,
+      "starts_infeasible": 0,
+      "descents_converged": 40,
+      "distinct_minima": 1,
+      "distinct_minima_1e-3": 1,
+      "global_min": 0.2847021109373453,
+      "minima_values_top5": [
+        0.2847021109373453
+      ],
+      "minima_counts_top5": [
+        40
+      ],
+      "frac_reaching_global": 1.0,
+      "frac_within_1pct": 1.0,
+      "worst_excess_over_global": 2.729716736833887e-15,
+      "below_separable_bound": false,
+      "repaired_distinct_minima": 36,
+      "repaired_distinct_minima_1e-3": 36,
+      "repaired_global_min": 0.2847021109373456,
+      "repaired_minima_values_top5": [
+        0.2847021109373456,
+        0.285049459099341,
+        0.2850582831328734,
+        0.2850979243112627,
+        0.2854403133954276
+      ],
+      "repaired_minima_counts_top5": [
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "repaired_frac_reaching_global": 0.1,
+      "repaired_frac_within_1pct": 0.725,
+      "repaired_worst_excess_over_global": 0.015254701619183127,
+      "repaired_below_separable_bound": false,
+      "optimum_blockwise": [
+        {
+          "block": 0,
+          "name": "w_z",
+          "lo": 0.35249950315203593,
+          "hi": 0.35249952495150505,
+          "stage_spread": 2.1799469118732873e-08,
+          "max_abs_step": 1.7410488994951123e-08,
+          "slew_limit": 0.05,
+          "slew_utilisation": 3.4820977989902246e-07
+        }
+      ],
+      "random_lines": 200,
+      "random_line_points": 801,
+      "random_line_minima_total": 84,
+      "random_line_minima_mean": 0.42,
+      "random_line_minima_max": 1,
+      "random_line_frac_unimodal": 1.0
+    },
+    {
+      "label": "C. B + manuscript xi box  [max(0.5, xi_min), 4.888]",
+      "dim": 20,
+      "n_blocks": 1,
+      "block0_grid_points": 4001,
+      "block0_finite_frac": 1.0,
+      "block0_local_minima": 1,
+      "block0_argmin": 0.35239137487988414,
+      "block0_min": 0.2847021234436834,
+      "block0_max_finite": 0.41089125305775126,
+      "block0_dynamic_range": 1.4432321335988532,
+      "box_admissible_fraction": 1.0,
+      "box_admissible_upper_edge": 0.9762578789697218,
+      "h_pred_first5": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "h_pred_std": 0.0,
+      "stage_weight_range": [
+        1.0,
+        1.0
+      ],
+      "stage_weight_uniform": true,
+      "h_enters_aber_argument": false,
+      "per_stage_argmins_range": [
+        0.35239137487988414,
+        0.35239137487988414
+      ],
+      "per_stage_argmins_spread": 0.0,
+      "degeneracy": {
+        "best_admissible": 0.28470223919898635,
+        "best_overall": 0.28470223919898635,
+        "nan_stages_at_best": 0,
+        "exploit_gain": 1.0,
+        "scanned": 80400
+      },
+      "separable_lower_bound": 0.28470211130984885,
+      "starts_requested": 40,
+      "starts_infeasible": 0,
+      "descents_converged": 40,
+      "distinct_minima": 1,
+      "distinct_minima_1e-3": 1,
+      "global_min": 0.2847021109373452,
+      "minima_values_top5": [
+        0.2847021109373452
+      ],
+      "minima_counts_top5": [
+        40
+      ],
+      "frac_reaching_global": 1.0,
+      "frac_within_1pct": 1.0,
+      "worst_excess_over_global": 3.1196762706673007e-15,
+      "below_separable_bound": false,
+      "repaired_distinct_minima": 21,
+      "repaired_distinct_minima_1e-3": 21,
+      "repaired_global_min": 0.28470211093734543,
+      "repaired_minima_values_top5": [
+        0.28470211093734543,
+        0.28508413945107,
+        0.28509788792109697,
+        0.2854144487460651,
+        0.2854452651169886
+      ],
+      "repaired_minima_counts_top5": [
+        20,
+        1,
+        1,
+        1,
+        1
+      ],
+      "repaired_frac_reaching_global": 0.5,
+      "repaired_frac_within_1pct": 0.975,
+      "repaired_worst_excess_over_global": 0.012784656103313951,
+      "repaired_below_separable_bound": false,
+      "optimum_blockwise": [
+        {
+          "block": 0,
+          "name": "w_z",
+          "lo": 0.35249950286961246,
+          "hi": 0.3524995296642418,
+          "stage_spread": 2.679462934862542e-08,
+          "max_abs_step": 1.773515706515738e-08,
+          "slew_limit": 0.05,
+          "slew_utilisation": 3.547031413031476e-07
+        }
+      ],
+      "random_lines": 200,
+      "random_line_points": 801,
+      "random_line_minima_total": 106,
+      "random_line_minima_mean": 0.53,
+      "random_line_minima_max": 1,
+      "random_line_frac_unimodal": 1.0
+    },
+    {
+      "label": "D. C + predicted state inside the ABER (gbar_k = gbar h_hat_k^2)",
+      "dim": 20,
+      "n_blocks": 1,
+      "block0_grid_points": 4001,
+      "block0_finite_frac": 1.0,
+      "block0_local_minima": 1,
+      "block0_argmin": 0.4031686055820689,
+      "block0_min": 0.19829279589030394,
+      "block0_max_finite": 0.38972094214638814,
+      "block0_dynamic_range": 1.9653812454285164,
+      "box_admissible_fraction": 1.0,
+      "box_admissible_upper_edge": 0.9762578789697218,
+      "h_pred_first5": [
+        1.8677183689770092,
+        1.830364001597469,
+        1.7937567215655195,
+        1.757881587134209,
+        1.722723955391525
+      ],
+      "h_pred_std": 0.18055485295199727,
+      "stage_weight_range": [
+        0.22548175326562137,
+        1.874198676129884
+      ],
+      "stage_weight_uniform": false,
+      "h_enters_aber_argument": true,
+      "per_stage_argmins_range": [
+        0.3973527113166204,
+        0.4092081880884961
+      ],
+      "per_stage_argmins_spread": 0.011855476771875706,
+      "degeneracy": {
+        "best_admissible": 0.198282241775978,
+        "best_overall": 0.198282241775978,
+        "nan_stages_at_best": 0,
+        "exploit_gain": 1.0,
+        "scanned": 80400
+      },
+      "separable_lower_bound": 0.19828038412419607,
+      "starts_requested": 40,
+      "starts_infeasible": 0,
+      "descents_converged": 40,
+      "distinct_minima": 1,
+      "distinct_minima_1e-3": 1,
+      "global_min": 0.19828107940866954,
+      "minima_values_top5": [
+        0.19828107940866954
+      ],
+      "minima_counts_top5": [
+        40
+      ],
+      "frac_reaching_global": 1.0,
+      "frac_within_1pct": 1.0,
+      "worst_excess_over_global": 6.9990479420436684e-15,
+      "below_separable_bound": false,
+      "repaired_distinct_minima": 27,
+      "repaired_distinct_minima_1e-3": 27,
+      "repaired_global_min": 0.19828107940866938,
+      "repaired_minima_values_top5": [
+        0.19828107940866938,
+        0.1986313569916174,
+        0.19865670011141545,
+        0.19865741700758263,
+        0.19865767658749284
+      ],
+      "repaired_minima_counts_top5": [
+        14,
+        1,
+        1,
+        1,
+        1
+      ],
+      "repaired_frac_reaching_global": 0.35,
+      "repaired_frac_within_1pct": 0.9,
+      "repaired_worst_excess_over_global": 0.013313029670728765,
+      "repaired_below_separable_bound": false,
+      "optimum_blockwise": [
+        {
+          "block": 0,
+          "name": "w_z",
+          "lo": 0.3980170117754167,
+          "hi": 0.4085669543096478,
+          "stage_spread": 0.010549942534231083,
+          "max_abs_step": 0.0006305608261739648,
+          "slew_limit": 0.05,
+          "slew_utilisation": 0.012611216523479296
+        }
+      ],
+      "random_lines": 200,
+      "random_line_points": 801,
+      "random_line_minima_total": 111,
+      "random_line_minima_mean": 0.555,
+      "random_line_minima_max": 1,
+      "random_line_frac_unimodal": 1.0
+    },
+    {
+      "label": "E. D + two-axis steering: the manuscript's 60-D trajectory",
+      "dim": 60,
+      "n_blocks": 3,
+      "block0_grid_points": 4001,
+      "block0_finite_frac": 1.0,
+      "block0_local_minima": 1,
+      "block0_argmin": 0.4031686055820689,
+      "block0_min": 0.19829279589030394,
+      "block0_max_finite": 0.38972094214638814,
+      "block0_dynamic_range": 1.9653812454285164,
+      "box_admissible_fraction": 1.0,
+      "box_admissible_upper_edge": 0.9762578789697218,
+      "h_pred_first5": [
+        1.8677183689770092,
+        1.830364001597469,
+        1.7937567215655195,
+        1.757881587134209,
+        1.722723955391525
+      ],
+      "h_pred_std": 0.18055485295199727,
+      "stage_weight_range": [
+        0.22548175326562137,
+        1.874198676129884
+      ],
+      "stage_weight_uniform": false,
+      "h_enters_aber_argument": true,
+      "per_stage_argmins_range": [
+        0.3973527113166204,
+        0.4092081880884961
+      ],
+      "per_stage_argmins_spread": 0.011855476771875706,
+      "degeneracy": {
+        "best_admissible": 0.198282241775978,
+        "best_overall": 0.198282241775978,
+        "nan_stages_at_best": 0,
+        "exploit_gain": 1.0,
+        "scanned": 80400
+      },
+      "separable_lower_bound": 0.08966948679867434,
+      "starts_requested": 40,
+      "starts_infeasible": 0,
+      "descents_converged": 40,
+      "distinct_minima": 2,
+      "distinct_minima_1e-3": 2,
+      "global_min": 0.09634005869306077,
+      "minima_values_top5": [
+        0.09634005869306077,
+        0.15435075132386863
+      ],
+      "minima_counts_top5": [
+        39,
+        1
+      ],
+      "frac_reaching_global": 0.975,
+      "frac_within_1pct": 0.975,
+      "worst_excess_over_global": 0.6021450829257828,
+      "below_separable_bound": false,
+      "repaired_distinct_minima": 40,
+      "repaired_distinct_minima_1e-3": 40,
+      "repaired_global_min": 0.11201482473358507,
+      "repaired_minima_values_top5": [
+        0.11201482473358507,
+        0.11959991830800923,
+        0.13013275316648945,
+        0.14274036947405658,
+        0.1440312441026201
+      ],
+      "repaired_minima_counts_top5": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "repaired_frac_reaching_global": 0.025,
+      "repaired_frac_within_1pct": 0.025,
+      "repaired_worst_excess_over_global": 3.3251839544193604,
+      "repaired_below_separable_bound": false,
+      "optimum_blockwise": [
+        {
+          "block": 0,
+          "name": "w_z",
+          "lo": 0.22046218964273254,
+          "hi": 0.3227654783127538,
+          "stage_spread": 0.10230328867002128,
+          "max_abs_step": 0.04999999916683101,
+          "slew_limit": 0.05,
+          "slew_utilisation": 0.9999999833366202
+        },
+        {
+          "block": 1,
+          "name": "theta_az",
+          "lo": -4.7573000040942096e-05,
+          "hi": 1.5062659006958253e-09,
+          "stage_spread": 4.7574506306842794e-05,
+          "max_abs_step": 4.757055268922454e-05,
+          "slew_limit": 5e-05,
+          "slew_utilisation": 0.9514110537844908
+        },
+        {
+          "block": 2,
+          "name": "theta_el",
+          "lo": -8.949305284937179e-05,
+          "hi": 1.050694675940298e-05,
+          "stage_spread": 9.999999960877477e-05,
+          "max_abs_step": 4.999999992201142e-05,
+          "slew_limit": 5e-05,
+          "slew_utilisation": 0.9999999984402284
+        }
+      ],
+      "random_lines": 200,
+      "random_line_points": 801,
+      "random_line_minima_total": 174,
+      "random_line_minima_mean": 0.87,
+      "random_line_minima_max": 2,
+      "random_line_frac_unimodal": 0.945
+    }
+  ]
+}

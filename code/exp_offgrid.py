@@ -129,11 +129,20 @@ def run(regime, gbar_db, n=120):
     print("      worst xi = %.4f" % float(wx))
 
 
-print("=" * 78)
-print("OFF-GRID INTERPOLATION ERROR, K=%d, sigma_s=%s, admissible band z<=%s" % (K, SIGMA, ZMAX))
-print("Table 7 certified per-branch bounds at K=10: 3.98e-9 / 5.49e-10 / 7.87e-10")
-print("=" * 78)
-for reg in ("weak", "moderate", "strong"):
-    for g in (30, 40):
-        run(reg, g)
-    print()
+def main():
+    print("=" * 78)
+    print("OFF-GRID INTERPOLATION ERROR, K=%d, sigma_s=%s, admissible band z<=%s"
+          % (K, SIGMA, ZMAX))
+    print("Table 7 certified per-branch bounds at K=10: 3.98e-9 / 5.49e-10 / 7.87e-10")
+    print("=" * 78)
+    for reg in ("weak", "moderate", "strong"):
+        for g in (30, 40):
+            run(reg, g)
+        print()
+
+
+# Guarded: exp_diagnose.py and exp_exact_runtime.py import node_tables/evaluate
+# from this module. Before the guard existed, merely importing it re-ran the
+# whole ~2-minute experiment and printed its output ahead of theirs.
+if __name__ == "__main__":
+    main()

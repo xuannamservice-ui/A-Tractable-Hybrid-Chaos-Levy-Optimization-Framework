@@ -1,0 +1,31 @@
+# Reproduction package -- third-party requirements.
+#
+# Derived by reading the import statements of every module in code/ and of
+# generate.py; there are no other third-party dependencies.
+#
+#   numpy       every script
+#   scipy       scipy.special (erf, kv, gamma, gammaln, erfc), scipy.stats
+#               (norm, beta), scipy.optimize (brentq)
+#   mpmath      the high-precision series arithmetic (rtodt.py, eq22_recursion.py,
+#               admissibility_bounds.py, ...)
+#   matplotlib  make_fig2.py only
+#
+# Version floors, with the reason each one exists:
+#
+#   numpy >= 2.0   egc_system.py and generate.py call np.trapezoid, which was
+#                  added in NumPy 2.0 (np.trapz is the deprecated 1.x spelling).
+#   scipy >= 1.7   scipy.stats.beta.ppf / scipy.special.kv usage is old and
+#                  stable; 1.7 is simply the oldest release routinely paired
+#                  with numpy 2.x toolchains.
+#   mpmath >= 1.2  mpmath.workdps context manager (rtodt_fast.py).
+#   matplotlib >= 3.5  no specific API need; 3.5 is the oldest release whose
+#                  Agg backend and `labelcolor=` legend kwarg (make_fig2.py)
+#                  behave as used here.
+#
+# Tested on: Python 3.14.6, numpy 2.5.0, scipy 1.18.0, mpmath 1.4.1,
+#            matplotlib 3.11.0 (Windows 11, x86-64).
+
+numpy>=2.0
+scipy>=1.7
+mpmath>=1.2
+matplotlib>=3.5

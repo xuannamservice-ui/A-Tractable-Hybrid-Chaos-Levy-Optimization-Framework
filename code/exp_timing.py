@@ -80,12 +80,46 @@ A0 = erf(v) ** 2
 wzeq = np.sqrt(wz**2 * np.sqrt(np.pi) * erf(v) / (2 * v * np.exp(-v**2)))
 xi = wzeq / (2 * 0.1)
 
-# node tables for the interpolated cost model
-nodes = np.array([0.500,0.628,0.789,0.992,1.266,1.548,1.967,2.511,3.104,3.912,4.888])
-nv = np.sqrt(np.pi/2)*A_APER/np.maximum(nodes*0+0.1, 0.1)  # placeholder A0 per node
-A0n = np.linspace(0.52, 0.005, len(nodes))
-ak1 = np.outer(A0n**-BETA, KcAB); ak2 = np.outer(A0n**-ALPHA, KcBA)
-Dv = A0n**-1.0; Cv = np.linspace(1e-3, 1e-9, len(nodes))
+# Node tables for the interpolated cost model.
+#
+# An earlier version of this file filled these with invented numbers
+# (A0n = linspace(0.52, 0.005), Cv = linspace(1e-3, 1e-9), plus a dead line
+# commented "placeholder A0 per node"). The timing is insensitive to the
+# VALUES -- the two kernels do the same count of float64 operations whatever
+# is in the tables -- but shipping invented tables in a released script
+# invites the reader to wonder what else is invented, so they are now built
+# from the same geometry the rest of the package uses.
+nodes = np.array([0.500, 0.628, 0.789, 0.992, 1.266,
+                  1.548, 1.967, 2.511, 3.104, 3.912, 4.888])
+SIGMA_S = 0.1
+
+
+def _wz_for_xi(xi_target, sigma_s, a=A_APER):
+    """Beam waist giving this xi at this jitter, upper (beam-broadening) branch."""
+    lo, hi = 0.0549, 50.0
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        vv = np.sqrt(np.pi / 2) * a / mid
+        wq = np.sqrt(mid ** 2 * np.sqrt(np.pi) * erf(vv) / (2 * vv * np.exp(-vv ** 2)))
+        if wq / (2 * sigma_s) < xi_target:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+_wzn = np.array([_wz_for_xi(x, SIGMA_S) for x in nodes])
+_vn = np.sqrt(np.pi / 2) * A_APER / _wzn
+A0n = erf(_vn) ** 2
+_x2n = nodes ** 2
+_kk = np.arange(K + 1)
+ak1 = KcAB[None, :] * _x2n[:, None] / ((_x2n[:, None] - BETA - _kk[None, :])
+                                       * A0n[:, None] ** (BETA + _kk)[None, :])
+ak2 = KcBA[None, :] * _x2n[:, None] / ((_x2n[:, None] - ALPHA - _kk[None, :])
+                                       * A0n[:, None] ** (ALPHA + _kk)[None, :])
+Dv = (_x2n * (ALPHA * BETA) ** _x2n * sp_gamma(ALPHA - _x2n) * sp_gamma(BETA - _x2n)
+      / (A0n ** _x2n * sp_gamma(ALPHA) * sp_gamma(BETA)))
+Cv = sp_gamma((_x2n + 1) / 2) / (2 * _x2n * np.sqrt(np.pi)) * (2 / gbar) ** (_x2n / 2)
 node_tab = (nodes, ak1, ak2, Dv, Cv, CB, CA)
 
 # ---- warm up

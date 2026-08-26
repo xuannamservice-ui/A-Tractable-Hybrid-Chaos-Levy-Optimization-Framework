@@ -9,8 +9,16 @@ Fixes two defects in the published rendering:
 Both curves here are computed independently of one another:
   exact   -- double Gauss-Legendre over the gamma-gamma x pointing composite
   series  -- eq:aber_emulator at K=10, evaluated exactly (no interpolation)
-and they agree to ~1e-7 relative inside the admissible band.
+
+The script MEASURES their agreement inside the admissible band and prints it;
+it does not assert a figure. An earlier version of this docstring claimed
+"~1e-7 relative" while the script computed no such quantity, and at the outer
+quadrature resolution then in use the true worst disagreement was 8.7e-4.
+(That was the reference's convergence, not the series': see the note in
+exact_reference.py.)
 """
+import os
+
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -26,12 +34,17 @@ K = 10
 ZMAX = 2.0   # ladder rung serving K=10 (z<=2); z<=8 is the K=20 rung
 SNR = np.arange(0, 51, 1.0)
 
-C_EXACT = "#1A62A8"     # validated pair, see validate_palette.js
+# Contrast-checked blue/red pair: both clear 4.5:1 against white and are
+# distinguishable under deuteranopia. (The comment here used to point at a
+# "validate_palette.js" that is not part of this release.)
+C_EXACT = "#1A62A8"
 C_SERIES = "#C43A22"
 INK, INK2, GRID = "#1a1a1a", "#4a4a4a", "#d8d8d8"
 
 A0 = A0_for(XI, SIGMA)
 print("xi = %s, sigma_s = %s m, A_0 = %.4f, K = %d" % (XI, SIGMA, float(A0), K))
+
+AGREEMENT = {}
 
 fig, axes = plt.subplots(1, 3, figsize=(11.0, 3.5), sharey=True)
 titles = {"weak": "Weak turbulence", "moderate": "Moderate turbulence",
@@ -48,6 +61,10 @@ for ax, reg in zip(axes, ("weak", "moderate", "strong")):
     ex, se, zs = np.array(ex), np.array(se), np.array(zs)
 
     adm = zs <= ZMAX
+    if adm.any():
+        rel = np.abs(se[adm] - ex[adm]) / np.abs(ex[adm])
+        AGREEMENT[reg] = (float(rel.max()), float(SNR[adm][int(np.argmax(rel))]),
+                          int(adm.sum()))
     se_plot = np.where(adm & (se > 0), se, np.nan)
     cut = SNR[adm][0] if adm.any() else None
 
@@ -85,9 +102,21 @@ fig.legend(_h, _l, fontsize=8.5, frameon=False, ncol=3, labelcolor=INK,
 fig.suptitle("RT-ODT power series against an independent exact evaluation "
              "($\\xi=1.967$, $\\sigma_s=0.05$ m)", fontsize=10.5, color=INK, y=1.075)
 fig.tight_layout(rect=[0, 0, 1, 0.90])
-out = "S3_fig3_corrected.png"
+# Written beside this script, not into whatever directory it was invoked from.
+out = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                   "S3_fig3_corrected.png")
 fig.savefig(out, dpi=300, bbox_inches="tight", facecolor="white")
 print("wrote", out)
+
+print()
+print("Measured agreement between the two curves inside the admissible band")
+print("(z <= %g, the rung K=%d serves):" % (ZMAX, K))
+print("  %-9s %6s %14s %s" % ("regime", "pts", "worst rel diff", "at SNR"))
+for reg in ("weak", "moderate", "strong"):
+    if reg in AGREEMENT:
+        w, g, n = AGREEMENT[reg]
+        print("  %-9s %6d %14.3e %.0f dB" % (reg, n, w, g))
+print()
 
 # report the admissibility cut per regime
 for reg in ("weak", "moderate", "strong"):

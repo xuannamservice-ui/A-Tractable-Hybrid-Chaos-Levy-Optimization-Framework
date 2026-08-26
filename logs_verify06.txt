@@ -1,0 +1,24 @@
+Arbitrating data/06_system_aber against Monte Carlo (8000000 samples/row)
+338 of 1734 rows are below --min-aber=1e-05 and cannot be arbitrated at this sample count.
+
+regime    sig    xi      dB    fast(shipped) quad         MC           fast/MC   quad/MC   sigma    verdict
+------------------------------------------------------------------------------------------------------------------------------
+weak      0.1    0.500   36    1.270719e-05 6.325708e-06 1.269932e-05 1.0006    0.4981    0.0      ok
+weak      0.2    0.500   48    1.535219e-05 7.707365e-06 1.534861e-05 1.0002    0.5022    0.0      ok
+strong    0.1    0.500   42    1.960021e-05 1.001707e-05 1.941413e-05 1.0096    0.5160    0.1      ok
+moderate  0.1    0.500   38    2.358490e-05 1.210503e-05 2.398021e-05 0.9835    0.5048    -0.2     ok
+weak      0.1    0.500   34    3.136861e-05 1.624631e-05 3.140964e-05 0.9987    0.5172    -0.0     ok
+weak      0.2    0.500   46    3.783539e-05 1.975208e-05 3.789542e-05 0.9984    0.5212    -0.0     ok
+strong    0.1    0.500   40    4.332695e-05 2.291574e-05 4.292686e-05 1.0093    0.5338    0.2      ok
+moderate  0.1    0.500   36    5.495923e-05 2.924620e-05 5.566473e-05 0.9873    0.5254    -0.3     ok
+moderate  0.2    0.500   48    6.542328e-05 3.506689e-05 6.620026e-05 0.9883    0.5297    -0.3     ok
+weak      0.1    0.500   32    7.672243e-05 4.124145e-05 7.687303e-05 0.9980    0.5365    -0.0     ok
+weak      0.2    0.500   44    9.231744e-05 4.999586e-05 9.249453e-05 0.9981    0.5405    -0.1     ok
+strong    0.1    0.500   38    9.395627e-05 5.130435e-05 9.321927e-05 1.0079    0.5504    0.2      ok
+
+checked 12 rows in 86 s
+deviation from the arbiter, in units of the MC standard error:
+   shipped `aber_system` : worst 0.3 sigma
+   `aber_system_quad`    : worst 12.5 sigma
+no row was resolved tightly enough for a ratio to be meaningful; raise --samples or --min-aber.
+worst `aber_system_quad` ratio over ALL checked rows: 50.189%

@@ -106,16 +106,60 @@ def eq22(regime, snr_db_list):
     return out
 
 
+def reference(snr_db_list):
+    """Independent reference: build f_h by quadrature over the pointing law and
+    convolve it MN times by FFT, then integrate Q against it.
+
+    This shares no code path with eq22() above -- no a_k, no lambda_j, no
+    trinomial expansion -- so agreement between the two is evidence about the
+    series, not a transcription check.
+
+    hmax / nh follow generate.py: the branch mean is A_0 xi^2/(xi^2+1) < A_0,
+    so a grid to 40*A_0 covers the density to well past the point where Q()
+    has stopped contributing, and 60000 points resolve its rise near zero.
+    The recovered mass of f_H is printed so the reader can see the quadrature
+    is converged rather than take it on trust.
+    """
+    from egc_system import aber_system, f_h_exact
+    A, B = REGIMES["strong"]
+    A0 = A0_for(XI, SIGMA)
+    out = {}
+    for g in snr_db_list:
+        v, mass, _, floor = aber_system(f_h_exact, 40 * float(A0), 60000,
+                                        float(db(g)), float(A), float(B),
+                                        float(XI), float(A0), "exact",
+                                        return_floor=True)
+        out[g] = (v, mass, floor)
+    return out
+
+
 if __name__ == "__main__":
     SNRS = [20, 28, 32, 40]
-    REF = {20: 4.510e-3, 28: 2.240e-5, 32: 6.200e-7, 40: 9.040e-11}
+    # Values recorded from a previous run of reference() below, kept only so a
+    # reader can spot a regression at a glance. They are NOT used to compute
+    # anything, and the "reference" column is recomputed live on every run.
+    FROZEN = {20: 4.510e-3, 28: 2.240e-5, 32: 6.200e-7, 40: 9.040e-11}
     print("eq (22) via the lambda_j/C_j convolved series, K=%d, MN=%d" % (K, MN))
     print("xi=%s, sigma_s=%s, strong turbulence\n" % (XI, SIGMA))
     res = eq22("strong", SNRS)
+    print("  computing the independent 16-fold-convolution reference "
+          "(about 20 s per SNR)...")
+    ref = reference(SNRS)
     print()
-    print("  %-8s %-22s %-16s %s" % ("SNR", "eq (22)", "exact reference", "rel. diff"))
+    print("  %-8s %-22s %-16s %-10s %-10s %-11s %s"
+          % ("SNR", "eq (22)", "reference", "rel. diff", "FFT floor",
+             "f_H mass", "prev. run"))
     for g in SNRS:
         v = res[g]
-        r = REF[g]
+        r, mass, floor = ref[g]
         rel = (float(v) - r) / r * 100 if r else float("nan")
-        print("  %-8s %-22s %-16.4e %+.2f%%" % ("%d dB" % g, mp.nstr(v, 8), r, rel))
+        mark = "" if abs(r) > 10 * floor else "  <-- AT THE FLOOR"
+        print("  %-8s %-22s %-16.4e %-10s %-10.2e %-11.6f %.3e%s"
+              % ("%d dB" % g, mp.nstr(v, 8), r, "%+.3f%%" % rel, floor, mass,
+                 FROZEN[g], mark))
+    print()
+    print("  The two columns are independent computations of the same system")
+    print("  ABER; the reference carries its own quadrature error, which the")
+    print("  recovered mass of f_H bounds, and a double-precision FFT round-off")
+    print("  floor, printed so a row that has sunk into it is visible rather")
+    print("  than merely small.")

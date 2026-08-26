@@ -20,3 +20,9 @@ Thumbs.db
 *.tex.bak
 a[0-9].png
 author*.png
+
+# regenerated figure (make_fig2.py writes beside the script)
+code/S3_fig3_corrected.png
+
+# smoke-run output tree (generate.py --smoke)
+data_smoke/

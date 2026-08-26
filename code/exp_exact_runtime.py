@@ -19,10 +19,10 @@ We compare, inside z <= 8:
    (b) exact-at-runtime float64 : the proposed scheme
    (c) deployed interpolation   : current scheme (from Experiment 1)
 """
-import math
 import random
 import mpmath as mp
-from rtodt import (NODES, REGIMES, A0_for, a_k, D_coef, C_moment, z_param, db)
+from scipy.special import gamma as sp_gamma
+from rtodt import (NODES, REGIMES, A0_for, C_moment, z_param, db)
 from exp_offgrid import node_tables, evaluate, K, SIGMA, ZMAX
 
 mp.mp.dps = 90
@@ -37,25 +37,33 @@ def Kc_float(A, B, k):
     return float(val)
 
 
-def Pe_exact_float64(Af, Bf, xi, A0, gbar, K, KcAB, KcBA, CB, CA):
-    """The proposed runtime kernel, entirely in float64."""
+def Pe_exact_float64(Af, Bf, xi, A0, gbar, K, KcAB, KcBA, CB, CA, Cx):
+    """The proposed runtime kernel, entirely in float64.
+
+    Every arithmetic operation below is float64. The xi-free Kc_k and the
+    xi-independent C(B+k), C(A+k) are precomputed in extended precision
+    OFFLINE -- that is the scheme's whole point -- but nothing is evaluated
+    in extended precision per candidate.
+
+    An earlier version of this file computed the residue D with mpmath inside
+    this function while the docstring said "entirely in float64". That made
+    the experiment unable to answer its own question, which is whether plain
+    float64 clears the Table 7 bound. D is now computed with scipy's real
+    gamma, which handles the negative non-integer arguments A - xi^2 and
+    B - xi^2 with the correct sign, exactly as rtodt_fast.py does in the
+    deployed kernel.
+    """
     x2 = xi * xi
     tot = 0.0
     for k in range(K + 1):
         tot += KcAB[k] * x2 / ((x2 - Bf - k) * A0**(Bf + k)) * CB[k]
         tot += KcBA[k] * x2 / ((x2 - Af - k) * A0**(Af + k)) * CA[k]
-    # residue term: two lgamma calls at runtime
-    try:
-        lg = math.lgamma(Af - x2) if Af - x2 > 0 else None
-        sgn_a = 1.0
-    except ValueError:
-        lg = None
-    # use mpmath gamma for correctness of sign at negative arguments, then cast
-    D = float(mp.mpf(x2) * mp.mpf(Af * Bf)**mp.mpf(x2)
-              * mp.gamma(mp.mpf(Af) - mp.mpf(x2)) * mp.gamma(mp.mpf(Bf) - mp.mpf(x2))
-              / (mp.mpf(A0)**mp.mpf(x2) * mp.gamma(mp.mpf(Af)) * mp.gamma(mp.mpf(Bf))))
-    tot += D * float(C_moment(mp.mpf(x2), gbar))
-    return tot
+    # residue term, float64: scipy.special.gamma is signed-correct on the
+    # negative non-integer reals, where math.gamma raises and math.lgamma
+    # discards the sign.
+    D = (x2 * (Af * Bf) ** x2 * sp_gamma(Af - x2) * sp_gamma(Bf - x2)
+         / (A0 ** x2 * sp_gamma(Af) * sp_gamma(Bf)))
+    return tot + D * Cx(x2)
 
 
 print("=" * 78)
@@ -74,6 +82,14 @@ for reg in ("weak", "moderate", "strong"):
         T = node_tables(A, B, gbar, SIGMA)
         CB = [float(C_moment(B + k, gbar)) for k in range(K + 1)]
         CA = [float(C_moment(A + k, gbar)) for k in range(K + 1)]
+        gbf = float(gbar)
+
+        def Cx(s, _g=gbf):
+            """C(s, gbar) in float64, eq. (20). s = xi^2 varies per candidate,
+            so unlike CB/CA this one cannot be precomputed offline."""
+            import math as _m
+            return (_m.gamma((s + 1.0) / 2.0) / (2.0 * s * _m.sqrt(_m.pi))
+                    * (2.0 / _g) ** (s / 2.0))
 
         worst_new = worst_old = 0.0
         bad_new = bad_old = tot = 0
@@ -86,8 +102,8 @@ for reg in ("weak", "moderate", "strong"):
                 continue
             tot += 1
             ref, dep, _, _ = evaluate(xi, A, B, gbar, SIGMA, T)
-            new = Pe_exact_float64(Af, Bf, float(xi), float(A0), gbar,
-                                   K, KcAB, KcBA, CB, CA)
+            new = Pe_exact_float64(Af, Bf, float(xi), float(A0), gbf,
+                                   K, KcAB, KcBA, CB, CA, Cx)
             worst_new = max(worst_new, abs(new - float(ref)))
             worst_old = max(worst_old, float(abs(dep - ref)))
             if not (0.0 <= new <= 0.5):

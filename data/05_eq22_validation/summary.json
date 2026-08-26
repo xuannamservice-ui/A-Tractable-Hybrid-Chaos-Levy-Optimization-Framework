@@ -1,0 +1,111 @@
+{
+  "source": "data/05_eq22_validation/eq22_vs_reference.csv",
+  "generated_by": "code/eq22_summary.py",
+  "total_rows": 132,
+  "admissibility_predicate": "admissible = (ladder admits z at THIS row's SNR) and (K used >= ladder-selected K). Identical to the predicate block 01 applies; z = sqrt(2)*alpha*beta/(A_0*sqrt(gbar)), ladder z<=0.5 -> K=5, z<=2 -> K=10, z<=8 -> K=20, beyond -> inadmissible.",
+  "resolved_predicate": "ref_resolved = the two independent branch-density constructions (ref_quad, ref_logdomain) agree to better than 1%. Below the FFT round-off floor they do not, and neither reference is meaningful.",
+  "scoping_justification": "The in-band scoping is the manuscript's own, not a choice made here: Fig. odt_validation plots the surrogate only inside the admissible band, and Sec. III-C declares candidates beyond z=8 inadmissible and has the guard reject them rather than score them.",
+  "caveat": "The out-of-band population is NOT evidence that Eq. (22) fails there. This sweep fixes one truncation order K per configuration from z at the highest SNR and reuses it at every lower SNR, which the deployed per-candidate fidelity ladder never does. code/eq22_ladder_check.py re-evaluates at the ladder-selected order and recovers agreement to ~1e-3 percent at SNRs where this sweep reports errors of 10^2 to 10^7 percent. What this dataset establishes is the in-band figure; it does not establish an out-of-band one either way.",
+  "populations": [
+    {
+      "label": "all rows, no scoping",
+      "rows": 132,
+      "rows_scored": 130,
+      "rows_unscoreable": 2,
+      "median_abs_rel_diff_percent": 86.09805,
+      "p90_abs_rel_diff_percent": 1.131888101445311e+35,
+      "max_abs_rel_diff_percent": 2.8268563138184396e+165,
+      "min_abs_rel_diff_percent": 0.0
+    },
+    {
+      "label": "out-of-band (admissible = 0)",
+      "rows": 88,
+      "rows_scored": 88,
+      "rows_unscoreable": 0,
+      "median_abs_rel_diff_percent": 61757.6843,
+      "p90_abs_rel_diff_percent": 8.545501187089284e+50,
+      "max_abs_rel_diff_percent": 2.8268563138184396e+165,
+      "min_abs_rel_diff_percent": 0.0559
+    },
+    {
+      "label": "in-band (admissible = 1)",
+      "rows": 44,
+      "rows_scored": 42,
+      "rows_unscoreable": 2,
+      "median_abs_rel_diff_percent": 0.0048000000000000004,
+      "p90_abs_rel_diff_percent": 0.053,
+      "max_abs_rel_diff_percent": 99.9976,
+      "min_abs_rel_diff_percent": 0.0
+    },
+    {
+      "label": "in-band AND reference resolved (comparison_valid = 1)",
+      "rows": 39,
+      "rows_scored": 39,
+      "rows_unscoreable": 0,
+      "median_abs_rel_diff_percent": 0.0043,
+      "p90_abs_rel_diff_percent": 0.0304,
+      "max_abs_rel_diff_percent": 0.0825,
+      "min_abs_rel_diff_percent": 0.0
+    },
+    {
+      "label": "out-of-band but reference resolved",
+      "rows": 87,
+      "rows_scored": 87,
+      "rows_unscoreable": 0,
+      "median_abs_rel_diff_percent": 111659.3423,
+      "p90_abs_rel_diff_percent": 8.545501187089284e+50,
+      "max_abs_rel_diff_percent": 2.8268563138184396e+165,
+      "min_abs_rel_diff_percent": 0.0559
+    }
+  ],
+  "by_snr": {
+    "20": {
+      "rows": 22,
+      "z_min": 0.8906,
+      "z_max": 55.15,
+      "in_band": 0,
+      "comparison_valid": 0,
+      "median_abs_rel_diff_percent_on_valid": null
+    },
+    "24": {
+      "rows": 22,
+      "z_min": 0.5619,
+      "z_max": 34.7973,
+      "in_band": 0,
+      "comparison_valid": 0,
+      "median_abs_rel_diff_percent_on_valid": null
+    },
+    "28": {
+      "rows": 22,
+      "z_min": 0.3546,
+      "z_max": 21.9556,
+      "in_band": 1,
+      "comparison_valid": 1,
+      "median_abs_rel_diff_percent_on_valid": 0.0022
+    },
+    "32": {
+      "rows": 22,
+      "z_min": 0.2237,
+      "z_max": 13.8531,
+      "in_band": 6,
+      "comparison_valid": 6,
+      "median_abs_rel_diff_percent_on_valid": 0.00645
+    },
+    "36": {
+      "rows": 22,
+      "z_min": 0.1412,
+      "z_max": 8.7407,
+      "in_band": 15,
+      "comparison_valid": 14,
+      "median_abs_rel_diff_percent_on_valid": 0.0049
+    },
+    "40": {
+      "rows": 22,
+      "z_min": 0.0891,
+      "z_max": 5.515,
+      "in_band": 22,
+      "comparison_valid": 18,
+      "median_abs_rel_diff_percent_on_valid": 0.0033
+    }
+  }
+}

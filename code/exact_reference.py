@@ -13,6 +13,23 @@ different computations.
          = Int_0^1 Int_0^inf Q(sqrt(gbar) x A0 u^{1/xi^2}) f(x) dx du
 
 Both integrals by Gauss-Legendre; the inner one on a log-x grid.
+
+Note on the outer variable.  Integrating in u directly is what the expression
+above literally says, but u^{1/xi^2} has an infinite derivative at u = 0 for
+every xi > 1, and Gauss-Legendre converges algebraically rather than
+spectrally against such an endpoint.  Substituting  u = t^{xi^2}  removes it:
+
+    h_p = A0 * t,   t ~ pdf  xi^2 t^{xi^2 - 1}  on [0, 1]
+
+which is the pointing law written directly in the loss variable (eq. 4 with
+h_p = A0 t).  The integrand is then smooth on the closed interval and the
+outer rule converges spectrally.  This is a change of variable, not a change
+of model: the two forms are the same integral.
+
+Measured effect at xi=1.967, sigma_s=0.05, weak turbulence, against the K=10
+series inside its admissible band (z <= 2): the u-form disagrees by 6.8e-5 at
+40 dB and 8.7e-4 at 50 dB and is still drifting at nu = 200; the t-form agrees
+to 5.6e-10 at 40 dB and 2.5e-14 at 50 dB and is converged by nt = 200.
 """
 import numpy as np
 from scipy.special import kv, gamma as G, erfc
@@ -37,19 +54,26 @@ def Q(z):
 
 
 def aber_exact(gbar, a, b, xi, A0, nu=200):
-    """Double Gauss-Legendre. Returns E[Q(sqrt(gbar) h)]."""
+    """Double Gauss-Legendre. Returns E[Q(sqrt(gbar) h)].
+
+    `nu` is the order of the outer (pointing) rule, taken in the smooth
+    variable t = u^{1/xi^2}; see the module docstring. 200 nodes is already
+    converged to float64 round-off for the configurations used in the paper --
+    it is not a tuned value, the rule simply stops improving.
+    """
     x, wx = _logx_nodes()
     fx = gg_pdf(x, a, b)
     fx = np.where(np.isfinite(fx), fx, 0.0)
 
-    gu, gw = np.polynomial.legendre.leggauss(nu)
-    u = 0.5 * (gu + 1.0)
-    wu = gw * 0.5
-    hp = A0 * u ** (1.0 / xi ** 2)                       # (nu,)
+    gt, gw = np.polynomial.legendre.leggauss(nu)
+    t = 0.5 * (gt + 1.0)
+    x2 = xi ** 2
+    wt = gw * 0.5 * x2 * t ** (x2 - 1.0)                 # pdf of t, times dt
+    hp = A0 * t                                          # (nu,)
 
     arg = np.sqrt(gbar) * np.outer(hp, x)                # (nu, nx)
     val = Q(arg) * (fx * wx)[None, :]
-    return float((val.sum(axis=1) * wu).sum())
+    return float((val.sum(axis=1) * wt).sum())
 
 
 def sanity():
@@ -63,6 +87,25 @@ def sanity():
               % (a, b, m0, m1))
 
 
+def convergence():
+    """Show that the outer rule is converged: doubling nu must not move it."""
+    from rtodt import REGIMES, A0_for, db
+    import mpmath as mp
+    xi, sigma = mp.mpf("1.967"), mp.mpf("0.05")
+    A0 = float(A0_for(xi, sigma))
+    print("\nOuter-rule convergence at xi=1.967, sigma_s=0.05, A_0=%.4f:" % A0)
+    print("  %-9s %-6s %-22s %-22s %s"
+          % ("regime", "SNR", "nu=100", "nu=200", "nu=400"))
+    for reg in ("weak", "moderate", "strong"):
+        A, B = REGIMES[reg]
+        for gdb in (30, 40, 50):
+            vals = [aber_exact(float(db(float(gdb))), float(A), float(B),
+                               float(xi), A0, nu=n) for n in (100, 200, 400)]
+            print("  %-9s %-6s %-22.14e %-22.14e %.14e"
+                  % (reg, "%d dB" % gdb, vals[0], vals[1], vals[2]))
+
+
 if __name__ == "__main__":
     print("Sanity of the gamma-gamma density (both should be 1.0):")
     sanity()
+    convergence()

@@ -1,0 +1,3377 @@
+{
+ "what": "end-to-end control-cycle latency, measured on ONE platform (Windows 11, Python, cold single-iteration cycles, no Linux isolation). This does NOT replace, reproduce or supersede the manuscript's Platform A latency tables (Tables 13-14) or its deadline-compliance figures: it is a different machine, a different OS and a different cycle construction, and its medians are milliseconds where the manuscript reports microseconds. It is shipped as an instrumented reference loop so the stage decomposition can be inspected, not as a measurement of the manuscript's arms. The manuscript's Linux isolcpus/chrt figures have not been re-measured here.",
+ "generated_by": "bench_cycle.py",
+ "clock": {
+  "source": "time.perf_counter_ns",
+  "monotonic": true,
+  "measured_resolution_ns": 100,
+  "advertised_resolution_s": 1e-07
+ },
+ "platform": {
+  "node": "CTS-Dual",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+  "python": "3.14.6 (tags/v3.14.6:c63aec6, Jun 10 2026, 10:26:10) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "2.5.0",
+  "logical_processors": 20,
+  "physical_cores": 14,
+  "blas_thread_caps": {
+   "OPENBLAS_NUM_THREADS": "1",
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "gc_enabled": true,
+  "gc_note": "the garbage collector is left ENABLED. A collection pause is a real source of tail latency in this loop and belongs inside the measurement, not outside it.",
+  "p_core_logical_processors": "0-11 (6 P-cores, SMT)",
+  "e_core_logical_processors": "12-19 (8 E-cores, no SMT)",
+  "measured_E_over_P_cost_ratio": 2.38,
+  "hybrid_note": "MEASURED in the platform phase on the same inner-loop shape: an E-core costs 2.38x a P-core. An unpinned latency distribution on this CPU is a mixture of two processors and its tail is not interpretable."
+ },
+ "scheduling_analogue": {
+  "status": "ANALOGUE -- NOT a reproduction of the manuscript's Linux arms",
+  "manuscript_arms": [
+   "SCHED_OTHER",
+   "chrt",
+   "isolcpus"
+  ],
+  "reproducible_here": false,
+  "why": "SCHED_OTHER, chrt and isolcpus are Linux kernel mechanisms. They do not exist on Windows 11 and are not emulated by anything in this script. No number in this file is a measurement of any of them.",
+  "mechanism_used_here": [
+   "SetPriorityClass (NORMAL_PRIORITY_CLASS = 32, HIGH_PRIORITY_CLASS = 128, REALTIME_PRIORITY_CLASS = 256), invoked through psutil.Process().nice()",
+   "SetProcessAffinityMask, invoked through psutil.Process().cpu_affinity(); ctypes fallback included"
+  ],
+  "semantic_differences": [
+   "Windows priority classes schedule a PROCESS against other processes; SCHED_OTHER/SCHED_FIFO are per-thread scheduling POLICIES with different preemption rules.",
+   "isolcpus removes a core from the general scheduler's runqueue entirely. Windows processor affinity does the opposite: it constrains this process to a core, while leaving every other thread on the system free to run there.",
+   "Windows offers no real-time guarantee at any priority class. Hardware interrupts and DPCs preempt REALTIME_PRIORITY_CLASS."
+  ]
+ },
+ "specification": {
+  "T_u_s": 0.001,
+  "tau_A_s": 0.0002,
+  "computation_budget_s": 0.0008,
+  "tau_O_s": 0.0006,
+  "horizon": 20,
+  "n_particles": 30,
+  "T_iter": 25,
+  "alpha": 1.2,
+  "beta": 1.1,
+  "gbar_dB": 38.0,
+  "sigma_s_m": 0.1,
+  "z_max": 8.0,
+  "eps_safe": 0.001,
+  "u_max_rad": 0.01,
+  "u_slew_rad_per_cycle": 5e-05,
+  "link_length_m": 2000.0,
+  "tau_O_reference_point": "start of the Optimization stage",
+  "note": "tau_O is polled at solver ITERATION boundaries, because that is the only stopping point hclpso_ga.minimise offers. If one iteration costs more than tau_O the checkpoint cannot fire before it, and the measured Optimization stage overruns tau_O by construction. Whether it does is reported, not assumed."
+ },
+ "instrumentation_equivalence_check": {
+  "instrumented_best_f": 0.4934408731340537,
+  "step_best_f": 0.4934408731340537,
+  "instrumented_evaluations": 750,
+  "step_evaluations": 750,
+  "instrumented_iterations": 25,
+  "step_iterations": 25,
+  "bit_identical": true
+ },
+ "disturbance_traces": {
+  "sway": "channel.SwayProcess, OU, 500-step burn-in, seeds 1000+s",
+  "scintillation": "channel.GammaGammaAR1(rho_a=0.98, calibrate=False), seeds 2000+s, h_meas = h - 1",
+  "n_seed_blocks": 10,
+  "cycles_per_seed": 3000,
+  "shared_across_arms": true,
+  "note": "pre-recorded and replayed; the plant is outside the timed window and is not closed around the controller"
+ },
+ "arms": {
+  "normal_pinned_P": {
+   "arm": "normal_pinned_P",
+   "label": "NORMAL_PRIORITY_CLASS, affinity pinned to logical processor 2 (P-core)",
+   "anytime_checkpoint": true,
+   "tau_O_us": 600.0,
+   "n_cycles": 30000,
+   "n_seed_blocks": 10,
+   "cycles_per_seed": 3000,
+   "end_to_end": {
+    "n": 30000,
+    "min_us": 1945.9,
+    "median_us": 3619.3,
+    "mean_us": 4423.3345733333335,
+    "std_us": 1446.7794230169688,
+    "p95_us": 6871.0,
+    "p99_us": 7442.2,
+    "p999_us": 9276.6,
+    "max_us": 38272.4,
+    "p999_ci95_us": [
+     8944.6,
+     9746.7
+    ],
+    "p999_ci95_ranks": [
+     29959,
+     29981
+    ],
+    "n_samples_above_p999": 30,
+    "p99_ci95_us": [
+     7383.0,
+     7523.2
+    ]
+   },
+   "stages": {
+    "sense": {
+     "n": 30000,
+     "min_us": 2.4,
+     "median_us": 3.0,
+     "mean_us": 3.625236666666667,
+     "std_us": 15.111837050183206,
+     "p95_us": 4.9,
+     "p99_us": 6.0,
+     "p999_us": 51.4,
+     "max_us": 2409.5,
+     "p999_ci95_us": [
+      30.3,
+      63.4
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      5.9,
+      6.1
+     ]
+    },
+    "predict": {
+     "n": 30000,
+     "min_us": 3.0,
+     "median_us": 3.5,
+     "mean_us": 4.23116,
+     "std_us": 3.5295186127555596,
+     "p95_us": 5.9,
+     "p99_us": 6.8,
+     "p999_us": 52.9,
+     "max_us": 276.8,
+     "p999_ci95_us": [
+      38.2,
+      68.7
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      6.7,
+      6.9
+     ]
+    },
+    "optimize": {
+     "n": 30000,
+     "min_us": 1856.3,
+     "median_us": 3519.1,
+     "mean_us": 4308.339156666666,
+     "std_us": 1418.066447891204,
+     "p95_us": 6706.6,
+     "p99_us": 7253.5,
+     "p999_us": 9127.1,
+     "max_us": 38114.6,
+     "p999_ci95_us": [
+      8763.3,
+      9412.2
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      7197.2,
+      7331.3
+     ]
+    },
+    "checks": {
+     "n": 30000,
+     "min_us": 1.3,
+     "median_us": 79.9,
+     "mean_us": 97.90158333333333,
+     "std_us": 42.90731858816166,
+     "p95_us": 144.8,
+     "p99_us": 198.6,
+     "p999_us": 388.8,
+     "max_us": 2693.2,
+     "p999_ci95_us": [
+      359.6,
+      427.6
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      191.2,
+      206.4
+     ]
+    },
+    "publish": {
+     "n": 30000,
+     "min_us": 6.1,
+     "median_us": 7.7,
+     "mean_us": 9.237436666666666,
+     "std_us": 11.897891752614303,
+     "p95_us": 13.1,
+     "p99_us": 15.9,
+     "p999_us": 89.8,
+     "max_us": 1810.1,
+     "p999_ci95_us": [
+      72.5,
+      112.9
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      15.7,
+      16.2
+     ]
+    }
+   },
+   "deadline": {
+    "budget_us": 800.0,
+    "budget_definition": "T_u - tau_A = 1000 us - 200 us",
+    "n_meeting_budget": 0,
+    "n_cycles": 30000,
+    "success_rate": 0.0,
+    "clopper_pearson_95": [
+     0.0,
+     0.00012295508887385758
+    ],
+    "n_meeting_T_u": 0,
+    "success_rate_T_u": 0.0,
+    "clopper_pearson_95_T_u": [
+     0.0,
+     0.00012295508887385758
+    ]
+   },
+   "budget_that_would_be_met": {
+    "us_for_50pct": 3619.3,
+    "us_for_95pct": 6871.0,
+    "us_for_99pct": 7442.2,
+    "us_for_999pct": 9276.6,
+    "note": "smallest computation budget this arm would have met at each rate, read straight off the measured order statistics"
+   },
+   "per_seed_dispersion": {
+    "per_seed_deadline_hits": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "pooled_p": 0.0,
+    "observed_variance_of_hits": 0.0,
+    "binomial_variance_of_hits": null,
+    "dispersion_ratio": null,
+    "per_seed_median_us": [
+     6042.6,
+     4897.05,
+     3542.2,
+     3509.25,
+     3530.05,
+     3541.0,
+     3549.5,
+     3654.6,
+     3704.4,
+     3625.35
+    ],
+    "spread_of_per_seed_medians_us": 2533.35,
+    "per_seed_p99_us": [
+     8015.6,
+     7338.4,
+     7458.6,
+     7274.6,
+     7193.3,
+     7239.5,
+     7292.2,
+     7467.8,
+     7410.9,
+     7551.3
+    ],
+    "note": "dispersion_ratio is observed/binomial variance of the per-seed deadline-hit count; 1.0 is exactly binomial, below 1 is the under-dispersion signature that condemned the released traces, above 1 means slow drift between blocks. It is undefined when the rate is 0 or 1."
+   },
+   "serial_correlation": {
+    "lag1_full_series": 0.8361555653742497,
+    "lag1_within_seed_blocks": [
+     0.6964507102949677,
+     0.855991155385772,
+     0.8221820998299556,
+     0.7993238769943739,
+     0.820364033347532,
+     0.8508414510195748,
+     0.8240520115600017,
+     0.877358043831815,
+     0.8625690492855734,
+     0.8529099195112847
+    ],
+    "lag1_within_seed_mean": 0.8262042351060851,
+    "acf_lag_1_to_10": [
+     0.8361555653742497,
+     0.7468182151084788,
+     0.6654930209722821,
+     0.6085310859359282,
+     0.5466033061471404,
+     0.5042974454685016,
+     0.46378224554065367,
+     0.4252897193884113,
+     0.3888132682441534,
+     0.3590940014878315
+    ]
+   },
+   "solver": {
+    "iterations_completed_median": 1.0,
+    "iterations_completed_min": 1,
+    "iterations_completed_max": 1,
+    "iterations_histogram": {
+     "1": 30000
+    },
+    "objective_evaluations_median": 30.0,
+    "fraction_command_admissible": 0.0002
+   },
+   "executed_on_logical_processors": {
+    "2": 30000
+   },
+   "n_distinct_logical_processors": 1,
+   "pinning": {
+    "requested_cpu": 2,
+    "affinity_mask_readback": [
+     2
+    ],
+    "mask_matches_request": true,
+    "observed_processor_numbers": {
+     "2": 4000
+    },
+    "all_probes_on_requested_cpu": true,
+    "n_probes": 4000,
+    "_sink": 7998007.997999999
+   },
+   "priority": {
+    "mechanism": "SetPriorityClass (psutil.Process.nice)",
+    "requested": "normal",
+    "requested_value": 32,
+    "granted": 32,
+    "granted_name": "NORMAL_PRIORITY_CLASS",
+    "granted_as_requested": true
+   },
+   "timer_overhead_on_this_core": {
+    "n": 100000,
+    "mean_ns": 96.3049630496305,
+    "median_ns": 100.0,
+    "min_ns": 0
+   },
+   "warmup_cycles_untimed": 200,
+   "core_class_mixture": {
+    "fraction_finishing_on_E_core": 0.0,
+    "fraction_finishing_on_P_core": 1.0,
+    "median_us_when_finished_on_P": 3619.35,
+    "median_us_when_finished_on_E": null,
+    "note": "logical 0-11 are P-core threads, 12-19 are E-cores; the core number is sampled once per cycle AFTER the timed window closes, so it is where the cycle ended. Recomputed from the saved raw arrays."
+   }
+  },
+  "high_pinned_P": {
+   "arm": "high_pinned_P",
+   "label": "HIGH_PRIORITY_CLASS, affinity pinned to logical processor 2 (P-core)",
+   "anytime_checkpoint": true,
+   "tau_O_us": 600.0,
+   "n_cycles": 30000,
+   "n_seed_blocks": 10,
+   "cycles_per_seed": 3000,
+   "end_to_end": {
+    "n": 30000,
+    "min_us": 1930.8,
+    "median_us": 3634.2,
+    "mean_us": 4332.2051200000005,
+    "std_us": 1537.5484139176313,
+    "p95_us": 6884.2,
+    "p99_us": 7233.1,
+    "p999_us": 8653.0,
+    "max_us": 65850.5,
+    "p999_ci95_us": [
+     8519.6,
+     8842.6
+    ],
+    "p999_ci95_ranks": [
+     29959,
+     29981
+    ],
+    "n_samples_above_p999": 30,
+    "p99_ci95_us": [
+     7206.8,
+     7266.5
+    ]
+   },
+   "stages": {
+    "sense": {
+     "n": 30000,
+     "min_us": 2.4,
+     "median_us": 3.0,
+     "mean_us": 3.4374933333333333,
+     "std_us": 2.5335188060364264,
+     "p95_us": 4.9,
+     "p99_us": 5.9,
+     "p999_us": 43.5,
+     "max_us": 169.0,
+     "p999_ci95_us": [
+      21.0,
+      54.4
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      5.8,
+      6.0
+     ]
+    },
+    "predict": {
+     "n": 30000,
+     "min_us": 3.0,
+     "median_us": 3.5,
+     "mean_us": 4.10393,
+     "std_us": 3.3661421913235343,
+     "p95_us": 5.8,
+     "p99_us": 6.6,
+     "p999_us": 49.9,
+     "max_us": 171.4,
+     "p999_ci95_us": [
+      35.2,
+      59.8
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      6.5,
+      6.6
+     ]
+    },
+    "optimize": {
+     "n": 30000,
+     "min_us": 1843.4,
+     "median_us": 3533.8,
+     "mean_us": 4219.464253333333,
+     "std_us": 1513.9637050359504,
+     "p95_us": 6723.3,
+     "p99_us": 7063.0,
+     "p999_us": 8462.3,
+     "max_us": 65687.8,
+     "p999_ci95_us": [
+      8311.5,
+      8663.9
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      7037.7,
+      7095.0
+     ]
+    },
+    "checks": {
+     "n": 30000,
+     "min_us": 1.3,
+     "median_us": 79.5,
+     "mean_us": 96.19591,
+     "std_us": 37.40792165694306,
+     "p95_us": 144.9,
+     "p99_us": 206.0,
+     "p999_us": 337.2,
+     "max_us": 1919.9,
+     "p999_ci95_us": [
+      322.2,
+      381.5
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      200.8,
+      210.4
+     ]
+    },
+    "publish": {
+     "n": 30000,
+     "min_us": 6.0,
+     "median_us": 7.6,
+     "mean_us": 9.003533333333333,
+     "std_us": 5.503736538578594,
+     "p95_us": 12.9,
+     "p99_us": 15.6,
+     "p999_us": 77.4,
+     "max_us": 325.4,
+     "p999_ci95_us": [
+      72.4,
+      113.5
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      15.4,
+      16.0
+     ]
+    }
+   },
+   "deadline": {
+    "budget_us": 800.0,
+    "budget_definition": "T_u - tau_A = 1000 us - 200 us",
+    "n_meeting_budget": 0,
+    "n_cycles": 30000,
+    "success_rate": 0.0,
+    "clopper_pearson_95": [
+     0.0,
+     0.00012295508887385758
+    ],
+    "n_meeting_T_u": 0,
+    "success_rate_T_u": 0.0,
+    "clopper_pearson_95_T_u": [
+     0.0,
+     0.00012295508887385758
+    ]
+   },
+   "budget_that_would_be_met": {
+    "us_for_50pct": 3634.2,
+    "us_for_95pct": 6884.2,
+    "us_for_99pct": 7233.1,
+    "us_for_999pct": 8653.0,
+    "note": "smallest computation budget this arm would have met at each rate, read straight off the measured order statistics"
+   },
+   "per_seed_dispersion": {
+    "per_seed_deadline_hits": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "pooled_p": 0.0,
+    "observed_variance_of_hits": 0.0,
+    "binomial_variance_of_hits": null,
+    "dispersion_ratio": null,
+    "per_seed_median_us": [
+     3572.1,
+     3531.4,
+     3542.9,
+     3503.9,
+     3728.65,
+     3979.1,
+     3722.9,
+     3687.35,
+     3586.5,
+     3646.0
+    ],
+    "spread_of_per_seed_medians_us": 475.2,
+    "per_seed_p99_us": [
+     7112.4,
+     7027.4,
+     7128.8,
+     7101.3,
+     7484.8,
+     7385.2,
+     7226.7,
+     7228.6,
+     7122.6,
+     7147.9
+    ],
+    "note": "dispersion_ratio is observed/binomial variance of the per-seed deadline-hit count; 1.0 is exactly binomial, below 1 is the under-dispersion signature that condemned the released traces, above 1 means slow drift between blocks. It is undefined when the rate is 0 or 1."
+   },
+   "serial_correlation": {
+    "lag1_full_series": 0.6397344102077321,
+    "lag1_within_seed_blocks": [
+     0.8595275610108891,
+     0.8509233918590157,
+     0.8152313824449285,
+     0.8282239102776233,
+     0.8309461443828686,
+     0.44067198704813637,
+     0.5371918841940908,
+     0.5298903265550302,
+     0.5464202155421461,
+     0.5275284573907603
+    ],
+    "lag1_within_seed_mean": 0.6766555260705489,
+    "acf_lag_1_to_10": [
+     0.6397344102077321,
+     0.5355655656058056,
+     0.4521698379481873,
+     0.3960257372689428,
+     0.3352861271281266,
+     0.29468638597252267,
+     0.2549054693297807,
+     0.22594477129583854,
+     0.19604054955309233,
+     0.17700756187933292
+    ]
+   },
+   "solver": {
+    "iterations_completed_median": 1.0,
+    "iterations_completed_min": 1,
+    "iterations_completed_max": 1,
+    "iterations_histogram": {
+     "1": 30000
+    },
+    "objective_evaluations_median": 30.0,
+    "fraction_command_admissible": 0.0002
+   },
+   "executed_on_logical_processors": {
+    "2": 30000
+   },
+   "n_distinct_logical_processors": 1,
+   "pinning": {
+    "requested_cpu": 2,
+    "affinity_mask_readback": [
+     2
+    ],
+    "mask_matches_request": true,
+    "observed_processor_numbers": {
+     "2": 4000
+    },
+    "all_probes_on_requested_cpu": true,
+    "n_probes": 4000,
+    "_sink": 7998007.997999999
+   },
+   "priority": {
+    "mechanism": "SetPriorityClass (psutil.Process.nice)",
+    "requested": "high",
+    "requested_value": 128,
+    "granted": 128,
+    "granted_name": "HIGH_PRIORITY_CLASS",
+    "granted_as_requested": true
+   },
+   "timer_overhead_on_this_core": {
+    "n": 100000,
+    "mean_ns": 83.90083900839008,
+    "median_ns": 100.0,
+    "min_ns": 0
+   },
+   "warmup_cycles_untimed": 200,
+   "core_class_mixture": {
+    "fraction_finishing_on_E_core": 0.0,
+    "fraction_finishing_on_P_core": 1.0,
+    "median_us_when_finished_on_P": 3634.2,
+    "median_us_when_finished_on_E": null,
+    "note": "logical 0-11 are P-core threads, 12-19 are E-cores; the core number is sampled once per cycle AFTER the timed window closes, so it is where the cycle ended. Recomputed from the saved raw arrays."
+   }
+  },
+  "realtime_pinned_P": {
+   "arm": "realtime_pinned_P",
+   "label": "REALTIME_PRIORITY_CLASS, affinity pinned to logical processor 2 (P-core)",
+   "anytime_checkpoint": true,
+   "tau_O_us": 600.0,
+   "n_cycles": 30000,
+   "n_seed_blocks": 10,
+   "cycles_per_seed": 3000,
+   "end_to_end": {
+    "n": 30000,
+    "min_us": 1923.9,
+    "median_us": 3776.4,
+    "mean_us": 4586.238283333333,
+    "std_us": 1730.7160562037977,
+    "p95_us": 6934.2,
+    "p99_us": 7281.0,
+    "p999_us": 9157.8,
+    "max_us": 40772.0,
+    "p999_ci95_us": [
+     8882.7,
+     36760.0
+    ],
+    "p999_ci95_ranks": [
+     29959,
+     29981
+    ],
+    "n_samples_above_p999": 30,
+    "p99_ci95_us": [
+     7246.8,
+     7312.4
+    ]
+   },
+   "stages": {
+    "sense": {
+     "n": 30000,
+     "min_us": 2.4,
+     "median_us": 3.1,
+     "mean_us": 3.5758,
+     "std_us": 3.1690930035288494,
+     "p95_us": 4.9,
+     "p99_us": 5.9,
+     "p999_us": 46.8,
+     "max_us": 175.3,
+     "p999_ci95_us": [
+      22.7,
+      63.2
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      5.9,
+      6.1
+     ]
+    },
+    "predict": {
+     "n": 30000,
+     "min_us": 3.0,
+     "median_us": 3.6,
+     "mean_us": 4.26975,
+     "std_us": 3.6303871135899293,
+     "p95_us": 5.8,
+     "p99_us": 6.6,
+     "p999_us": 55.0,
+     "max_us": 176.1,
+     "p999_ci95_us": [
+      44.3,
+      73.3
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      6.5,
+      6.7
+     ]
+    },
+    "optimize": {
+     "n": 30000,
+     "min_us": 1840.1,
+     "median_us": 3674.6,
+     "mean_us": 4467.824566666666,
+     "std_us": 1697.4300586904753,
+     "p95_us": 6771.8,
+     "p99_us": 7106.2,
+     "p999_us": 8908.8,
+     "max_us": 40604.2,
+     "p999_ci95_us": [
+      8685.1,
+      36511.4
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      7072.8,
+      7135.2
+     ]
+    },
+    "checks": {
+     "n": 30000,
+     "min_us": 1.6,
+     "median_us": 81.9,
+     "mean_us": 101.22409333333334,
+     "std_us": 195.90605615176673,
+     "p95_us": 144.2,
+     "p99_us": 206.3,
+     "p999_us": 312.5,
+     "max_us": 33397.3,
+     "p999_ci95_us": [
+      305.1,
+      321.6
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      202.7,
+      211.9
+     ]
+    },
+    "publish": {
+     "n": 30000,
+     "min_us": 6.0,
+     "median_us": 7.9,
+     "mean_us": 9.344073333333334,
+     "std_us": 5.840910952010299,
+     "p95_us": 12.9,
+     "p99_us": 15.6,
+     "p999_us": 83.1,
+     "max_us": 325.9,
+     "p999_ci95_us": [
+      72.9,
+      159.5
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      15.3,
+      16.0
+     ]
+    }
+   },
+   "deadline": {
+    "budget_us": 800.0,
+    "budget_definition": "T_u - tau_A = 1000 us - 200 us",
+    "n_meeting_budget": 0,
+    "n_cycles": 30000,
+    "success_rate": 0.0,
+    "clopper_pearson_95": [
+     0.0,
+     0.00012295508887385758
+    ],
+    "n_meeting_T_u": 0,
+    "success_rate_T_u": 0.0,
+    "clopper_pearson_95_T_u": [
+     0.0,
+     0.00012295508887385758
+    ]
+   },
+   "budget_that_would_be_met": {
+    "us_for_50pct": 3776.4,
+    "us_for_95pct": 6934.2,
+    "us_for_99pct": 7281.0,
+    "us_for_999pct": 9157.8,
+    "note": "smallest computation budget this arm would have met at each rate, read straight off the measured order statistics"
+   },
+   "per_seed_dispersion": {
+    "per_seed_deadline_hits": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "pooled_p": 0.0,
+    "observed_variance_of_hits": 0.0,
+    "binomial_variance_of_hits": null,
+    "dispersion_ratio": null,
+    "per_seed_median_us": [
+     3722.55,
+     3785.05,
+     3752.2,
+     3762.25,
+     3766.0,
+     3814.35,
+     3788.1,
+     3835.65,
+     3983.05,
+     3757.55
+    ],
+    "spread_of_per_seed_medians_us": 260.5,
+    "per_seed_p99_us": [
+     7283.8,
+     7182.7,
+     7243.4,
+     7239.3,
+     7292.4,
+     7460.4,
+     7362.0,
+     7160.9,
+     7085.3,
+     7293.0
+    ],
+    "note": "dispersion_ratio is observed/binomial variance of the per-seed deadline-hit count; 1.0 is exactly binomial, below 1 is the under-dispersion signature that condemned the released traces, above 1 means slow drift between blocks. It is undefined when the rate is 0 or 1."
+   },
+   "serial_correlation": {
+    "lag1_full_series": 0.5773303405599635,
+    "lag1_within_seed_blocks": [
+     0.5943502564741789,
+     0.5617921317105004,
+     0.6109771363820126,
+     0.6376799657279287,
+     0.5423867605340627,
+     0.6029396260587564,
+     0.5438264633373868,
+     0.5475699798093557,
+     0.5441107936515354,
+     0.5918469427148364
+    ],
+    "lag1_within_seed_mean": 0.5777480056400555,
+    "acf_lag_1_to_10": [
+     0.5773303405599635,
+     0.4958995591056854,
+     0.4268867935092912,
+     0.3748500936834477,
+     0.32347400960054234,
+     0.2925523758289759,
+     0.26179202076741254,
+     0.2340331738518769,
+     0.20425848702243218,
+     0.18352891013344538
+    ]
+   },
+   "solver": {
+    "iterations_completed_median": 1.0,
+    "iterations_completed_min": 1,
+    "iterations_completed_max": 1,
+    "iterations_histogram": {
+     "1": 30000
+    },
+    "objective_evaluations_median": 30.0,
+    "fraction_command_admissible": 0.0002
+   },
+   "executed_on_logical_processors": {
+    "2": 30000
+   },
+   "n_distinct_logical_processors": 1,
+   "pinning": {
+    "requested_cpu": 2,
+    "affinity_mask_readback": [
+     2
+    ],
+    "mask_matches_request": true,
+    "observed_processor_numbers": {
+     "2": 4000
+    },
+    "all_probes_on_requested_cpu": true,
+    "n_probes": 4000,
+    "_sink": 7998007.997999999
+   },
+   "priority": {
+    "mechanism": "SetPriorityClass (psutil.Process.nice)",
+    "requested": "realtime",
+    "requested_value": 256,
+    "granted": 128,
+    "granted_name": "HIGH_PRIORITY_CLASS",
+    "granted_as_requested": false
+   },
+   "timer_overhead_on_this_core": {
+    "n": 100000,
+    "mean_ns": 156.11356113561135,
+    "median_ns": 200.0,
+    "min_ns": 0
+   },
+   "warmup_cycles_untimed": 200,
+   "core_class_mixture": {
+    "fraction_finishing_on_E_core": 0.0,
+    "fraction_finishing_on_P_core": 1.0,
+    "median_us_when_finished_on_P": 3776.4,
+    "median_us_when_finished_on_E": null,
+    "note": "logical 0-11 are P-core threads, 12-19 are E-cores; the core number is sampled once per cycle AFTER the timed window closes, so it is where the cycle ended. Recomputed from the saved raw arrays."
+   }
+  },
+  "normal_unpinned": {
+   "arm": "normal_unpinned",
+   "label": "NORMAL_PRIORITY_CLASS, no affinity restriction (all 20 logical processors, scheduler free to migrate between P- and E-cores)",
+   "anytime_checkpoint": true,
+   "tau_O_us": 600.0,
+   "n_cycles": 30000,
+   "n_seed_blocks": 10,
+   "cycles_per_seed": 3000,
+   "end_to_end": {
+    "n": 30000,
+    "min_us": 1911.6,
+    "median_us": 5806.0,
+    "mean_us": 5318.325756666667,
+    "std_us": 1709.5128386162455,
+    "p95_us": 8448.6,
+    "p99_us": 8800.6,
+    "p999_us": 9574.8,
+    "max_us": 14712.7,
+    "p999_ci95_us": [
+     9333.8,
+     9988.5
+    ],
+    "p999_ci95_ranks": [
+     29959,
+     29981
+    ],
+    "n_samples_above_p999": 30,
+    "p99_ci95_us": [
+     8774.0,
+     8826.7
+    ]
+   },
+   "stages": {
+    "sense": {
+     "n": 30000,
+     "min_us": 2.4,
+     "median_us": 4.0,
+     "mean_us": 4.0713099999999995,
+     "std_us": 2.4889066620598186,
+     "p95_us": 6.4,
+     "p99_us": 7.7,
+     "p999_us": 16.6,
+     "max_us": 289.5,
+     "p999_ci95_us": [
+      14.0,
+      23.1
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      7.6,
+      7.8
+     ]
+    },
+    "predict": {
+     "n": 30000,
+     "min_us": 3.0,
+     "median_us": 5.0,
+     "mean_us": 4.714333333333333,
+     "std_us": 1.4978522426907088,
+     "p95_us": 6.7,
+     "p99_us": 7.8,
+     "p999_us": 14.2,
+     "max_us": 80.4,
+     "p999_ci95_us": [
+      12.6,
+      18.9
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      7.8,
+      8.0
+     ]
+    },
+    "optimize": {
+     "n": 30000,
+     "min_us": 1827.0,
+     "median_us": 5658.6,
+     "mean_us": 5184.04745,
+     "std_us": 1675.646181681076,
+     "p95_us": 8250.6,
+     "p99_us": 8589.9,
+     "p999_us": 9336.3,
+     "max_us": 14475.5,
+     "p999_ci95_us": [
+      9140.2,
+      9775.1
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      8564.5,
+      8617.1
+     ]
+    },
+    "checks": {
+     "n": 30000,
+     "min_us": 1.3,
+     "median_us": 123.9,
+     "mean_us": 115.00592333333334,
+     "std_us": 40.77390267829137,
+     "p95_us": 178.7,
+     "p99_us": 212.5,
+     "p999_us": 302.0,
+     "max_us": 1927.0,
+     "p999_ci95_us": [
+      289.0,
+      318.6
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      209.5,
+      215.7
+     ]
+    },
+    "publish": {
+     "n": 30000,
+     "min_us": 5.9,
+     "median_us": 10.9,
+     "mean_us": 10.48674,
+     "std_us": 3.393668330664909,
+     "p95_us": 15.5,
+     "p99_us": 18.8,
+     "p999_us": 40.9,
+     "max_us": 118.6,
+     "p999_ci95_us": [
+      35.2,
+      47.4
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      18.6,
+      19.0
+     ]
+    }
+   },
+   "deadline": {
+    "budget_us": 800.0,
+    "budget_definition": "T_u - tau_A = 1000 us - 200 us",
+    "n_meeting_budget": 0,
+    "n_cycles": 30000,
+    "success_rate": 0.0,
+    "clopper_pearson_95": [
+     0.0,
+     0.00012295508887385758
+    ],
+    "n_meeting_T_u": 0,
+    "success_rate_T_u": 0.0,
+    "clopper_pearson_95_T_u": [
+     0.0,
+     0.00012295508887385758
+    ]
+   },
+   "budget_that_would_be_met": {
+    "us_for_50pct": 5806.0,
+    "us_for_95pct": 8448.6,
+    "us_for_99pct": 8800.6,
+    "us_for_999pct": 9574.8,
+    "note": "smallest computation budget this arm would have met at each rate, read straight off the measured order statistics"
+   },
+   "per_seed_dispersion": {
+    "per_seed_deadline_hits": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "pooled_p": 0.0,
+    "observed_variance_of_hits": 0.0,
+    "binomial_variance_of_hits": null,
+    "dispersion_ratio": null,
+    "per_seed_median_us": [
+     6242.7,
+     5699.85,
+     5118.5,
+     6197.15,
+     5667.3,
+     5337.8,
+     5233.25,
+     5383.75,
+     5588.7,
+     6040.6
+    ],
+    "spread_of_per_seed_medians_us": 1124.2,
+    "per_seed_p99_us": [
+     8964.5,
+     8761.6,
+     8853.1,
+     8756.1,
+     8753.4,
+     8807.1,
+     8709.3,
+     8706.5,
+     8715.6,
+     8693.4
+    ],
+    "note": "dispersion_ratio is observed/binomial variance of the per-seed deadline-hit count; 1.0 is exactly binomial, below 1 is the under-dispersion signature that condemned the released traces, above 1 means slow drift between blocks. It is undefined when the rate is 0 or 1."
+   },
+   "serial_correlation": {
+    "lag1_full_series": 0.7994443995179419,
+    "lag1_within_seed_blocks": [
+     0.7742603684392767,
+     0.7920302141637944,
+     0.8133736170149389,
+     0.7861962730317291,
+     0.8076998819102402,
+     0.8035663778075666,
+     0.7972351358382148,
+     0.8079119238716063,
+     0.7919625273725053,
+     0.7992318006105512
+    ],
+    "lag1_within_seed_mean": 0.7973468120060423,
+    "acf_lag_1_to_10": [
+     0.7994443995179419,
+     0.6252182309959663,
+     0.5070787883081211,
+     0.43096012451759547,
+     0.3699644171766948,
+     0.3174774313987772,
+     0.2753860237179819,
+     0.24087365428489074,
+     0.2103643036645702,
+     0.1867221018316795
+    ]
+   },
+   "solver": {
+    "iterations_completed_median": 1.0,
+    "iterations_completed_min": 1,
+    "iterations_completed_max": 1,
+    "iterations_histogram": {
+     "1": 30000
+    },
+    "objective_evaluations_median": 30.0,
+    "fraction_command_admissible": 0.0002
+   },
+   "executed_on_logical_processors": {
+    "0": 2676,
+    "1": 1319,
+    "2": 1894,
+    "3": 1782,
+    "4": 2429,
+    "5": 2398,
+    "6": 2460,
+    "7": 2183,
+    "8": 2243,
+    "9": 2347,
+    "10": 2677,
+    "11": 2697,
+    "12": 119,
+    "13": 162,
+    "14": 109,
+    "15": 208,
+    "16": 220,
+    "17": 343,
+    "18": 645,
+    "19": 1089
+   },
+   "n_distinct_logical_processors": 20,
+   "pinning": {
+    "requested_cpu": null,
+    "affinity_mask_readback": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19
+    ],
+    "mask_matches_request": null,
+    "all_probes_on_requested_cpu": null,
+    "note": "arm is intentionally unpinned"
+   },
+   "priority": {
+    "mechanism": "SetPriorityClass (psutil.Process.nice)",
+    "requested": "normal",
+    "requested_value": 32,
+    "granted": 32,
+    "granted_name": "NORMAL_PRIORITY_CLASS",
+    "granted_as_requested": true
+   },
+   "timer_overhead_on_this_core": {
+    "n": 100000,
+    "mean_ns": 124.58924589245892,
+    "median_ns": 100.0,
+    "min_ns": 100
+   },
+   "warmup_cycles_untimed": 200,
+   "core_class_mixture": {
+    "fraction_finishing_on_E_core": 0.0965,
+    "fraction_finishing_on_P_core": 0.9035,
+    "median_us_when_finished_on_P": 5208.1,
+    "median_us_when_finished_on_E": 8418.5,
+    "note": "logical 0-11 are P-core threads, 12-19 are E-cores; the core number is sampled once per cycle AFTER the timed window closes, so it is where the cycle ended. Recomputed from the saved raw arrays."
+   }
+  },
+  "normal_pinned_E": {
+   "arm": "normal_pinned_E",
+   "label": "NORMAL_PRIORITY_CLASS, affinity pinned to logical processor 12 (E-core)",
+   "anytime_checkpoint": true,
+   "tau_O_us": 600.0,
+   "n_cycles": 30000,
+   "n_seed_blocks": 10,
+   "cycles_per_seed": 3000,
+   "end_to_end": {
+    "n": 30000,
+    "min_us": 4644.3,
+    "median_us": 8503.0,
+    "mean_us": 8443.712163333334,
+    "std_us": 1037.3903416852088,
+    "p95_us": 9161.1,
+    "p99_us": 10736.7,
+    "p999_us": 15569.7,
+    "max_us": 102588.8,
+    "p999_ci95_us": [
+     14272.2,
+     18692.1
+    ],
+    "p999_ci95_ranks": [
+     29959,
+     29981
+    ],
+    "n_samples_above_p999": 30,
+    "p99_ci95_us": [
+     10451.5,
+     11366.0
+    ]
+   },
+   "stages": {
+    "sense": {
+     "n": 30000,
+     "min_us": 5.0,
+     "median_us": 5.9,
+     "mean_us": 6.285973333333334,
+     "std_us": 7.879449987807476,
+     "p95_us": 7.6,
+     "p99_us": 9.4,
+     "p999_us": 23.5,
+     "max_us": 1183.3,
+     "p999_ci95_us": [
+      19.5,
+      31.4
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      9.2,
+      9.6
+     ]
+    },
+    "predict": {
+     "n": 30000,
+     "min_us": 5.7,
+     "median_us": 6.3,
+     "mean_us": 6.5128,
+     "std_us": 2.507521834173792,
+     "p95_us": 7.5,
+     "p99_us": 8.7,
+     "p999_us": 21.1,
+     "max_us": 269.6,
+     "p999_ci95_us": [
+      17.7,
+      28.3
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      8.6,
+      8.8
+     ]
+    },
+    "optimize": {
+     "n": 30000,
+     "min_us": 4460.0,
+     "median_us": 8305.8,
+     "mean_us": 8240.593413333334,
+     "std_us": 1030.8192199883672,
+     "p95_us": 8932.7,
+     "p99_us": 10414.2,
+     "p999_us": 15295.6,
+     "max_us": 102366.8,
+     "p999_ci95_us": [
+      14040.9,
+      18417.2
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      10160.9,
+      11026.3
+     ]
+    },
+    "checks": {
+     "n": 30000,
+     "min_us": 2.0,
+     "median_us": 169.7,
+     "mean_us": 176.03379333333334,
+     "std_us": 63.381968727780006,
+     "p95_us": 199.4,
+     "p99_us": 252.0,
+     "p999_us": 584.1,
+     "max_us": 4837.1,
+     "p999_ci95_us": [
+      515.4,
+      650.0
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      245.9,
+      257.6
+     ]
+    },
+    "publish": {
+     "n": 30000,
+     "min_us": 11.6,
+     "median_us": 13.5,
+     "mean_us": 14.286183333333332,
+     "std_us": 4.322196063617347,
+     "p95_us": 17.9,
+     "p99_us": 21.9,
+     "p999_us": 56.9,
+     "max_us": 383.5,
+     "p999_ci95_us": [
+      47.0,
+      69.6
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      21.4,
+      22.6
+     ]
+    }
+   },
+   "deadline": {
+    "budget_us": 800.0,
+    "budget_definition": "T_u - tau_A = 1000 us - 200 us",
+    "n_meeting_budget": 0,
+    "n_cycles": 30000,
+    "success_rate": 0.0,
+    "clopper_pearson_95": [
+     0.0,
+     0.00012295508887385758
+    ],
+    "n_meeting_T_u": 0,
+    "success_rate_T_u": 0.0,
+    "clopper_pearson_95_T_u": [
+     0.0,
+     0.00012295508887385758
+    ]
+   },
+   "budget_that_would_be_met": {
+    "us_for_50pct": 8503.0,
+    "us_for_95pct": 9161.1,
+    "us_for_99pct": 10736.7,
+    "us_for_999pct": 15569.7,
+    "note": "smallest computation budget this arm would have met at each rate, read straight off the measured order statistics"
+   },
+   "per_seed_dispersion": {
+    "per_seed_deadline_hits": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "pooled_p": 0.0,
+    "observed_variance_of_hits": 0.0,
+    "binomial_variance_of_hits": null,
+    "dispersion_ratio": null,
+    "per_seed_median_us": [
+     8458.75,
+     8381.5,
+     8456.65,
+     8514.25,
+     8620.85,
+     8571.8,
+     8489.1,
+     8489.75,
+     8532.95,
+     8523.35
+    ],
+    "spread_of_per_seed_medians_us": 239.35,
+    "per_seed_p99_us": [
+     10107.7,
+     9847.4,
+     10002.4,
+     11687.3,
+     12210.1,
+     10710.2,
+     10604.9,
+     10634.7,
+     11191.5,
+     10432.3
+    ],
+    "note": "dispersion_ratio is observed/binomial variance of the per-seed deadline-hit count; 1.0 is exactly binomial, below 1 is the under-dispersion signature that condemned the released traces, above 1 means slow drift between blocks. It is undefined when the rate is 0 or 1."
+   },
+   "serial_correlation": {
+    "lag1_full_series": 0.28047473140920315,
+    "lag1_within_seed_blocks": [
+     0.43552599175753204,
+     0.5541935756258416,
+     0.5984078987381344,
+     0.4728842017391908,
+     0.11704808680001856,
+     0.4067930405771442,
+     0.510749055774861,
+     0.08210349527295081,
+     0.496763713232566,
+     0.5376137589570755
+    ],
+    "lag1_within_seed_mean": 0.42120828184753145,
+    "acf_lag_1_to_10": [
+     0.28047473140920315,
+     0.25264970419408694,
+     0.24055846109208162,
+     0.2692333444234125,
+     0.19976699714714163,
+     0.19926266305058968,
+     0.183433234892566,
+     0.1966144943546884,
+     0.16923535937457088,
+     0.15898197411351253
+    ]
+   },
+   "solver": {
+    "iterations_completed_median": 1.0,
+    "iterations_completed_min": 1,
+    "iterations_completed_max": 1,
+    "iterations_histogram": {
+     "1": 30000
+    },
+    "objective_evaluations_median": 30.0,
+    "fraction_command_admissible": 0.0002
+   },
+   "executed_on_logical_processors": {
+    "12": 30000
+   },
+   "n_distinct_logical_processors": 1,
+   "pinning": {
+    "requested_cpu": 12,
+    "affinity_mask_readback": [
+     12
+    ],
+    "mask_matches_request": true,
+    "observed_processor_numbers": {
+     "12": 4000
+    },
+    "all_probes_on_requested_cpu": true,
+    "n_probes": 4000,
+    "_sink": 7998007.997999999
+   },
+   "priority": {
+    "mechanism": "SetPriorityClass (psutil.Process.nice)",
+    "requested": "normal",
+    "requested_value": 32,
+    "granted": 32,
+    "granted_name": "NORMAL_PRIORITY_CLASS",
+    "granted_as_requested": true
+   },
+   "timer_overhead_on_this_core": {
+    "n": 100000,
+    "mean_ns": 122.22222222222223,
+    "median_ns": 100.0,
+    "min_ns": 100
+   },
+   "warmup_cycles_untimed": 200,
+   "core_class_mixture": {
+    "fraction_finishing_on_E_core": 1.0,
+    "fraction_finishing_on_P_core": 0.0,
+    "median_us_when_finished_on_P": null,
+    "median_us_when_finished_on_E": 8503.0,
+    "note": "logical 0-11 are P-core threads, 12-19 are E-cores; the core number is sampled once per cycle AFTER the timed window closes, so it is where the cycle ended. Recomputed from the saved raw arrays."
+   }
+  },
+  "converged_pinned_P": {
+   "arm": "converged_pinned_P",
+   "label": "NORMAL_PRIORITY_CLASS, pinned to logical processor 2 (P-core), anytime checkpoint REMOVED: solver runs the full T_iter = 25",
+   "anytime_checkpoint": false,
+   "tau_O_us": null,
+   "n_cycles": 1000,
+   "n_seed_blocks": 5,
+   "cycles_per_seed": 200,
+   "end_to_end": {
+    "n": 1000,
+    "min_us": 36309.0,
+    "median_us": 149725.1,
+    "mean_us": 158075.28069999997,
+    "std_us": 51509.645122648035,
+    "p95_us": 245096.9,
+    "p99_us": 255750.6,
+    "p999_us": 353044.0,
+    "max_us": 375045.1,
+    "p999_ci95_us": [
+     275215.4,
+     375045.1
+    ],
+    "p999_ci95_ranks": [
+     997,
+     1000
+    ],
+    "n_samples_above_p999": 1,
+    "p99_ci95_us": [
+     253579.2,
+     275215.4
+    ]
+   },
+   "stages": {
+    "sense": {
+     "n": 1000,
+     "min_us": 3.0,
+     "median_us": 4.5,
+     "mean_us": 37.7744,
+     "std_us": 1057.1147445797205,
+     "p95_us": 5.5,
+     "p99_us": 7.1,
+     "p999_us": 51.0,
+     "max_us": 33433.2,
+     "p999_ci95_us": [
+      11.6,
+      33433.2
+     ],
+     "p999_ci95_ranks": [
+      997,
+      1000
+     ],
+     "n_samples_above_p999": 1,
+     "p99_ci95_us": [
+      5.9,
+      11.6
+     ]
+    },
+    "predict": {
+     "n": 1000,
+     "min_us": 3.2,
+     "median_us": 5.1,
+     "mean_us": 38.9871,
+     "std_us": 1073.2467375134074,
+     "p95_us": 6.0,
+     "p99_us": 8.1,
+     "p999_us": 160.7,
+     "max_us": 33943.6,
+     "p999_ci95_us": [
+      52.2,
+      33943.6
+     ],
+     "p999_ci95_ranks": [
+      997,
+      1000
+     ],
+     "n_samples_above_p999": 1,
+     "p99_ci95_us": [
+      6.6,
+      52.2
+     ]
+    },
+    "optimize": {
+     "n": 1000,
+     "min_us": 36083.3,
+     "median_us": 149558.7,
+     "mean_us": 157711.5595,
+     "std_us": 51426.663327335096,
+     "p95_us": 244865.9,
+     "p99_us": 255509.5,
+     "p999_us": 352884.6,
+     "max_us": 374946.7,
+     "p999_ci95_us": [
+      274960.7,
+      374946.7
+     ],
+     "p999_ci95_ranks": [
+      997,
+      1000
+     ],
+     "n_samples_above_p999": 1,
+     "p99_ci95_us": [
+      253408.4,
+      274960.7
+     ]
+    },
+    "checks": {
+     "n": 1000,
+     "min_us": 76.3,
+     "median_us": 129.5,
+     "mean_us": 275.85220000000004,
+     "std_us": 2247.422305285202,
+     "p95_us": 163.1,
+     "p99_us": 278.6,
+     "p999_us": 32938.3,
+     "max_us": 33226.6,
+     "p999_ci95_us": [
+      32903.1,
+      33226.6
+     ],
+     "p999_ci95_ranks": [
+      997,
+      1000
+     ],
+     "n_samples_above_p999": 1,
+     "p99_ci95_us": [
+      219.2,
+      32903.1
+     ]
+    },
+    "publish": {
+     "n": 1000,
+     "min_us": 6.4,
+     "median_us": 11.3,
+     "mean_us": 11.1075,
+     "std_us": 10.37021577042277,
+     "p95_us": 14.4,
+     "p99_us": 21.1,
+     "p999_us": 169.1,
+     "max_us": 181.2,
+     "p999_ci95_us": [
+      91.3,
+      181.2
+     ],
+     "p999_ci95_ranks": [
+      997,
+      1000
+     ],
+     "n_samples_above_p999": 1,
+     "p99_ci95_us": [
+      15.9,
+      91.3
+     ]
+    }
+   },
+   "deadline": {
+    "budget_us": 800.0,
+    "budget_definition": "T_u - tau_A = 1000 us - 200 us",
+    "n_meeting_budget": 0,
+    "n_cycles": 1000,
+    "success_rate": 0.0,
+    "clopper_pearson_95": [
+     0.0,
+     0.003682083896865671
+    ],
+    "n_meeting_T_u": 0,
+    "success_rate_T_u": 0.0,
+    "clopper_pearson_95_T_u": [
+     0.0,
+     0.003682083896865671
+    ]
+   },
+   "budget_that_would_be_met": {
+    "us_for_50pct": 149725.1,
+    "us_for_95pct": 245096.9,
+    "us_for_99pct": 255750.6,
+    "us_for_999pct": 353044.0,
+    "note": "smallest computation budget this arm would have met at each rate, read straight off the measured order statistics"
+   },
+   "per_seed_dispersion": {
+    "per_seed_deadline_hits": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "pooled_p": 0.0,
+    "observed_variance_of_hits": 0.0,
+    "binomial_variance_of_hits": null,
+    "dispersion_ratio": null,
+    "per_seed_median_us": [
+     135328.95,
+     186969.0,
+     185296.8,
+     132002.05,
+     171438.65
+    ],
+    "spread_of_per_seed_medians_us": 54966.95,
+    "per_seed_p99_us": [
+     252934.1,
+     253579.2,
+     265828.6,
+     207698.1,
+     255750.6
+    ],
+    "note": "dispersion_ratio is observed/binomial variance of the per-seed deadline-hit count; 1.0 is exactly binomial, below 1 is the under-dispersion signature that condemned the released traces, above 1 means slow drift between blocks. It is undefined when the rate is 0 or 1."
+   },
+   "serial_correlation": {
+    "lag1_full_series": 0.5186768217933552,
+    "lag1_within_seed_blocks": [
+     0.6849391305365623,
+     0.190553168260422,
+     0.3213973450826454,
+     0.3221636188205764,
+     0.34684337072607907
+    ],
+    "lag1_within_seed_mean": 0.373179326685257,
+    "acf_lag_1_to_10": [
+     0.5186768217933552,
+     0.4160712843473285,
+     0.3660617131775187,
+     0.321362136813913,
+     0.32084392422326957,
+     0.3287116710151949,
+     0.27609689476987037,
+     0.2690811628999218,
+     0.28619305455441424,
+     0.2949370869342409
+    ]
+   },
+   "solver": {
+    "iterations_completed_median": 25.0,
+    "iterations_completed_min": 25,
+    "iterations_completed_max": 25,
+    "iterations_histogram": {
+     "25": 1000
+    },
+    "objective_evaluations_median": 750.0,
+    "fraction_command_admissible": 0.001
+   },
+   "executed_on_logical_processors": {
+    "2": 1000
+   },
+   "n_distinct_logical_processors": 1,
+   "pinning": {
+    "requested_cpu": 2,
+    "affinity_mask_readback": [
+     2
+    ],
+    "mask_matches_request": true,
+    "observed_processor_numbers": {
+     "2": 4000
+    },
+    "all_probes_on_requested_cpu": true,
+    "n_probes": 4000,
+    "_sink": 7998007.997999999
+   },
+   "priority": {
+    "mechanism": "SetPriorityClass (psutil.Process.nice)",
+    "requested": "normal",
+    "requested_value": 32,
+    "granted": 32,
+    "granted_name": "NORMAL_PRIORITY_CLASS",
+    "granted_as_requested": true
+   },
+   "timer_overhead_on_this_core": {
+    "n": 100000,
+    "mean_ns": 84.79184791847918,
+    "median_ns": 100.0,
+    "min_ns": 0
+   },
+   "warmup_cycles_untimed": 200,
+   "core_class_mixture": {
+    "fraction_finishing_on_E_core": 0.0,
+    "fraction_finishing_on_P_core": 1.0,
+    "median_us_when_finished_on_P": 149803.4,
+    "median_us_when_finished_on_E": null,
+    "note": "logical 0-11 are P-core threads, 12-19 are E-cores; the core number is sampled once per cycle AFTER the timed window closes, so it is where the cycle ended. Recomputed from the saved raw arrays."
+   }
+  },
+  "normal_pinned_P_repeat": {
+   "arm": "normal_pinned_P_repeat",
+   "label": "repeat of normal_pinned_P in a separate process at a later time -- reproducibility check, not an independent arm",
+   "anytime_checkpoint": true,
+   "tau_O_us": 600.0,
+   "n_cycles": 30000,
+   "n_seed_blocks": 10,
+   "cycles_per_seed": 3000,
+   "end_to_end": {
+    "n": 30000,
+    "min_us": 1953.1,
+    "median_us": 5495.4,
+    "mean_us": 8939.201373333333,
+    "std_us": 26819.246335499873,
+    "p95_us": 39259.1,
+    "p99_us": 40804.9,
+    "p999_us": 63363.2,
+    "max_us": 3023468.4,
+    "p999_ci95_us": [
+     54143.4,
+     72544.0
+    ],
+    "p999_ci95_ranks": [
+     29959,
+     29981
+    ],
+    "n_samples_above_p999": 30,
+    "p99_ci95_us": [
+     40739.4,
+     40875.5
+    ]
+   },
+   "stages": {
+    "sense": {
+     "n": 30000,
+     "min_us": 2.5,
+     "median_us": 3.9,
+     "mean_us": 7.138636666666667,
+     "std_us": 327.9687645349147,
+     "p95_us": 5.2,
+     "p99_us": 5.9,
+     "p999_us": 47.6,
+     "max_us": 33947.0,
+     "p999_ci95_us": [
+      41.8,
+      52.9
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      5.8,
+      6.0
+     ]
+    },
+    "predict": {
+     "n": 30000,
+     "min_us": 3.0,
+     "median_us": 4.6,
+     "mean_us": 6.0679,
+     "std_us": 197.73869255983894,
+     "p95_us": 6.0,
+     "p99_us": 6.8,
+     "p999_us": 51.7,
+     "max_us": 32902.8,
+     "p999_ci95_us": [
+      48.2,
+      64.0
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      6.7,
+      6.9
+     ]
+    },
+    "optimize": {
+     "n": 30000,
+     "min_us": 1866.0,
+     "median_us": 5325.4,
+     "mean_us": 8724.25566,
+     "std_us": 26768.51807551555,
+     "p95_us": 39053.1,
+     "p99_us": 40623.6,
+     "p999_us": 62077.5,
+     "max_us": 3023320.1,
+     "p999_ci95_us": [
+      52999.4,
+      71957.5
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      40562.1,
+      40682.9
+     ]
+    },
+    "checks": {
+     "n": 30000,
+     "min_us": 1.4,
+     "median_us": 121.7,
+     "mean_us": 181.50547,
+     "std_us": 1550.6924269656167,
+     "p95_us": 152.6,
+     "p99_us": 232.0,
+     "p999_us": 33212.6,
+     "max_us": 66546.7,
+     "p999_ci95_us": [
+      32880.0,
+      33829.1
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      226.4,
+      238.4
+     ]
+    },
+    "publish": {
+     "n": 30000,
+     "min_us": 6.0,
+     "median_us": 10.7,
+     "mean_us": 20.233706666666667,
+     "std_us": 571.8921860248442,
+     "p95_us": 14.2,
+     "p99_us": 16.1,
+     "p999_us": 114.0,
+     "max_us": 34227.8,
+     "p999_ci95_us": [
+      76.2,
+      173.3
+     ],
+     "p999_ci95_ranks": [
+      29959,
+      29981
+     ],
+     "n_samples_above_p999": 30,
+     "p99_ci95_us": [
+      15.9,
+      16.3
+     ]
+    }
+   },
+   "deadline": {
+    "budget_us": 800.0,
+    "budget_definition": "T_u - tau_A = 1000 us - 200 us",
+    "n_meeting_budget": 0,
+    "n_cycles": 30000,
+    "success_rate": 0.0,
+    "clopper_pearson_95": [
+     0.0,
+     0.00012295508887385758
+    ],
+    "n_meeting_T_u": 0,
+    "success_rate_T_u": 0.0,
+    "clopper_pearson_95_T_u": [
+     0.0,
+     0.00012295508887385758
+    ]
+   },
+   "budget_that_would_be_met": {
+    "us_for_50pct": 5495.4,
+    "us_for_95pct": 39259.1,
+    "us_for_99pct": 40804.9,
+    "us_for_999pct": 63363.2,
+    "note": "smallest computation budget this arm would have met at each rate, read straight off the measured order statistics"
+   },
+   "per_seed_dispersion": {
+    "per_seed_deadline_hits": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "pooled_p": 0.0,
+    "observed_variance_of_hits": 0.0,
+    "binomial_variance_of_hits": null,
+    "dispersion_ratio": null,
+    "per_seed_median_us": [
+     3903.2,
+     3895.7,
+     6395.5,
+     4013.05,
+     4033.9,
+     4847.4,
+     6378.25,
+     6032.45,
+     6503.55,
+     5782.4
+    ],
+    "spread_of_per_seed_medians_us": 2607.85,
+    "per_seed_p99_us": [
+     7272.2,
+     7319.3,
+     39731.4,
+     40440.4,
+     39992.1,
+     41136.4,
+     41153.0,
+     41167.5,
+     41238.2,
+     40946.2
+    ],
+    "note": "dispersion_ratio is observed/binomial variance of the per-seed deadline-hit count; 1.0 is exactly binomial, below 1 is the under-dispersion signature that condemned the released traces, above 1 means slow drift between blocks. It is undefined when the rate is 0 or 1."
+   },
+   "serial_correlation": {
+    "lag1_full_series": 0.0019590893646904226,
+    "lag1_within_seed_blocks": [
+     0.5656671398820871,
+     0.7086099999450283,
+     -0.12571957923366917,
+     -0.07240915001144135,
+     0.013930671123689384,
+     0.01916864629748391,
+     -0.12907023576321958,
+     -0.1168845260946676,
+     -0.008360013150717813,
+     -0.12100539482481219
+    ],
+    "lag1_within_seed_mean": 0.07339275581697609,
+    "acf_lag_1_to_10": [
+     0.0019590893646904226,
+     0.025498968825444314,
+     -0.011264963847324332,
+     0.019707284406827338,
+     0.09018320582956167,
+     0.002570055517143375,
+     0.00027516645529205495,
+     -0.005928268234380698,
+     0.03163413992570863,
+     0.04465781930765521
+    ]
+   },
+   "solver": {
+    "iterations_completed_median": 1.0,
+    "iterations_completed_min": 1,
+    "iterations_completed_max": 1,
+    "iterations_histogram": {
+     "1": 30000
+    },
+    "objective_evaluations_median": 30.0,
+    "fraction_command_admissible": 0.0002
+   },
+   "executed_on_logical_processors": {
+    "2": 30000
+   },
+   "n_distinct_logical_processors": 1,
+   "core_class_mixture": {
+    "fraction_finishing_on_E_core": 0.0,
+    "fraction_finishing_on_P_core": 1.0,
+    "median_us_when_finished_on_P": 5495.5,
+    "median_us_when_finished_on_E": null,
+    "note": "logical 0-11 are P-core threads, 12-19 are E-cores. The core number is sampled once per cycle AFTER the timed window closes, so it is where the cycle ended, not necessarily where all of it ran -- which is exactly the problem with an unpinned measurement."
+   },
+   "pinning": {
+    "requested_cpu": 2,
+    "affinity_mask_readback": [
+     2
+    ],
+    "mask_matches_request": true,
+    "observed_processor_numbers": {
+     "2": 4000
+    },
+    "all_probes_on_requested_cpu": true,
+    "n_probes": 4000,
+    "_sink": 7998007.997999999
+   },
+   "priority": {
+    "mechanism": "SetPriorityClass (psutil.Process.nice)",
+    "requested": "normal",
+    "requested_value": 32,
+    "granted": 32,
+    "granted_name": "NORMAL_PRIORITY_CLASS",
+    "granted_as_requested": true
+   },
+   "timer_overhead_on_this_core": {
+    "n": 100000,
+    "mean_ns": 159.86259862598627,
+    "median_ns": 200.0,
+    "min_ns": 0
+   },
+   "warmup_cycles_untimed": 3000,
+   "machine_load_before_arm": {
+    "available": true,
+    "sample_seconds": 1.0,
+    "system_cpu_percent": 47.0,
+    "n_logical_processors": 20,
+    "other_processes_above_20pct": [
+     {
+      "pid": 0,
+      "name": "System Idle Process",
+      "cpu_percent": 1049.8
+     },
+     {
+      "pid": 17528,
+      "name": "python.exe",
+      "cpu_percent": 100.5
+     },
+     {
+      "pid": 10408,
+      "name": "python.exe",
+      "cpu_percent": 100.3
+     },
+     {
+      "pid": 21316,
+      "name": "python.exe",
+      "cpu_percent": 100.3
+     },
+     {
+      "pid": 8012,
+      "name": "python.exe",
+      "cpu_percent": 99.7
+     },
+     {
+      "pid": 13700,
+      "name": "python.exe",
+      "cpu_percent": 99.2
+     },
+     {
+      "pid": 11224,
+      "name": "python.exe",
+      "cpu_percent": 99.1
+     },
+     {
+      "pid": 18632,
+      "name": "python.exe",
+      "cpu_percent": 99.0
+     },
+     {
+      "pid": 19272,
+      "name": "python.exe",
+      "cpu_percent": 99.0
+     },
+     {
+      "pid": 21320,
+      "name": "python.exe",
+      "cpu_percent": 99.0
+     }
+    ],
+    "n_other_processes_above_20pct": 10,
+    "note": "system_cpu_percent is the whole-machine utilisation measured over the sample window while this benchmark was the caller. Anything well above the ~5%% one pinned thread contributes is other work sharing L3, memory bandwidth and the package power budget with the measurement."
+   },
+   "machine_load_after_arm": {
+    "available": true,
+    "sample_seconds": 1.0,
+    "system_cpu_percent": 52.7,
+    "n_logical_processors": 20,
+    "other_processes_above_20pct": [
+     {
+      "pid": 0,
+      "name": "System Idle Process",
+      "cpu_percent": 943.5
+     },
+     {
+      "pid": 19272,
+      "name": "python.exe",
+      "cpu_percent": 100.5
+     },
+     {
+      "pid": 21316,
+      "name": "python.exe",
+      "cpu_percent": 100.5
+     },
+     {
+      "pid": 21320,
+      "name": "python.exe",
+      "cpu_percent": 100.5
+     },
+     {
+      "pid": 10408,
+      "name": "python.exe",
+      "cpu_percent": 100.2
+     },
+     {
+      "pid": 13700,
+      "name": "python.exe",
+      "cpu_percent": 99.8
+     },
+     {
+      "pid": 17528,
+      "name": "python.exe",
+      "cpu_percent": 99.5
+     },
+     {
+      "pid": 8012,
+      "name": "python.exe",
+      "cpu_percent": 99.3
+     },
+     {
+      "pid": 11224,
+      "name": "python.exe",
+      "cpu_percent": 98.9
+     },
+     {
+      "pid": 18632,
+      "name": "python.exe",
+      "cpu_percent": 98.0
+     },
+     {
+      "pid": 3728,
+      "name": "python.exe",
+      "cpu_percent": 95.1
+     }
+    ],
+    "n_other_processes_above_20pct": 11,
+    "note": "system_cpu_percent is the whole-machine utilisation measured over the sample window while this benchmark was the caller. Anything well above the ~5%% one pinned thread contributes is other work sharing L3, memory bandwidth and the package power budget with the measurement."
+   }
+  }
+ },
+ "guard_test_iii_cost": {
+  "fast": {
+   "reps": 5,
+   "median_us": 73071.6,
+   "min_us": 71687.2,
+   "value": 1.0272283886715705e-09,
+   "times_the_800us_budget": 91.3395
+  },
+  "quad": {
+   "reps": 1,
+   "median_us": 4939415.0,
+   "min_us": 4939415.0,
+   "value": 1.0272122017012341e-09,
+   "times_the_800us_budget": 6174.26875
+  },
+  "egc": {
+   "reps": 1,
+   "median_us": 23388302.3,
+   "min_us": 23388302.3,
+   "value": 1.0276995917170993e-09,
+   "times_the_800us_budget": 29235.377875000002
+  },
+  "eps_safe": 0.001,
+  "note": "Measured cost of ONE evaluation of guard test (iii). The cheapest available implementation is compared against the whole 800 us computation budget, not against the Checks stage alone.",
+  "pinning": {
+   "requested_cpu": 2,
+   "affinity_mask_readback": [
+    2
+   ],
+   "mask_matches_request": true,
+   "observed_processor_numbers": {
+    "2": 4000
+   },
+   "all_probes_on_requested_cpu": true,
+   "n_probes": 4000,
+   "_sink": 7998007.997999999
+  }
+ },
+ "cross_arm_ratios": {
+  "E_over_P_same_priority": {
+   "median_us": 2.34934932169204,
+   "p95_us": 1.333299374181342,
+   "p99_us": 1.4426782403052862,
+   "p999_us": 1.6783843218420542,
+   "max_us": 2.680490379490181
+  },
+  "unpinned_over_pinned_P": {
+   "median_us": 1.604177603403973,
+   "p95_us": 1.2296026779217,
+   "p99_us": 1.18252667222058,
+   "p999_us": 1.0321453980984412,
+   "max_us": 0.3844206268747191
+  },
+  "unpinned_logical_processors_touched": 20,
+  "high_pinned_P_over_normal_pinned_P": {
+   "median_us": 1.0041168181692592,
+   "p95_us": 1.0019211177412313,
+   "p99_us": 0.9719034694042085,
+   "p999_us": 0.9327770950563784,
+   "max_us": 1.72057409517041
+  },
+  "realtime_pinned_P_over_normal_pinned_P": {
+   "median_us": 1.0434061835161494,
+   "p95_us": 1.0091980788822588,
+   "p99_us": 0.9783397382494424,
+   "p999_us": 0.9871935838561541,
+   "max_us": 1.0653107722536344
+  },
+  "converged_over_anytime_median": 41.368524300279056
+ },
+ "self_forensics": {
+  "normal_pinned_P": {
+   "arm": "normal_pinned_P",
+   "n": 30000,
+   "clock_resolution_ns": 100,
+   "lattice": {
+    "frac_multiple_of_clock_resolution": 1.0,
+    "frac_multiple_of_1us": 0.0992,
+    "frac_multiple_of_10us": 0.010533333333333334,
+    "frac_multiple_of_100us": 0.0011333333333333334,
+    "expected_by_chance_1us": 0.1,
+    "expected_by_chance_10us": 0.01,
+    "distinct_values": 16330,
+    "distinct_fraction": 0.5443333333333333,
+    "note": "frac_multiple_of_clock_resolution is 1.0 by construction: the clock ticks at that resolution. The 1 us / 10 us / 100 us rows are the real test and should sit at the by-chance rate."
+   },
+   "order_statistics_on_integer_microseconds": {
+    "values_us": {
+     "median_us": 3619.3,
+     "p95_us": 6871.0,
+     "p99_us": 7442.2,
+     "p999_us": 9276.6,
+     "max_us": 38272.4
+    },
+    "n_landing_on_integer_us": 1,
+    "n_reported": 5,
+    "note": "the released traces had 14 of 15 order statistics on exact integers; anything much above chance here would be the same problem in a new file"
+   },
+   "acf_lag_1_to_20": [
+    0.8361555653742497,
+    0.7468182151084788,
+    0.6654930209722821,
+    0.6085310859359282,
+    0.5466033061471404,
+    0.5042974454685016,
+    0.46378224554065367,
+    0.4252897193884113,
+    0.3888132682441534,
+    0.3590940014878315,
+    0.33652757530451666,
+    0.3113278757301163,
+    0.2873898556802843,
+    0.27092652773176484,
+    0.25601461616517224,
+    0.23955440779403392,
+    0.2187286790579816,
+    0.20927747423496348,
+    0.20147962165506642,
+    0.19245396402274575
+   ],
+   "per_seed_medians_us": [
+    6042.6,
+    4897.05,
+    3542.2,
+    3509.25,
+    3530.05,
+    3541.0,
+    3549.5,
+    3654.6,
+    3704.4,
+    3625.35
+   ],
+   "per_seed_median_cv": 0.21284527292351788,
+   "warm_up": {
+    "block_size": 1000,
+    "block_medians_us": [
+     6252.1,
+     6217.2,
+     5492.4,
+     4682.65,
+     4616.3,
+     5186.75,
+     5798.65,
+     3488.55,
+     3464.7,
+     3485.3,
+     3503.0,
+     3540.55,
+     3577.65,
+     3509.0,
+     3501.0,
+     3502.75,
+     3573.45,
+     3551.35,
+     3530.8,
+     3559.2,
+     3565.45,
+     3576.25,
+     3806.4,
+     3628.55,
+     3764.65,
+     3733.0,
+     3635.95,
+     3558.85,
+     3678.15,
+     3639.6
+    ],
+    "settled_median_us": 3576.25,
+    "first_block_within_5pct_of_settled": 7,
+    "cycles_to_settle": 7000,
+    "note": "block medians over equal blocks of the series as measured, in order. A rising-then-flat profile is cache warm-up; the raw array is saved so a reader can cut it themselves."
+   },
+   "histogram_100us_bins": {
+    "first_nonempty_bin_us": 1900.0,
+    "counts_around_800us": {
+     "500-600 us": 0,
+     "600-700 us": 0,
+     "700-800 us": 0,
+     "800-900 us": 0,
+     "900-1000 us": 0,
+     "1000-1100 us": 0,
+     "1100-1200 us": 0
+    },
+    "n_below_budget": 0
+   }
+  },
+  "high_pinned_P": {
+   "arm": "high_pinned_P",
+   "n": 30000,
+   "clock_resolution_ns": 100,
+   "lattice": {
+    "frac_multiple_of_clock_resolution": 1.0,
+    "frac_multiple_of_1us": 0.10143333333333333,
+    "frac_multiple_of_10us": 0.010133333333333333,
+    "frac_multiple_of_100us": 0.0013,
+    "expected_by_chance_1us": 0.1,
+    "expected_by_chance_10us": 0.01,
+    "distinct_values": 16471,
+    "distinct_fraction": 0.5490333333333334,
+    "note": "frac_multiple_of_clock_resolution is 1.0 by construction: the clock ticks at that resolution. The 1 us / 10 us / 100 us rows are the real test and should sit at the by-chance rate."
+   },
+   "order_statistics_on_integer_microseconds": {
+    "values_us": {
+     "median_us": 3634.2,
+     "p95_us": 6884.2,
+     "p99_us": 7233.1,
+     "p999_us": 8653.0,
+     "max_us": 65850.5
+    },
+    "n_landing_on_integer_us": 1,
+    "n_reported": 5,
+    "note": "the released traces had 14 of 15 order statistics on exact integers; anything much above chance here would be the same problem in a new file"
+   },
+   "acf_lag_1_to_20": [
+    0.6397344102077321,
+    0.5355655656058056,
+    0.4521698379481873,
+    0.3960257372689428,
+    0.3352861271281266,
+    0.29468638597252267,
+    0.2549054693297807,
+    0.22594477129583854,
+    0.19604054955309233,
+    0.17700756187933292,
+    0.16304757198360814,
+    0.14991305026975058,
+    0.13453675945449273,
+    0.1259310205548089,
+    0.12319637723641312,
+    0.11382882211874758,
+    0.10342138947656715,
+    0.09722664563238731,
+    0.10011208798212569,
+    0.0895372514317314
+   ],
+   "per_seed_medians_us": [
+    3572.1,
+    3531.4,
+    3542.9,
+    3503.9,
+    3728.65,
+    3979.1,
+    3722.9,
+    3687.35,
+    3586.5,
+    3646.0
+   ],
+   "per_seed_median_cv": 0.038550543534761096,
+   "warm_up": {
+    "block_size": 1000,
+    "block_medians_us": [
+     3580.1,
+     3519.55,
+     3667.1,
+     3505.05,
+     3559.35,
+     3527.55,
+     3578.0,
+     3504.7,
+     3555.1,
+     3540.75,
+     3479.85,
+     3515.85,
+     3558.35,
+     3670.4,
+     4044.4,
+     4135.95,
+     3942.3,
+     3915.15,
+     3955.6,
+     3668.25,
+     3654.35,
+     3718.65,
+     3637.7,
+     3704.65,
+     3556.95,
+     3544.25,
+     3713.15,
+     3567.7,
+     3689.55,
+     3719.65
+    ],
+    "settled_median_us": 3704.65,
+    "first_block_within_5pct_of_settled": 0,
+    "cycles_to_settle": 0,
+    "note": "block medians over equal blocks of the series as measured, in order. A rising-then-flat profile is cache warm-up; the raw array is saved so a reader can cut it themselves."
+   },
+   "histogram_100us_bins": {
+    "first_nonempty_bin_us": 1900.0,
+    "counts_around_800us": {
+     "500-600 us": 0,
+     "600-700 us": 0,
+     "700-800 us": 0,
+     "800-900 us": 0,
+     "900-1000 us": 0,
+     "1000-1100 us": 0,
+     "1100-1200 us": 0
+    },
+    "n_below_budget": 0
+   }
+  },
+  "realtime_pinned_P": {
+   "arm": "realtime_pinned_P",
+   "n": 30000,
+   "clock_resolution_ns": 100,
+   "lattice": {
+    "frac_multiple_of_clock_resolution": 1.0,
+    "frac_multiple_of_1us": 0.09803333333333333,
+    "frac_multiple_of_10us": 0.0108,
+    "frac_multiple_of_100us": 0.0011,
+    "expected_by_chance_1us": 0.1,
+    "expected_by_chance_10us": 0.01,
+    "distinct_values": 17592,
+    "distinct_fraction": 0.5864,
+    "note": "frac_multiple_of_clock_resolution is 1.0 by construction: the clock ticks at that resolution. The 1 us / 10 us / 100 us rows are the real test and should sit at the by-chance rate."
+   },
+   "order_statistics_on_integer_microseconds": {
+    "values_us": {
+     "median_us": 3776.4,
+     "p95_us": 6934.2,
+     "p99_us": 7281.0,
+     "p999_us": 9157.8,
+     "max_us": 40772.0
+    },
+    "n_landing_on_integer_us": 2,
+    "n_reported": 5,
+    "note": "the released traces had 14 of 15 order statistics on exact integers; anything much above chance here would be the same problem in a new file"
+   },
+   "acf_lag_1_to_20": [
+    0.5773303405599635,
+    0.4958995591056854,
+    0.4268867935092912,
+    0.3748500936834477,
+    0.32347400960054234,
+    0.2925523758289759,
+    0.26179202076741254,
+    0.2340331738518769,
+    0.20425848702243218,
+    0.18352891013344538,
+    0.16586663916996558,
+    0.14766877838415518,
+    0.13101547921255105,
+    0.118988347372163,
+    0.11435967922701448,
+    0.10564625034355515,
+    0.10041100080332721,
+    0.09539929966250268,
+    0.08854213769811553,
+    0.08311015586179893
+   ],
+   "per_seed_medians_us": [
+    3722.55,
+    3785.05,
+    3752.2,
+    3762.25,
+    3766.0,
+    3814.35,
+    3788.1,
+    3835.65,
+    3983.05,
+    3757.55
+   ],
+   "per_seed_median_cv": 0.019216144206845837,
+   "warm_up": {
+    "block_size": 1000,
+    "block_medians_us": [
+     3663.7,
+     3692.65,
+     3839.75,
+     3855.8,
+     3683.35,
+     3817.05,
+     3774.0,
+     3744.9,
+     3739.5,
+     3802.9,
+     3736.35,
+     3775.7,
+     3920.4,
+     3718.3,
+     3680.9,
+     3780.7,
+     3769.8,
+     3866.3,
+     3646.85,
+     3938.4,
+     3860.9,
+     3736.15,
+     3758.25,
+     4962.8,
+     3664.05,
+     3729.85,
+     5236.25,
+     5030.3,
+     3649.3,
+     3711.9
+    ],
+    "settled_median_us": 3769.8,
+    "first_block_within_5pct_of_settled": 0,
+    "cycles_to_settle": 0,
+    "note": "block medians over equal blocks of the series as measured, in order. A rising-then-flat profile is cache warm-up; the raw array is saved so a reader can cut it themselves."
+   },
+   "histogram_100us_bins": {
+    "first_nonempty_bin_us": 1900.0,
+    "counts_around_800us": {
+     "500-600 us": 0,
+     "600-700 us": 0,
+     "700-800 us": 0,
+     "800-900 us": 0,
+     "900-1000 us": 0,
+     "1000-1100 us": 0,
+     "1100-1200 us": 0
+    },
+    "n_below_budget": 0
+   }
+  },
+  "normal_unpinned": {
+   "arm": "normal_unpinned",
+   "n": 30000,
+   "clock_resolution_ns": 100,
+   "lattice": {
+    "frac_multiple_of_clock_resolution": 1.0,
+    "frac_multiple_of_1us": 0.10076666666666667,
+    "frac_multiple_of_10us": 0.009633333333333334,
+    "frac_multiple_of_100us": 0.0014333333333333333,
+    "expected_by_chance_1us": 0.1,
+    "expected_by_chance_10us": 0.01,
+    "distinct_values": 19034,
+    "distinct_fraction": 0.6344666666666666,
+    "note": "frac_multiple_of_clock_resolution is 1.0 by construction: the clock ticks at that resolution. The 1 us / 10 us / 100 us rows are the real test and should sit at the by-chance rate."
+   },
+   "order_statistics_on_integer_microseconds": {
+    "values_us": {
+     "median_us": 5806.0,
+     "p95_us": 8448.6,
+     "p99_us": 8800.6,
+     "p999_us": 9574.8,
+     "max_us": 14712.7
+    },
+    "n_landing_on_integer_us": 1,
+    "n_reported": 5,
+    "note": "the released traces had 14 of 15 order statistics on exact integers; anything much above chance here would be the same problem in a new file"
+   },
+   "acf_lag_1_to_20": [
+    0.7994443995179419,
+    0.6252182309959663,
+    0.5070787883081211,
+    0.43096012451759547,
+    0.3699644171766948,
+    0.3174774313987772,
+    0.2753860237179819,
+    0.24087365428489074,
+    0.2103643036645702,
+    0.1867221018316795,
+    0.16913414671023244,
+    0.15949154943498126,
+    0.14852976061577552,
+    0.133794096116641,
+    0.12315797984558832,
+    0.11760504514628631,
+    0.1079062024903225,
+    0.10009137030614196,
+    0.09097318105664073,
+    0.08436252698434178
+   ],
+   "per_seed_medians_us": [
+    6242.7,
+    5699.85,
+    5118.5,
+    6197.15,
+    5667.3,
+    5337.8,
+    5233.25,
+    5383.75,
+    5588.7,
+    6040.6
+   ],
+   "per_seed_median_cv": 0.07064415748132546,
+   "warm_up": {
+    "block_size": 1000,
+    "block_medians_us": [
+     6241.35,
+     6295.85,
+     6215.8,
+     5786.0,
+     4993.95,
+     6056.85,
+     6174.7,
+     6137.6,
+     3706.05,
+     6203.65,
+     6206.85,
+     6125.2,
+     4675.95,
+     5885.05,
+     6096.15,
+     5344.85,
+     5001.05,
+     5500.25,
+     5109.05,
+     5741.15,
+     4786.4,
+     5773.65,
+     5163.5,
+     4668.0,
+     5067.9,
+     6129.0,
+     5434.85,
+     3986.15,
+     6284.75,
+     6248.45
+    ],
+    "settled_median_us": 5344.85,
+    "first_block_within_5pct_of_settled": 4,
+    "cycles_to_settle": 4000,
+    "note": "block medians over equal blocks of the series as measured, in order. A rising-then-flat profile is cache warm-up; the raw array is saved so a reader can cut it themselves."
+   },
+   "histogram_100us_bins": {
+    "first_nonempty_bin_us": 1900.0,
+    "counts_around_800us": {
+     "500-600 us": 0,
+     "600-700 us": 0,
+     "700-800 us": 0,
+     "800-900 us": 0,
+     "900-1000 us": 0,
+     "1000-1100 us": 0,
+     "1100-1200 us": 0
+    },
+    "n_below_budget": 0
+   }
+  },
+  "normal_pinned_E": {
+   "arm": "normal_pinned_E",
+   "n": 30000,
+   "clock_resolution_ns": 100,
+   "lattice": {
+    "frac_multiple_of_clock_resolution": 1.0,
+    "frac_multiple_of_1us": 0.10006666666666666,
+    "frac_multiple_of_10us": 0.009866666666666666,
+    "frac_multiple_of_100us": 0.0008,
+    "expected_by_chance_1us": 0.1,
+    "expected_by_chance_10us": 0.01,
+    "distinct_values": 13724,
+    "distinct_fraction": 0.4574666666666667,
+    "note": "frac_multiple_of_clock_resolution is 1.0 by construction: the clock ticks at that resolution. The 1 us / 10 us / 100 us rows are the real test and should sit at the by-chance rate."
+   },
+   "order_statistics_on_integer_microseconds": {
+    "values_us": {
+     "median_us": 8503.0,
+     "p95_us": 9161.1,
+     "p99_us": 10736.7,
+     "p999_us": 15569.7,
+     "max_us": 102588.8
+    },
+    "n_landing_on_integer_us": 1,
+    "n_reported": 5,
+    "note": "the released traces had 14 of 15 order statistics on exact integers; anything much above chance here would be the same problem in a new file"
+   },
+   "acf_lag_1_to_20": [
+    0.28047473140920315,
+    0.25264970419408694,
+    0.24055846109208162,
+    0.2692333444234125,
+    0.19976699714714163,
+    0.19926266305058968,
+    0.183433234892566,
+    0.1966144943546884,
+    0.16923535937457088,
+    0.15898197411351253,
+    0.1604107043806956,
+    0.15840049614522944,
+    0.15217178215961852,
+    0.15101054316642262,
+    0.1391536414256641,
+    0.1365506702530344,
+    0.1294106656159964,
+    0.12227023207266509,
+    0.11730773964597765,
+    0.11152858651405624
+   ],
+   "per_seed_medians_us": [
+    8458.75,
+    8381.5,
+    8456.65,
+    8514.25,
+    8620.85,
+    8571.8,
+    8489.1,
+    8489.75,
+    8532.95,
+    8523.35
+   ],
+   "per_seed_median_cv": 0.007769573106794577,
+   "warm_up": {
+    "block_size": 1000,
+    "block_medians_us": [
+     8439.95,
+     8503.5,
+     8419.55,
+     8377.6,
+     8354.95,
+     8412.4,
+     8504.9,
+     8479.0,
+     8354.1,
+     8494.55,
+     8494.0,
+     8546.15,
+     8576.9,
+     8673.65,
+     8633.9,
+     8608.35,
+     8600.65,
+     8526.2,
+     8524.8,
+     8457.45,
+     8495.2,
+     8469.15,
+     8491.85,
+     8508.2,
+     8492.3,
+     8515.85,
+     8595.65,
+     8521.7,
+     8508.65,
+     8542.45
+    ],
+    "settled_median_us": 8515.85,
+    "first_block_within_5pct_of_settled": 0,
+    "cycles_to_settle": 0,
+    "note": "block medians over equal blocks of the series as measured, in order. A rising-then-flat profile is cache warm-up; the raw array is saved so a reader can cut it themselves."
+   },
+   "histogram_100us_bins": {
+    "first_nonempty_bin_us": 4600.0,
+    "counts_around_800us": {
+     "500-600 us": 0,
+     "600-700 us": 0,
+     "700-800 us": 0,
+     "800-900 us": 0,
+     "900-1000 us": 0,
+     "1000-1100 us": 0,
+     "1100-1200 us": 0
+    },
+    "n_below_budget": 0
+   }
+  },
+  "converged_pinned_P": {
+   "arm": "converged_pinned_P",
+   "n": 1000,
+   "clock_resolution_ns": 100,
+   "lattice": {
+    "frac_multiple_of_clock_resolution": 1.0,
+    "frac_multiple_of_1us": 0.112,
+    "frac_multiple_of_10us": 0.007,
+    "frac_multiple_of_100us": 0.0,
+    "expected_by_chance_1us": 0.1,
+    "expected_by_chance_10us": 0.01,
+    "distinct_values": 1000,
+    "distinct_fraction": 1.0,
+    "note": "frac_multiple_of_clock_resolution is 1.0 by construction: the clock ticks at that resolution. The 1 us / 10 us / 100 us rows are the real test and should sit at the by-chance rate."
+   },
+   "order_statistics_on_integer_microseconds": {
+    "values_us": {
+     "median_us": 149725.1,
+     "p95_us": 245096.9,
+     "p99_us": 255750.6,
+     "p999_us": 353044.0,
+     "max_us": 375045.1
+    },
+    "n_landing_on_integer_us": 1,
+    "n_reported": 5,
+    "note": "the released traces had 14 of 15 order statistics on exact integers; anything much above chance here would be the same problem in a new file"
+   },
+   "acf_lag_1_to_20": [
+    0.5186768217933552,
+    0.4160712843473285,
+    0.3660617131775187,
+    0.321362136813913,
+    0.32084392422326957,
+    0.3287116710151949,
+    0.27609689476987037,
+    0.2690811628999218,
+    0.28619305455441424,
+    0.2949370869342409,
+    0.3287805584186346,
+    0.29035210220844576,
+    0.267324302843038,
+    0.25605390846040943,
+    0.2663972146272022,
+    0.24087677269248095,
+    0.2543695274930512,
+    0.2216448318242992,
+    0.2144990891110384,
+    0.21789055503853452
+   ],
+   "per_seed_medians_us": [
+    135328.95,
+    186969.0,
+    185296.8,
+    132002.05,
+    171438.65
+   ],
+   "per_seed_median_cv": 0.16502891409792375,
+   "histogram_100us_bins": {
+    "first_nonempty_bin_us": 36300.0,
+    "counts_around_800us": {
+     "500-600 us": 0,
+     "600-700 us": 0,
+     "700-800 us": 0,
+     "800-900 us": 0,
+     "900-1000 us": 0,
+     "1000-1100 us": 0,
+     "1100-1200 us": 0
+    },
+    "n_below_budget": 0
+   }
+  },
+  "normal_pinned_P_repeat": {
+   "arm": "normal_pinned_P_repeat",
+   "n": 30000,
+   "clock_resolution_ns": 100,
+   "lattice": {
+    "frac_multiple_of_clock_resolution": 1.0,
+    "frac_multiple_of_1us": 0.09786666666666667,
+    "frac_multiple_of_10us": 0.009833333333333333,
+    "frac_multiple_of_100us": 0.0010333333333333334,
+    "expected_by_chance_1us": 0.1,
+    "expected_by_chance_10us": 0.01,
+    "distinct_values": 19471,
+    "distinct_fraction": 0.6490333333333334,
+    "note": "frac_multiple_of_clock_resolution is 1.0 by construction: the clock ticks at that resolution. The 1 us / 10 us / 100 us rows are the real test and should sit at the by-chance rate."
+   },
+   "order_statistics_on_integer_microseconds": {
+    "values_us": {
+     "median_us": 5495.4,
+     "p95_us": 39259.1,
+     "p99_us": 40804.9,
+     "p999_us": 63363.2,
+     "max_us": 3023468.4
+    },
+    "n_landing_on_integer_us": 0,
+    "n_reported": 5,
+    "note": "the released traces had 14 of 15 order statistics on exact integers; anything much above chance here would be the same problem in a new file"
+   },
+   "acf_lag_1_to_20": [
+    0.0019590893646904226,
+    0.025498968825444314,
+    -0.011264963847324332,
+    0.019707284406827338,
+    0.09018320582956167,
+    0.002570055517143375,
+    0.00027516645529205495,
+    -0.005928268234380698,
+    0.03163413992570863,
+    0.04465781930765521,
+    3.740723054781088e-05,
+    -0.000209681613855159,
+    -0.006328769306279239,
+    0.02769832137261648,
+    0.028040426504821688,
+    0.0017482512009626622,
+    0.0024857995091061165,
+    0.008463218032413698,
+    0.017880052432462084,
+    0.015024269215917646
+   ],
+   "per_seed_medians_us": [
+    3903.2,
+    3895.7,
+    6395.5,
+    4013.05,
+    4033.9,
+    4847.4,
+    6378.25,
+    6032.45,
+    6503.55,
+    5782.4
+   ],
+   "per_seed_median_cv": 0.22130074399372662,
+   "warm_up": {
+    "block_size": 1000,
+    "block_medians_us": [
+     3833.55,
+     3826.25,
+     6001.5,
+     3790.1,
+     5081.45,
+     3832.35,
+     6383.9,
+     6476.7,
+     6233.6,
+     5217.45,
+     3844.2,
+     4078.45,
+     3905.55,
+     3829.65,
+     6107.65,
+     4022.75,
+     4034.85,
+     6392.4,
+     5525.5,
+     6493.1,
+     6510.2,
+     6434.45,
+     4572.35,
+     6218.2,
+     5175.5,
+     6591.65,
+     6630.05,
+     6515.7,
+     3978.15,
+     3916.95
+    ],
+    "settled_median_us": 6218.2,
+    "first_block_within_5pct_of_settled": 0,
+    "cycles_to_settle": 0,
+    "note": "block medians over equal blocks of the series as measured, in order. A rising-then-flat profile is cache warm-up; the raw array is saved so a reader can cut it themselves."
+   },
+   "histogram_100us_bins": {
+    "first_nonempty_bin_us": 1900.0,
+    "counts_around_800us": {
+     "500-600 us": 0,
+     "600-700 us": 0,
+     "700-800 us": 0,
+     "800-900 us": 0,
+     "900-1000 us": 0,
+     "1000-1100 us": 0,
+     "1100-1200 us": 0
+    },
+    "n_below_budget": 0
+   }
+  }
+ },
+ "latex_tables_file": "cycle_latency_tables.tex",
+ "guard_audit": {
+  "n": 2000,
+  "admissible": 0,
+  "fail_test_i_z": 0,
+  "fail_test_ii_range": 0,
+  "fail_actuator_abs": 0,
+  "fail_actuator_slew": 2000,
+  "no_feasible_candidate": 0,
+  "rates": {
+   "admissible": 0.0,
+   "fail_test_i_z": 0.0,
+   "fail_test_ii_range": 0.0,
+   "fail_actuator_abs": 0.0,
+   "fail_actuator_slew": 1.0,
+   "no_feasible_candidate": 0.0
+  },
+  "note": "UNTIMED diagnostic. u_dot_max*T_u = 5.00e-05 rad per cycle while the decision box for the pointing command is +/- 1.00e-02 rad, and the released solver applies the slew constraint only BETWEEN horizon stages within one cycle, never between the command published this cycle and the one published last cycle. Whether that is what binds is the question this audit answers."
+ },
+ "primary_arm_steady_state": {
+  "n": 23000,
+  "min_us": 1945.9,
+  "median_us": 3557.7,
+  "mean_us": 4216.322086956521,
+  "std_us": 1334.5889069960751,
+  "p95_us": 6839.3,
+  "p99_us": 7333.5,
+  "p999_us": 9105.4,
+  "max_us": 17817.0,
+  "p999_ci95_us": [
+   8756.7,
+   9489.9
+  ],
+  "p999_ci95_ranks": [
+   22967,
+   22987
+  ],
+  "n_samples_above_p999": 23,
+  "p99_ci95_us": [
+   7280.3,
+   7423.7
+  ],
+  "cycles_discarded_as_warm_up": 7000,
+  "lag1_autocorr": 0.8436426983159865,
+  "n_meeting_800us_budget": 0,
+  "note": "the same measured samples with the first 7000 cycles removed. The warm-up is real -- a deployed controller also boots cold -- so this is offered next to the full-series numbers, not instead of them."
+ },
+ "replaces_published": {
+  "published_median_ms": "0.77-0.79",
+  "measured_median_ms": 3.6193,
+  "published_joint_realtime_success_rate": 0.78,
+  "measured_deadline_success_rate": 0.0,
+  "measured_deadline_success_clopper_pearson_95": [
+   0.0,
+   0.00012295508887385758
+  ],
+  "published_platforms": [
+   "A (Intel i7)",
+   "B (Jetson AGX Xavier)",
+   "C (Cortex-A72)"
+  ],
+  "measured_platforms": [
+   "Intel Core i5-14600KF, Windows 11 Pro build 26200"
+  ],
+  "published_os_arms": [
+   "SCHED_OTHER",
+   "chrt",
+   "isolcpus"
+  ],
+  "measured_os_arms": [
+   "NORMAL_PRIORITY_CLASS + affinity",
+   "HIGH_PRIORITY_CLASS + affinity",
+   "REALTIME requested, HIGH granted + affinity",
+   "NORMAL, unpinned"
+  ],
+  "measured_os_arms_are": "a Windows ANALOGUE, not a reproduction",
+  "verdict": "the measured cycle is 5x the published median and misses the 800 us budget on every one of 30000 cycles in every configuration tested. The replacement number is worse than the published one, which is the expected consequence of replacing an unreproducible claim with a measured one."
+ },
+ "contention_proof_lower_bound": {
+  "per_arm": {
+   "normal_pinned_P": {
+    "n": 30000,
+    "min_end_to_end_us": 1945.9,
+    "min_optimize_stage_us": 1856.3,
+    "min_over_budget_factor": 2.432375,
+    "min_optimize_over_tau_O_factor": 3.0938333333333334
+   },
+   "high_pinned_P": {
+    "n": 30000,
+    "min_end_to_end_us": 1930.8,
+    "min_optimize_stage_us": 1843.4,
+    "min_over_budget_factor": 2.4135,
+    "min_optimize_over_tau_O_factor": 3.0723333333333334
+   },
+   "realtime_pinned_P": {
+    "n": 30000,
+    "min_end_to_end_us": 1923.9,
+    "min_optimize_stage_us": 1840.1,
+    "min_over_budget_factor": 2.404875,
+    "min_optimize_over_tau_O_factor": 3.0668333333333333
+   },
+   "normal_unpinned": {
+    "n": 30000,
+    "min_end_to_end_us": 1911.6,
+    "min_optimize_stage_us": 1827.0,
+    "min_over_budget_factor": 2.3895,
+    "min_optimize_over_tau_O_factor": 3.045
+   },
+   "normal_pinned_E": {
+    "n": 30000,
+    "min_end_to_end_us": 4644.3,
+    "min_optimize_stage_us": 4460.0,
+    "min_over_budget_factor": 5.805375000000001,
+    "min_optimize_over_tau_O_factor": 7.433333333333334
+   },
+   "converged_pinned_P": {
+    "n": 1000,
+    "min_end_to_end_us": 36309.0,
+    "min_optimize_stage_us": 36083.3,
+    "min_over_budget_factor": 45.38625,
+    "min_optimize_over_tau_O_factor": 60.13883333333334
+   },
+   "normal_pinned_P_repeat": {
+    "n": 30000,
+    "min_end_to_end_us": 1953.1,
+    "min_optimize_stage_us": 1866.0,
+    "min_over_budget_factor": 2.441375,
+    "min_optimize_over_tau_O_factor": 3.11
+   }
+  },
+  "pooled_pinned_P_runs": {
+   "n": 60000,
+   "min_us": 1945.9,
+   "n_inside_800us": 0
+  },
+  "method": "the machine carried a concurrent compute-bound load of about ten processes at ~50% utilisation for the whole measurement. Contention inflates a measured duration and cannot shorten one, so the minimum over a long run bounds the cost from below regardless of that load.",
+  "verdict": "even the single fastest cycle observed exceeds the 800 us budget, and even the single fastest Optimization stage exceeds tau_O = 600 us, so neither the deadline verdict nor the tau_O verdict is an artefact of background interference."
+ },
+ "measurement_environment": {
+  "machine_was_idle": false,
+  "description": "Ten other compute-bound Python processes were running on this machine for the whole of this phase, holding it at roughly 50% of 20 logical processors. The per-arm probe machine_load_before_arm records it directly for every arm measured after the probe was added; the same processes were running before that, having started about an hour earlier and still being resident afterwards.",
+  "consequence": "This inflates every number in this file. It does not change the deadline verdict, because contention cannot make a duration shorter and the measured MINIMUM already misses the budget by a factor of about 2.4 -- see contention_proof_lower_bound.",
+  "current_load": {
+   "available": true,
+   "sample_seconds": 1.0,
+   "system_cpu_percent": 55.2,
+   "n_logical_processors": 20,
+   "other_processes_above_20pct": [
+    {
+     "pid": 0,
+     "name": "System Idle Process",
+     "cpu_percent": 886.2
+    },
+    {
+     "pid": 8012,
+     "name": "python.exe",
+     "cpu_percent": 100.4
+    },
+    {
+     "pid": 10408,
+     "name": "python.exe",
+     "cpu_percent": 99.8
+    },
+    {
+     "pid": 11224,
+     "name": "python.exe",
+     "cpu_percent": 99.8
+    },
+    {
+     "pid": 13700,
+     "name": "python.exe",
+     "cpu_percent": 99.7
+    },
+    {
+     "pid": 21316,
+     "name": "python.exe",
+     "cpu_percent": 99.5
+    },
+    {
+     "pid": 21320,
+     "name": "python.exe",
+     "cpu_percent": 99.5
+    },
+    {
+     "pid": 19272,
+     "name": "python.exe",
+     "cpu_percent": 99.4
+    },
+    {
+     "pid": 17528,
+     "name": "python.exe",
+     "cpu_percent": 99.2
+    },
+    {
+     "pid": 18632,
+     "name": "python.exe",
+     "cpu_percent": 98.2
+    },
+    {
+     "pid": 12628,
+     "name": "python.exe",
+     "cpu_percent": 96.2
+    },
+    {
+     "pid": 4,
+     "name": "System",
+     "cpu_percent": 35.0
+    }
+   ],
+   "n_other_processes_above_20pct": 12,
+   "note": "system_cpu_percent is the whole-machine utilisation measured over the sample window while this benchmark was the caller. Anything well above the ~5%% one pinned thread contributes is other work sharing L3, memory bandwidth and the package power budget with the measurement."
+  }
+ },
+ "supersedes_manuscript_tables": false,
+ "note_correction": "A previous value of the 'what' field claimed this file 'replaces the manuscript's three-platform latency tables and its joint real-time success rate'. It does not, and that claim has been withdrawn. Previous text: end-to-end control-cycle latency, measured on one platform; replaces the manuscript's three-platform latency tables and its joint real-time success rate"
+}

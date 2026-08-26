@@ -15,14 +15,29 @@ with the SAME seeds, and count the discordant pairs.
 
 If c is reliably 0, the assumption is defensible. If c > 0, the tabulated
 p-values are anti-conservative and must be recomputed from measured counts.
+
+Usage:
+    python ablation_bc.py [--realizations 1000] [--out ablation_success.npz]
+
+The .npz it writes is the input `check_table11_statistics.py` consumes; the
+two scripts together close the loop from paired indicators to the exact McNemar
+and Clopper-Pearson statistics. That is a check on the statistics, not a
+reproduction of the published counts -- see that file's docstring.
 """
+import argparse
+
 import numpy as np
-from scipy.special import erf
 
 from campaign import (geom, pe_exact, NODES, SIGMAS, ALPHA, BETA, GAMMA_OP,
-                      NP_SWARM, T_ITER, ELITE_FRAC, levy, _invert_xi)
+                      NP_SWARM, T_ITER, ELITE_FRAC, Z_MAX, LADDER_K,
+                      levy, _invert_xi, wzeq_min)
 
-BOX = {s: (_invert_xi(max(0.5, 0.0877 / (2 * s)), s), _invert_xi(4.888, s))
+# Decision box: the manuscript's xi range at each jitter level. The lower edge
+# is max(0.5, xi_min(sigma_s)) where xi_min = min_w w_zeq(w) / (2 sigma_s); the
+# minimum is computed from the geometry rather than pasted in as 0.0877, which
+# is what this line used to do.
+_WEQ_MIN = wzeq_min()
+BOX = {s: (_invert_xi(max(0.5, _WEQ_MIN / (2 * s)), s), _invert_xi(4.888, s))
        for s in SIGMAS}
 
 VARIANTS = ["full", "no_chaos", "no_levy", "no_ga", "fixed_fidelity"]
@@ -50,9 +65,16 @@ def optimise(rng, sigma_s, variant):
         x = np.clip(x, LO, HI)
         A0, wzeq = geom(x)
         xi = np.clip(wzeq / (2 * sigma_s), NODES[0], NODES[-1])
-        f = pe_exact(xi, A0)
         z = np.sqrt(2) * ALPHA * BETA / (A0 * np.sqrt(GAMMA_OP))
-        ok = np.isfinite(f) & (z <= 8.0) & (f >= 0.0) & (f <= 0.5)
+        # The fidelity-ladder ablation: 'fixed_fidelity' pins K=10 for every
+        # candidate, every other arm selects K per candidate from z. Before
+        # this branch existed the variant was scored with the same fixed K=10
+        # as every other arm, so it was a copy of 'full' under a different
+        # name -- it always returned b = c = 0 and was reported as an ablation
+        # that had been tested.
+        K = np.full(z.shape, 10, dtype=int) if variant == "fixed_fidelity" else LADDER_K(z)
+        f = pe_exact(xi, A0, K)
+        ok = np.isfinite(f) & (z <= Z_MAX) & (f >= 0.0) & (f <= 0.5)
         fw = np.where(ok, f, np.inf)
 
         imp = fw < pbest_f
@@ -88,7 +110,7 @@ def optimise(rng, sigma_s, variant):
     return best_f
 
 
-def run(n=1000, seed0=90210):
+def run(n=1000, seed0=90210, out=None):
     # a common target: median of the full kernel's achievable optimum
     probe = []
     for r in range(120):
@@ -97,8 +119,9 @@ def run(n=1000, seed0=90210):
         probe.append(optimise(rng, s, "full"))
     probe = np.array([p for p in probe if np.isfinite(p)])
     target = float(np.quantile(probe, 0.55))
-    print("paired ablation, n=%d realizations, success threshold Pe <= %.4e" % (n, target))
-    print("(threshold set so the full kernel succeeds on ~55%% of draws, giving")
+    print("paired ablation, n=%d realizations, success threshold Pe <= %.4e"
+          % (n, target))
+    print("(threshold set so the full kernel succeeds on ~55% of draws, giving")
     print(" both b and c room to be non-zero -- the least favourable case for c=0)\n")
 
     succ = {v: np.zeros(n, dtype=bool) for v in VARIANTS}
@@ -114,14 +137,28 @@ def run(n=1000, seed0=90210):
     print("  " + "-" * 62)
     full = succ["full"]
     print("  %-16s %6.1f%%" % ("full kernel", 100 * full.mean()))
+    any_c = False
     for var in VARIANTS[1:]:
         v = succ[var]
         b = int(np.sum(full & ~v))
         c = int(np.sum(~full & v))
+        any_c |= c > 0
         verdict = "c=0 holds" if c == 0 else "c>0 -- assumption FAILS"
         print("  %-16s %6.1f%% %6d %6d   %s" % (var, 100 * v.mean(), b, c, verdict))
+    print()
+    print("  On this solver the c=0 assumption %s."
+          % ("FAILS on at least one arm" if any_c else "holds on every arm"))
+
+    if out:
+        np.savez(out, **succ)
+        print("  wrote %s  (feed it to check_table11_statistics.py)" % out)
     return succ
 
 
 if __name__ == "__main__":
-    run()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--realizations", type=int, default=1000)
+    ap.add_argument("--out", default=None,
+                    help="write the paired indicators to this .npz")
+    a = ap.parse_args()
+    run(n=a.realizations, out=a.out)

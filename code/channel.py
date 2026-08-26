@@ -32,12 +32,79 @@ SWAY_BAND_HZ = (1.0, 30.0)
 
 
 # --------------------------------------------------------------- geometry
-def beam_geometry(w_z: np.ndarray, a: float = APERTURE):
-    """Return (A_0, w_zeq) for a transmitted waist w_z, per eq. (3)."""
-    v = np.sqrt(np.pi / 2.0) * a / w_z
-    A0 = erf(v) ** 2
-    w_zeq = np.sqrt(w_z ** 2 * np.sqrt(np.pi) * erf(v) / (2.0 * v * np.exp(-v ** 2)))
+def _raw_beam_geometry(w_z: np.ndarray, a: float = APERTURE):
+    """Eq. (3) with NO domain guard.  Internal: needed by the routines that
+    locate the branch boundary, which must evaluate across it."""
+    with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+        v = np.sqrt(np.pi / 2.0) * a / np.asarray(w_z, float)
+        A0 = erf(v) ** 2
+        w_zeq = np.sqrt(np.asarray(w_z, float) ** 2 * np.sqrt(np.pi) * erf(v)
+                        / (2.0 * v * np.exp(-v ** 2)))
     return A0, w_zeq
+
+
+def beam_geometry(w_z: np.ndarray, a: float = APERTURE, check_domain: bool = True):
+    """Return (A_0, w_zeq) for a transmitted waist w_z, per eq. (3).
+
+    DOMAIN.  w_zeq is non-monotonic in w_z with an interior minimum at
+    w_z* = 0.054869 m (a = 0.05 m); only w_z >= w_z* is a beam model.  Below it
+    the map inverts -- narrowing the beam raises w_zeq, hence xi, while A_0
+    rises towards 1 -- which offers unlimited beam-to-jitter ratio at full
+    collected power.  See `system_metric.beam_geometry` for the full argument
+    and for the configuration that reached the success predicate through it.
+
+    This is the vectorised evaluator the solver calls per candidate, so an
+    out-of-domain waist is flagged rather than raised: both outputs are set to
+    NaN, which propagates through the RT-ODT kernel to a non-finite fitness and
+    is rejected by the envelope guard's finiteness test, on the same path as any
+    other unscoreable candidate.  `system_metric.beam_geometry`, which is the
+    scalar entry point used by the success predicate, raises instead.
+
+    `check_domain=False` returns the raw two-branch formula and must be used
+    only to locate the boundary itself, never to score a beam.
+    """
+    A0, w_zeq = _raw_beam_geometry(w_z, a)
+    if check_domain:
+        bad = ~beam_geometry_valid(w_z, a)
+        if np.any(bad):
+            A0 = np.where(bad, np.nan, A0)
+            w_zeq = np.where(bad, np.nan, w_zeq)
+    return A0, w_zeq
+
+
+_BRANCH_MIN_CACHE: dict = {}
+_BRANCH_RTOL = 1e-6
+
+
+def branch_min_wz(a: float = APERTURE):
+    """(w_z*, w_zeq*) at the interior minimum of the equivalent width, eq. (3).
+
+    The manuscript states this minimum (0.0877 m at w_z = 0.0549 m for
+    a = 0.05 m, Sec. VII-A) and builds the decision box's lower edge
+    xi_min(sigma_s) = 0.0877/(2 sigma_s) on it.  Recomputed, not pasted.
+    """
+    key = float(a)
+    if key not in _BRANCH_MIN_CACHE:
+        f = lambda w: float(_raw_beam_geometry(np.array([w]), a)[1][0])
+        gr = (np.sqrt(5) - 1) / 2
+        lo, hi = 1e-4 * (a / APERTURE), 20.0 * (a / APERTURE)
+        c, d = hi - gr * (hi - lo), lo + gr * (hi - lo)
+        for _ in range(400):
+            if f(c) < f(d):
+                hi = d
+            else:
+                lo = c
+            c, d = hi - gr * (hi - lo), lo + gr * (hi - lo)
+        w = 0.5 * (lo + hi)
+        _BRANCH_MIN_CACHE[key] = (float(w), f(w))
+    return _BRANCH_MIN_CACHE[key]
+
+
+def beam_geometry_valid(w_z, a: float = APERTURE):
+    """Elementwise domain test for `beam_geometry`."""
+    w = np.asarray(w_z, float)
+    return (np.isfinite(w) & (w > 0.0)
+            & (w >= branch_min_wz(a)[0] * (1.0 - _BRANCH_RTOL)))
 
 
 def xi_of(w_z: np.ndarray, sigma_s: float, a: float = APERTURE):
@@ -46,18 +113,12 @@ def xi_of(w_z: np.ndarray, sigma_s: float, a: float = APERTURE):
 
 
 def xi_floor(sigma_s: float, a: float = APERTURE) -> float:
-    """w_zeq is non-monotonic in w_z; its minimum sets an attainable floor on xi."""
-    lo, hi = 1e-3, 1.0
-    gr = (np.sqrt(5) - 1) / 2
-    c, d = hi - gr * (hi - lo), lo + gr * (hi - lo)
-    f = lambda w: beam_geometry(np.array([w]), a)[1][0]
-    for _ in range(200):
-        if f(c) < f(d):
-            hi = d
-        else:
-            lo = c
-        c, d = hi - gr * (hi - lo), lo + gr * (hi - lo)
-    return f(0.5 * (lo + hi)) / (2.0 * sigma_s)
+    """w_zeq is non-monotonic in w_z; its minimum sets an attainable floor on xi.
+
+    This is the routine that locates the branch boundary, so it is one of the
+    few places entitled to evaluate eq. (3) across it.
+    """
+    return branch_min_wz(a)[1] / (2.0 * sigma_s)
 
 
 # ------------------------------------------------------------ gamma-gamma
@@ -127,10 +188,35 @@ class GammaGammaAR1:
 
 # ------------------------------------------------------------- pointing
 class SwayProcess:
-    """Building sway as a band-limited random walk in the two angular axes.
+    """Building sway as a band-limited Ornstein-Uhlenbeck process in the two
+    angular axes.
 
-    The manuscript specifies an RMS sway velocity <= 5 mrad/s over 1-30 Hz
-    (Section II-B); the per-cycle increment at T_u is drawn to match that.
+    What is actually pinned down, and by what:
+
+      stationary spread   sigma_theta = sigma_s / L, so that the stationary
+                          RADIAL displacement at the receiver plane has scale
+                          sigma_s. This is not a free choice: sigma_s is
+                          defined in the manuscript as the pointing-jitter
+                          standard deviation in metres at the receiver, and
+                          xi = w_zeq/(2 sigma_s) is defined against it. Any
+                          other stationary spread would make the sway process
+                          and the xi it is evaluated at describe different
+                          links.
+
+      correlation time    the low corner of the 1-30 Hz sway band, giving the
+                          pole a = exp(-2 pi f_lo T_u). The high corner
+                          f_hi = 30 Hz is above the 1 kHz update rate and so
+                          places no constraint on a discrete-time model at
+                          T_u = 1 ms; it is not used.
+
+    The manuscript's 5 mrad/s RMS sway-velocity figure (Section II-B) is a
+    CONSEQUENCE of the two choices above, not an input to them, and this class
+    does not impose it. `rms_velocity()` reports what the model implies so the
+    reader can compare: at sigma_s = 0.1 m, L = 2 km, T_u = 1 ms it comes out
+    at 5.6 mrad/s, i.e. the same order as the specification, which is the only
+    claim the code can support. An earlier version of this docstring stated
+    the causality the other way round -- that the increment was "drawn to
+    match" 5 mrad/s -- which no line of the code did.
     """
 
     def __init__(self, sigma_s, T_u=1e-3, link_length=2000.0, seed=0):
@@ -138,8 +224,16 @@ class SwayProcess:
         self.rng = np.random.default_rng(seed)
         self.theta = np.zeros(2)
         self.sigma_theta = sigma_s / link_length          # angular jitter scale
-        f_lo, f_hi = SWAY_BAND_HZ
+        f_lo, _f_hi = SWAY_BAND_HZ
         self.a = np.exp(-2 * np.pi * f_lo * T_u)          # band-limiting pole
+
+    def rms_velocity(self) -> float:
+        """Implied RMS angular sway velocity [rad/s], per axis.
+
+        The stationary increment has std sigma_theta*sqrt(1-a^2) per T_u, so
+        the velocity RMS is that divided by T_u.
+        """
+        return float(self.sigma_theta * np.sqrt(1 - self.a ** 2) / self.T_u)
 
     def step(self, u_ptr=np.zeros(2)) -> np.ndarray:
         drive = self.rng.normal(size=2) * self.sigma_theta * np.sqrt(1 - self.a ** 2)

@@ -96,23 +96,45 @@ class SolverResult:
 class HCLPSOGA:
     """Anytime hybrid solver over a box-constrained decision vector."""
 
-    def __init__(self, lower, upper, config: SolverConfig = SolverConfig(), seed: int = 0):
+    def __init__(self, lower, upper, config: SolverConfig = SolverConfig(), seed: int = 0,
+                 blocks=None, repair: Optional[Callable] = None):
         self.lo = np.atleast_1d(np.asarray(lower, dtype=float))
         self.hi = np.atleast_1d(np.asarray(upper, dtype=float))
         self.dim = self.lo.size
         self.cfg = config
         self.rng = np.random.default_rng(seed)
+        # `blocks` lists the (start, end) index range of each physical variable's
+        # stage block, so the swarm is seeded one level per variable rather than
+        # one level for the whole concatenated vector -- the blocks of a 60-D
+        # trajectory carry different units and box widths.
+        self.blocks = list(blocks) if blocks is not None else [(0, self.dim)]
+        # `repair` maps an arbitrary point to a feasible one.  Section V-B2:
+        # "When a jump generates a coordinate exceeding the physical slew-rate
+        # or angular limits, the particle is not simply truncated; instead, it
+        # is reflected back into the feasible search space."  Without it the
+        # swarm spends its whole budget on candidates the objective returns
+        # +inf for, and no component of the kernel can differentiate.
+        self.repair = repair
+
+    # ------------------------------------------------------------------
+    def _feasible(self, x: np.ndarray) -> np.ndarray:
+        """Reflect into the box, then project onto the slew-rate tube."""
+        span = self.hi - self.lo
+        t = np.abs((x - self.lo) % (2.0 * span) )
+        x = self.lo + np.where(t > span, 2.0 * span - t, t)
+        x = np.clip(x, self.lo, self.hi)          # guards against fp overshoot
+        return self.repair(x) if self.repair is not None else x
 
     # ------------------------------------------------------------------
     def _initialise(self) -> np.ndarray:
         """Chaotic initialisation.
 
         For a trajectory decision vector the swarm is seeded with *smooth*
-        trajectories: a chaotically-spread base level per particle plus a small
-        per-stage variation bounded by `smooth_span`. Seeding each stage
-        independently would violate the slew-rate constraint of eq. (14) almost
-        surely and leave the whole swarm infeasible, which is also why the
-        deployed controller warm-starts from the previous cycle's solution.
+        trajectories: a chaotically-spread base level per block per particle
+        plus a small per-stage variation bounded by `smooth_span`. Seeding each
+        stage independently would violate the slew-rate constraint of eq. (14)
+        almost surely and leave the whole swarm infeasible, which is also why
+        the deployed controller warm-starts from the previous cycle's solution.
         """
         n, d = self.cfg.n_particles, self.dim
         draw = (logistic_chaos(n * d, self.rng.uniform(0.1, 0.9)).reshape(n, d)
@@ -120,11 +142,14 @@ class HCLPSOGA:
         span = self.hi - self.lo
 
         if d == 1 or self.cfg.smooth_span is None:
-            return self.lo + draw * span
+            return self._feasible(self.lo + draw * span)
 
-        base = self.lo + draw[:, :1] * span          # one level per particle
-        jitter = (draw - 0.5) * 2.0 * self.cfg.smooth_span
-        return np.clip(base + jitter * span, self.lo, self.hi)
+        x = np.empty((n, d))
+        for (s, e) in self.blocks:
+            base = self.lo[s] + draw[:, s:s + 1] * span[s]     # one level per block
+            jitter = (draw[:, s:e] - 0.5) * 2.0 * self.cfg.smooth_span
+            x[:, s:e] = base + jitter * span[s:e]
+        return self._feasible(x)
 
     # ------------------------------------------------------------------
     def minimise(self, objective: Callable, guard: Optional[Callable] = None,
@@ -142,7 +167,7 @@ class HCLPSOGA:
         trace = []
 
         for it in range(cfg.max_iters):
-            x = np.clip(x, self.lo, self.hi)
+            x = self._feasible(x)
             f, aux = objective(x)
             evals += cfg.n_particles
 

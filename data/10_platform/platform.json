@@ -1,0 +1,1094 @@
+{
+  "schema": "platform_spec/1",
+  "generated_utc": "2026-08-26T22:18:15.373296+00:00",
+  "generator": "platform_spec.py",
+  "elapsed_s": 45.1,
+  "provenance": "Every quantity below is either read directly from the operating system / a library __version__, or measured on this machine during this run with time.perf_counter_ns. Nothing is modelled, fitted, smoothed, or copied from a datasheet, except the clearly labelled vendor_datasheet block.",
+  "cpu": {
+    "platform_processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "machine": "AMD64",
+    "logical_processors_os": 20,
+    "physical_cores_psutil": 14,
+    "logical_cores_psutil": 20,
+    "model_name": "Intel(R) Core(TM) i5-14600KF",
+    "cpuid_description": "Intel64 Family 6 Model 183 Stepping 1",
+    "vendor": "GenuineIntel",
+    "physical_cores_os": 14,
+    "logical_processors_cim": 20,
+    "base_clock_mhz_nominal": 3500,
+    "l2_total_kb_cim": 20480,
+    "l3_total_kb_cim": 24576,
+    "socket": "U3E1",
+    "cpuid_signature": "BFEBFBFF000B0671",
+    "_base_clock_note": "Win32_Processor.MaxClockSpeed reports the NOMINAL/base clock, not the turbo ceiling. The clock actually achieved under our workload is measured separately in achieved_clock_measured."
+  },
+  "memory": {
+    "total_bytes": 34144477184,
+    "total_gib": 31.8,
+    "modules": [
+      {
+        "slot": "Controller0-DIMMA2",
+        "capacity_bytes": 17179869184,
+        "capacity_gib": 16.0,
+        "rated_speed_mts": 2667,
+        "configured_speed_mts": 2667,
+        "type": "DDR4",
+        "manufacturer": "OCPC"
+      },
+      {
+        "slot": "Controller1-DIMMB2",
+        "capacity_bytes": 17179869184,
+        "capacity_gib": 16.0,
+        "rated_speed_mts": 2667,
+        "configured_speed_mts": 2667,
+        "type": "DDR4",
+        "manufacturer": "OCPC"
+      }
+    ],
+    "n_modules": 2,
+    "installed_gib": 32.0,
+    "configured_speed_mts": 2667
+  },
+  "os": {
+    "system": "Windows",
+    "release": "11",
+    "version": "10.0.26200",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "node_hash": null,
+    "caption": "Microsoft Windows 11 Pro",
+    "version_full": "10.0.26200",
+    "build": "26200",
+    "architecture": "64-bit",
+    "display_version": "25H2",
+    "build_ubr": "26200.9168",
+    "motherboard": "Micro-Star International Co., Ltd. MPG Z690 EDGE WIFI DDR4 (MS-7D31)",
+    "gpus": [
+      {
+        "name": "NVIDIA GeForce GTX 1070",
+        "driver": "32.0.15.6094"
+      }
+    ]
+  },
+  "python": {
+    "version": "3.14.6 (tags/v3.14.6:c63aec6, Jun 10 2026, 10:26:10) [MSC v.1944 64 bit (AMD64)]",
+    "version_info": [
+      3,
+      14,
+      6
+    ],
+    "implementation": "CPython",
+    "compiler": "MSC v.1944 64 bit (AMD64)",
+    "executable": "C:\\Python314\\python.exe",
+    "gil_enabled": true,
+    "64bit": true
+  },
+  "libraries": {
+    "numpy": "2.5.0",
+    "scipy": "1.18.0",
+    "mpmath": "1.4.1",
+    "matplotlib": "3.11.0",
+    "psutil": "7.2.2"
+  },
+  "blas": {
+    "numpy_version": "2.5.0",
+    "blas_name": "scipy-openblas",
+    "blas_version": "0.3.33.112.0",
+    "blas_configuration": "OpenBLAS 0.3.33.112.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=24",
+    "lapack_name": "scipy-openblas",
+    "lapack_version": "0.3.33.112.0",
+    "simd_baseline": [
+      "X86_V2"
+    ],
+    "simd_found": [
+      "X86_V3"
+    ],
+    "compiler": "msvc 19.44.35228",
+    "threading_layer_env": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    }
+  },
+  "process": {
+    "pid": 14476,
+    "priority_class": "32",
+    "priority_class_note": "NORMAL_PRIORITY_CLASS unless stated otherwise. Windows priority classes are the nearest analogue to Linux SCHED_OTHER/chrt, but they are NOT the same mechanism and must not be presented as a reproduction of them."
+  },
+  "clock_resolution": {
+    "min_nonzero_increment_ns": 100,
+    "median_nonzero_increment_ns": 100,
+    "n_nonzero_increments": 1379947,
+    "n_calls": 2000000,
+    "fraction_of_calls_returning_same_value": 0.310026,
+    "mean_call_cost_ns": 61.24,
+    "clock": "time.perf_counter_ns",
+    "monotonic": true,
+    "reported_resolution_s": 1e-07,
+    "implementation": "QueryPerformanceCounter()"
+  },
+  "clock_resolution_pinned": {
+    "note": "Same measurement as clock_resolution, but pinned to one representative core of each measured class. The tick granularity is a property of the timer source and is identical on both; the per-call cost is a property of the core and sets the instrumentation floor for later phases.",
+    "p_core": {
+      "min_nonzero_increment_ns": 100,
+      "median_nonzero_increment_ns": 100,
+      "n_nonzero_increments": 644955,
+      "n_calls": 1000000,
+      "fraction_of_calls_returning_same_value": 0.355045,
+      "mean_call_cost_ns": 34.48,
+      "clock": "time.perf_counter_ns",
+      "monotonic": true,
+      "reported_resolution_s": 1e-07,
+      "implementation": "QueryPerformanceCounter()",
+      "cpu": 0,
+      "pin_verified": true
+    },
+    "e_core": {
+      "min_nonzero_increment_ns": 100,
+      "median_nonzero_increment_ns": 100.0,
+      "n_nonzero_increments": 999996,
+      "n_calls": 1000000,
+      "fraction_of_calls_returning_same_value": 4e-06,
+      "mean_call_cost_ns": 66.67,
+      "clock": "time.perf_counter_ns",
+      "monotonic": true,
+      "reported_resolution_s": 1e-07,
+      "implementation": "QueryPerformanceCounter()",
+      "cpu": 12,
+      "pin_verified": true
+    }
+  },
+  "topology_kernel_reported": {
+    "physical_cores": 14,
+    "cores": [
+      {
+        "efficiency_class": 1,
+        "smt": true,
+        "logical_processors": [
+          0,
+          1
+        ]
+      },
+      {
+        "efficiency_class": 1,
+        "smt": true,
+        "logical_processors": [
+          2,
+          3
+        ]
+      },
+      {
+        "efficiency_class": 1,
+        "smt": true,
+        "logical_processors": [
+          4,
+          5
+        ]
+      },
+      {
+        "efficiency_class": 1,
+        "smt": true,
+        "logical_processors": [
+          6,
+          7
+        ]
+      },
+      {
+        "efficiency_class": 1,
+        "smt": true,
+        "logical_processors": [
+          8,
+          9
+        ]
+      },
+      {
+        "efficiency_class": 1,
+        "smt": true,
+        "logical_processors": [
+          10,
+          11
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          12
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          13
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          14
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          15
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          16
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          17
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          18
+        ]
+      },
+      {
+        "efficiency_class": 0,
+        "smt": false,
+        "logical_processors": [
+          19
+        ]
+      }
+    ],
+    "logical_by_efficiency_class": {
+      "0": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "1": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "caches": {
+      "L1_data": {
+        "instances": 14,
+        "sizes_bytes": [
+          32768,
+          49152
+        ],
+        "line_bytes": 64
+      },
+      "L1_instruction": {
+        "instances": 14,
+        "sizes_bytes": [
+          32768,
+          65536
+        ],
+        "line_bytes": 64
+      },
+      "L2_unified": {
+        "instances": 8,
+        "sizes_bytes": [
+          2097152,
+          4194304
+        ],
+        "line_bytes": 64
+      },
+      "L3_unified": {
+        "instances": 1,
+        "sizes_bytes": [
+          25165824
+        ],
+        "line_bytes": 64
+      }
+    },
+    "note": "EfficiencyClass is the Windows kernel's own label; higher value = higher-performance core class. Reported here only as an independent cross-check of the measured clustering."
+  },
+  "core_pinning": {
+    "mechanism": "Windows processor affinity: psutil.Process().cpu_affinity([i]), which calls SetProcessAffinityMask. Fallback path in this script uses SetProcessAffinityMask via ctypes directly if psutil is absent.",
+    "verification": "Two independent checks per pin: (a) the affinity mask is read back from the OS and compared to the request; (b) kernel32.GetCurrentProcessorNumber() is sampled 2000x while the thread is runnable, and every sample must equal the requested logical processor.",
+    "all_pins_verified": true,
+    "note_not_linux": "The manuscript's SCHED_OTHER / chrt / isolcpus arms are Linux mechanisms and do not exist on Windows. Processor affinity plus Windows priority classes are the nearest analogue and are NOT a reproduction of them."
+  },
+  "per_logical_processor_benchmark": {
+    "workload": "fixed deterministic float64 kernel of the same shape as the manuscript inner loop (30-candidate swarm, K=10 truncation, broadcast (30,11) pow/divide/reduce, ~2.6 kB working set, L1-resident); identical inputs on every core",
+    "estimator": "3 independent passes over all logical processors; each pass times 31 batches of 400 evaluations after 3 warm-up batches and reports the batch minimum; the per-core value is the minimum over the 3 passes. Interference can only inflate a measured cost, never deflate it, so the minimum is the least-contaminated estimator of the intrinsic core cost. Per-pass values and the median/max of the retained pass are kept so nothing is hidden.",
+    "blas_threads": 1,
+    "identical_checksum_on_all_cores": true,
+    "checksum": -2862032.154501653,
+    "results": [
+      {
+        "cpu": 0,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            0
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "0": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8235100,
+        "median_batch_ns": 9396000,
+        "max_batch_ns": 15023100,
+        "ns_per_eval_min": 20587.8,
+        "evals_per_second_min": 48572.6,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20626.0,
+          20587.8,
+          20633.8
+        ],
+        "pass_spread_pct": 0.2,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 1,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            1
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "1": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8211400,
+        "median_batch_ns": 8546200,
+        "max_batch_ns": 12533400,
+        "ns_per_eval_min": 20528.5,
+        "evals_per_second_min": 48712.8,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20659.0,
+          20528.5,
+          20541.2
+        ],
+        "pass_spread_pct": 0.6,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 2,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            2
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "2": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8227300,
+        "median_batch_ns": 10597300,
+        "max_batch_ns": 14970900,
+        "ns_per_eval_min": 20568.2,
+        "evals_per_second_min": 48618.6,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20624.5,
+          20568.2,
+          22776.2
+        ],
+        "pass_spread_pct": 10.7,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 3,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            3
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "3": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8093300,
+        "median_batch_ns": 8617000,
+        "max_batch_ns": 14606600,
+        "ns_per_eval_min": 20233.2,
+        "evals_per_second_min": 49423.6,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          21353.5,
+          20277.0,
+          20233.2
+        ],
+        "pass_spread_pct": 5.5,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 4,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            4
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "4": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8203700,
+        "median_batch_ns": 8309600,
+        "max_batch_ns": 14832500,
+        "ns_per_eval_min": 20509.2,
+        "evals_per_second_min": 48758.5,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20509.2,
+          21438.5,
+          22384.8
+        ],
+        "pass_spread_pct": 9.1,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 5,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            5
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "5": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8140200,
+        "median_batch_ns": 13826700,
+        "max_batch_ns": 14532400,
+        "ns_per_eval_min": 20350.5,
+        "evals_per_second_min": 49138.8,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20483.0,
+          20557.0,
+          20350.5
+        ],
+        "pass_spread_pct": 1.0,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 6,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            6
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "6": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8228500,
+        "median_batch_ns": 8327800,
+        "max_batch_ns": 14649600,
+        "ns_per_eval_min": 20571.2,
+        "evals_per_second_min": 48611.5,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20642.8,
+          20639.8,
+          20571.2
+        ],
+        "pass_spread_pct": 0.3,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 7,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            7
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "7": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8096200,
+        "median_batch_ns": 11597700,
+        "max_batch_ns": 14577400,
+        "ns_per_eval_min": 20240.5,
+        "evals_per_second_min": 49405.9,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20615.8,
+          20569.5,
+          20240.5
+        ],
+        "pass_spread_pct": 1.9,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 8,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            8
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "8": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8213600,
+        "median_batch_ns": 8872600,
+        "max_batch_ns": 16932000,
+        "ns_per_eval_min": 20534.0,
+        "evals_per_second_min": 48699.7,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20918.8,
+          20534.0,
+          20729.0
+        ],
+        "pass_spread_pct": 1.9,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 9,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            9
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "9": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8219000,
+        "median_batch_ns": 8405900,
+        "max_batch_ns": 15035300,
+        "ns_per_eval_min": 20547.5,
+        "evals_per_second_min": 48667.7,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20551.8,
+          20547.5,
+          20568.5
+        ],
+        "pass_spread_pct": 0.1,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 10,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            10
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "10": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8223300,
+        "median_batch_ns": 14459400,
+        "max_batch_ns": 15311300,
+        "ns_per_eval_min": 20558.2,
+        "evals_per_second_min": 48642.3,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          35617.5,
+          35206.2,
+          20558.2
+        ],
+        "pass_spread_pct": 73.3,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 11,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            11
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "11": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 8152200,
+        "median_batch_ns": 14385600,
+        "max_batch_ns": 41697700,
+        "ns_per_eval_min": 20380.5,
+        "evals_per_second_min": 49066.5,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          20579.5,
+          20543.8,
+          20380.5
+        ],
+        "pass_spread_pct": 1.0,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 12,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            12
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "12": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19425200,
+        "median_batch_ns": 20019400,
+        "max_batch_ns": 47449000,
+        "ns_per_eval_min": 48563.0,
+        "evals_per_second_min": 20591.8,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          48612.5,
+          48563.0,
+          48660.5
+        ],
+        "pass_spread_pct": 0.2,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 13,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            13
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "13": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19528200,
+        "median_batch_ns": 20242600,
+        "max_batch_ns": 30248900,
+        "ns_per_eval_min": 48820.5,
+        "evals_per_second_min": 20483.2,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          49119.5,
+          48820.5,
+          48967.8
+        ],
+        "pass_spread_pct": 0.6,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 14,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            14
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "14": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19609200,
+        "median_batch_ns": 20144500,
+        "max_batch_ns": 25808200,
+        "ns_per_eval_min": 49023.0,
+        "evals_per_second_min": 20398.6,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          49023.0,
+          49249.0,
+          49936.2
+        ],
+        "pass_spread_pct": 1.9,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 15,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            15
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "15": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19240700,
+        "median_batch_ns": 20025000,
+        "max_batch_ns": 23270400,
+        "ns_per_eval_min": 48101.8,
+        "evals_per_second_min": 20789.3,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          48732.5,
+          48101.8,
+          49049.5
+        ],
+        "pass_spread_pct": 2.0,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 16,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            16
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "16": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19787900,
+        "median_batch_ns": 20447100,
+        "max_batch_ns": 23991000,
+        "ns_per_eval_min": 49469.8,
+        "evals_per_second_min": 20214.4,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          49821.8,
+          49512.5,
+          49469.8
+        ],
+        "pass_spread_pct": 0.7,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 17,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            17
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "17": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19437700,
+        "median_batch_ns": 20064900,
+        "max_batch_ns": 21146600,
+        "ns_per_eval_min": 48594.2,
+        "evals_per_second_min": 20578.6,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          48594.2,
+          49305.2,
+          48742.8
+        ],
+        "pass_spread_pct": 1.5,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 18,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            18
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "18": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19610700,
+        "median_batch_ns": 20167800,
+        "max_batch_ns": 22698300,
+        "ns_per_eval_min": 49026.8,
+        "evals_per_second_min": 20397.0,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          49026.8,
+          49485.5,
+          49193.2
+        ],
+        "pass_spread_pct": 0.9,
+        "pin_verified_all_passes": true
+      },
+      {
+        "cpu": 19,
+        "affinity_api_ok": true,
+        "pin_verified": true,
+        "pin_evidence": {
+          "affinity_mask_readback": [
+            19
+          ],
+          "mask_matches_request": true,
+          "observed_processor_numbers": {
+            "19": 2000
+          },
+          "all_probes_on_requested_cpu": true,
+          "n_probes": 2000
+        },
+        "reps_per_batch": 400,
+        "n_batches": 31,
+        "min_batch_ns": 19294900,
+        "median_batch_ns": 20020800,
+        "max_batch_ns": 20444000,
+        "ns_per_eval_min": 48237.2,
+        "evals_per_second_min": 20730.9,
+        "checksum": -2862032.154501653,
+        "ns_per_eval_by_pass": [
+          48712.8,
+          48237.2,
+          48918.2
+        ],
+        "pass_spread_pct": 1.4,
+        "pin_verified_all_passes": true
+      }
+    ]
+  },
+  "pcore_ecore_clustering": {
+    "fast_group": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "slow_group": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "fast_mean_ns_per_eval": 20467.4,
+    "slow_mean_ns_per_eval": 48729.5,
+    "fast_min_ns_per_eval": 20233.2,
+    "fast_median_ns_per_eval": 20531.2,
+    "fast_max_ns_per_eval": 20587.8,
+    "slow_min_ns_per_eval": 48101.8,
+    "slow_median_ns_per_eval": 48707.3,
+    "slow_max_ns_per_eval": 49469.8,
+    "slow_over_fast_ratio_of_medians": 2.3724,
+    "slow_over_fast_ratio_of_minima": 2.3774,
+    "split_gap_ns_per_eval": 27514.0,
+    "max_within_group_spread_ns_per_eval": 1368.0,
+    "gap_to_spread_ratio": 20.11,
+    "slow_over_fast_ratio": 2.3808,
+    "n_passes": 3,
+    "clustering_clean": true,
+    "method": "largest-gap split of the sorted per-logical-processor ns/eval costs; no assumption is made about index ordering",
+    "p_cores_logical": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "e_cores_logical": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "kernel_crosscheck": {
+      "kernel_high_efficiency_class_lps": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "kernel_low_efficiency_class_lps": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "agrees_with_measurement": true
+    }
+  },
+  "achieved_clock_measured": {
+    "fast_core_representative": {
+      "cpu": 0,
+      "counter": "\\Processor Information(0,0)\\% Processor Performance",
+      "samples_pct_of_base": [
+        150.48,
+        150.83,
+        151.72
+      ],
+      "base_mhz": 3500,
+      "achieved_mhz_max_sample": 5310.2,
+      "achieved_mhz_median_sample": 5279.1,
+      "method": "one thread pinned to this logical processor running the benchmark kernel; counter is relative to nominal/base clock"
+    },
+    "slow_core_representative": {
+      "cpu": 12,
+      "counter": "\\Processor Information(0,12)\\% Processor Performance",
+      "samples_pct_of_base": [
+        117.02,
+        117.05,
+        117.14
+      ],
+      "base_mhz": 3500,
+      "achieved_mhz_max_sample": 4099.9,
+      "achieved_mhz_median_sample": 4096.6,
+      "method": "one thread pinned to this logical processor running the benchmark kernel; counter is relative to nominal/base clock"
+    }
+  },
+  "vendor_datasheet": {
+    "_warning": "NOT MEASURED. Vendor-published figures, for reader orientation only. Do not cite as a measurement.",
+    "model": "Intel Core i5-14600KF (Raptor Lake Refresh, LGA1700)",
+    "p_core_base_ghz": 3.5,
+    "p_core_max_turbo_ghz": 5.3,
+    "e_core_base_ghz": 2.6,
+    "e_core_max_turbo_ghz": 4.0
+  }
+}

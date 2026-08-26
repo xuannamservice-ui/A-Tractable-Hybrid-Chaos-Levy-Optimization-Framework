@@ -1,0 +1,27 @@
+[2026-08-27 07:58:42] deadline 2026-08-27 09:40  (1.7 h from now)
+[2026-08-27 07:58:42] running only: 05_eq22_validation
+[2026-08-27 07:58:42] === 05_eq22_validation ===
+[2026-08-27 07:58:42]   eq22: weak sigma=0.05 xi=1.548 K=10
+[2026-08-27 07:59:15]   eq22: weak sigma=0.05 xi=1.967 K=10
+[2026-08-27 07:59:48]   eq22: weak sigma=0.05 xi=2.511 K=20
+[2026-08-27 08:00:48]   eq22: weak sigma=0.05 xi=3.104 K=20
+[2026-08-27 08:01:49]   eq22: weak sigma=0.1 xi=1.548 K=20
+[2026-08-27 08:02:49]   eq22: weak sigma=0.1 xi=1.967 K=20
+[2026-08-27 08:03:54]   eq22: moderate sigma=0.05 xi=1.548 K=5
+[2026-08-27 08:04:17]   eq22: moderate sigma=0.05 xi=1.967 K=5
+[2026-08-27 08:04:41]   eq22: moderate sigma=0.05 xi=2.511 K=10
+[2026-08-27 08:05:16]   eq22: moderate sigma=0.05 xi=3.104 K=10
+[2026-08-27 08:05:53]   eq22: moderate sigma=0.1 xi=1.548 K=10
+[2026-08-27 08:06:28]   eq22: moderate sigma=0.1 xi=1.967 K=10
+[2026-08-27 08:07:00]   eq22: moderate sigma=0.1 xi=2.511 K=20
+[2026-08-27 08:07:57]   eq22: moderate sigma=0.1 xi=3.104 K=20
+[2026-08-27 08:08:55]   eq22: strong sigma=0.05 xi=1.548 K=5
+[2026-08-27 08:09:21]   eq22: strong sigma=0.05 xi=1.967 K=5
+[2026-08-27 08:09:46]   eq22: strong sigma=0.05 xi=2.511 K=5
+[2026-08-27 08:10:12]   eq22: strong sigma=0.05 xi=3.104 K=5
+[2026-08-27 08:10:39]   eq22: strong sigma=0.1 xi=1.548 K=5
+[2026-08-27 08:11:04]   eq22: strong sigma=0.1 xi=1.967 K=10
+[2026-08-27 08:11:45]   eq22: strong sigma=0.1 xi=2.511 K=10
+[2026-08-27 08:12:29]   eq22: strong sigma=0.1 xi=3.104 K=10
+[2026-08-27 08:13:13]   05_eq22_validation: 132 records in 870.8 s (complete)
+[2026-08-27 08:13:13] ALL DONE

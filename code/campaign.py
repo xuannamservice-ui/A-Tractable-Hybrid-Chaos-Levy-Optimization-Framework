@@ -7,13 +7,30 @@ cannot reproduce their absolute 98%.  What it CAN do, and what it is for, is an
 A/B comparison in which the two arms share the optimizer, the channel draws, the
 seeds and the success criterion, and differ ONLY in:
 
-    ARM A  "as executed"  : interpolated lookup kernel + threshold-only guard
-                            (Pe < eps_safe), i.e. the campaign of Section VII
+    ARM A  "as executed"  : interpolated lookup kernel + range test only
     ARM B  "as described" : exact-at-runtime kernel (eq:ak_factorised) +
-                            the full three-part guard of Section VI-C
+                            the per-branch tests of the Section VI-C guard
 
 Everything else is held fixed, so the difference isolates the effect of the
 kernel and the guard.
+
+WHERE THE eps_safe THRESHOLD GOES
+    An earlier version of this file applied test (iii) of the Section VI-C
+    guard -- Pe < eps_safe = 1e-3 -- as an acceptance test INSIDE the swarm
+    loop, against the per-branch surrogate.  The per-branch ABER at the
+    operating SNR is of order 1e-1, so that test rejected every candidate in
+    every cycle of both arms; the script ran to completion and printed a table
+    of "0/1000  0.0%  nan", which is not a result, it is a script reporting
+    that it rejected its own entire search space.
+
+    eps_safe is a POST-EGC SYSTEM threshold and the surrogate is a per-branch
+    quantity; the two are not comparable.  `mpc_loop.envelope_guard` already
+    documents and implements that split.  This file now follows it: tests (i)
+    and (ii) run in the loop, and eps_safe is evaluated once on the SELECTED
+    command and reported.  Nothing has been loosened -- eps_safe is unchanged
+    at 1e-3 and the attainment rate against it is printed explicitly, so the
+    fact that the per-branch objective never reaches it is stated as a result
+    rather than smuggled out as a row of zeros.
 
 Optimizer: H-CLPSO-GA per Section V and Table 4 -- chaotic (logistic) init,
 Levy-flight jumps (Mantegna, lambda=1.5), PSO core update, GA crossover on the
@@ -21,7 +38,7 @@ top 20% elite, N_p=30, T_iter=25.
 Objective: per-branch ABER of eq:aber_emulator at gamma_op = 38 dB.
 """
 import numpy as np
-from scipy.special import gamma as sp_gamma, erf, gammaln
+from scipy.special import gamma as sp_gamma, erf
 
 # ----------------------------------------------------------------- constants
 A_APER = 0.05
@@ -37,6 +54,17 @@ NODES = np.array([0.500, 0.628, 0.789, 0.992, 1.266,
                   1.548, 1.967, 2.511, 3.104, 3.912, 4.888])
 SIGMAS = [0.05, 0.1, 0.2, 0.3]
 
+# z threshold -> series order, the fidelity ladder of Section V-B4.
+LADDER = ((0.5, 5), (2.0, 10), (8.0, 20))
+
+
+def LADDER_K(z):
+    """Per-candidate series order from the conditioning parameter; -1 = reject."""
+    out = np.full(np.shape(z), -1, dtype=int)
+    for zt, k in reversed(LADDER):
+        out = np.where(z <= zt, k, out)
+    return out
+
 
 # ----------------------------------------------------------------- geometry
 def geom(wz):
@@ -44,6 +72,23 @@ def geom(wz):
     A0 = erf(v) ** 2
     wzeq = np.sqrt(wz ** 2 * np.sqrt(np.pi) * erf(v) / (2 * v * np.exp(-v ** 2)))
     return A0, wzeq
+
+
+def wzeq_min(a=A_APER):
+    """Minimum of w_zeq over w_z. w_zeq is non-monotonic in w_z (Farid-
+    Hranilovic), and this minimum sets the attainable floor on xi at any
+    jitter level: xi >= wzeq_min / (2 sigma_s)."""
+    lo, hi = 5e-3, 0.5
+    gr = (np.sqrt(5) - 1) / 2
+    c, d = hi - gr * (hi - lo), lo + gr * (hi - lo)
+    f = lambda w: geom(np.array([w]))[1][0]
+    for _ in range(200):
+        if f(c) < f(d):
+            hi = d
+        else:
+            lo = c
+        c, d = hi - gr * (hi - lo), lo + gr * (hi - lo)
+    return float(f(0.5 * (lo + hi)))
 
 
 # --------------------------------------------------------- exact kernel (B)
@@ -55,31 +100,57 @@ def _Kc(A, B, K):
             / (sp_gamma(k + 1.0) * sp_gamma(A) * sp_gamma(B)))
 
 
-KC_AB = _Kc(ALPHA, BETA, K)
-KC_BA = _Kc(BETA, ALPHA, K)
-_k = np.arange(K + 1)
-
-
 def _Cmom(s, gbar):
     s = np.asarray(s, dtype=float)
     return sp_gamma((s + 1) / 2) / (2 * s * np.sqrt(np.pi)) * (2 / gbar) ** (s / 2)
 
 
-C_B = _Cmom(BETA + _k, GAMMA_OP)
-C_A = _Cmom(ALPHA + _k, GAMMA_OP)
+_ORDER_CACHE = {}
 
 
-def pe_exact(xi, A0):
-    """eq:ak_factorised evaluated in closed form. No interpolation."""
-    x2 = xi * xi
-    t1 = KC_AB[None, :] * x2[:, None] / ((x2[:, None] - BETA - _k[None, :])
-                                         * A0[:, None] ** (BETA + _k)[None, :])
-    t2 = KC_BA[None, :] * x2[:, None] / ((x2[:, None] - ALPHA - _k[None, :])
-                                         * A0[:, None] ** (ALPHA + _k)[None, :])
-    tot = (t1 * C_B[None, :]).sum(1) + (t2 * C_A[None, :]).sum(1)
-    D = (x2 * (ALPHA * BETA) ** x2 * sp_gamma(ALPHA - x2) * sp_gamma(BETA - x2)
-         / (A0 ** x2 * sp_gamma(ALPHA) * sp_gamma(BETA)))
-    return tot + D * _Cmom(x2, GAMMA_OP)
+def _order_tables(order):
+    """(Kc_AB, Kc_BA, C_B, C_A, k) for one series order, cached."""
+    if order not in _ORDER_CACHE:
+        k = np.arange(order + 1)
+        _ORDER_CACHE[order] = (_Kc(ALPHA, BETA, order), _Kc(BETA, ALPHA, order),
+                               _Cmom(BETA + k, GAMMA_OP), _Cmom(ALPHA + k, GAMMA_OP), k)
+    return _ORDER_CACHE[order]
+
+
+# retained for callers that want the K=10 tables directly
+KC_AB, KC_BA, C_B, C_A, _k = _order_tables(K)
+
+
+def pe_exact(xi, A0, order=K):
+    """eq:ak_factorised evaluated in closed form. No interpolation.
+
+    `order` may be a scalar or a per-candidate integer array (the fidelity
+    ladder); entries with order < 0 are inadmissible and return NaN.
+    """
+    xi = np.atleast_1d(np.asarray(xi, dtype=float))
+    A0 = np.atleast_1d(np.asarray(A0, dtype=float))
+    order = np.atleast_1d(np.asarray(order, dtype=int))
+    if order.size == 1:
+        order = np.full(xi.shape, int(order[0]))
+
+    out = np.full(xi.shape, np.nan)
+    for o in np.unique(order):
+        if o < 0:
+            continue
+        m = order == o
+        kcAB, kcBA, CB, CA, k = _order_tables(int(o))
+        x2 = xi[m] * xi[m]
+        a0 = A0[m]
+        t1 = kcAB[None, :] * x2[:, None] / ((x2[:, None] - BETA - k[None, :])
+                                            * a0[:, None] ** (BETA + k)[None, :])
+        t2 = kcBA[None, :] * x2[:, None] / ((x2[:, None] - ALPHA - k[None, :])
+                                            * a0[:, None] ** (ALPHA + k)[None, :])
+        tot = (t1 * CB[None, :]).sum(1) + (t2 * CA[None, :]).sum(1)
+        with np.errstate(over='ignore', invalid='ignore', divide='ignore'):
+            D = (x2 * (ALPHA * BETA) ** x2 * sp_gamma(ALPHA - x2) * sp_gamma(BETA - x2)
+                 / (a0 ** x2 * sp_gamma(ALPHA) * sp_gamma(BETA)))
+            out[m] = tot + D * _Cmom(x2, GAMMA_OP)
+    return out
 
 
 # -------------------------------------------------- interpolated kernel (A)
@@ -131,7 +202,14 @@ def levy(rng, n, lam=LEVY_LAMBDA):
 
 
 def optimise(rng, sigma_s, evaluate, guard_full):
-    """One control cycle. Returns (best_reported_pe, best_wz, scored_invalid)."""
+    """One control cycle. Returns (best_reported_pe, best_wz, scored_invalid).
+
+    `guard_full` selects the guard FORM, per mpc_loop.envelope_guard:
+        True  -> tests (i) z <= z_max and (ii) 0 <= Pe <= 1/2
+        False -> test (ii) alone
+    Test (iii), Pe < eps_safe, is post-EGC and is applied by the caller to the
+    selected command, not here; see the module docstring.
+    """
     lo, hi = 0.055, 0.60                       # beam-waist box
     # chaotic (logistic) initialisation
     c = rng.uniform(0.1, 0.9)
@@ -156,10 +234,10 @@ def optimise(rng, sigma_s, evaluate, guard_full):
 
         z = np.sqrt(2) * ALPHA * BETA / (A0 * np.sqrt(GAMMA_OP))
         ok = np.isfinite(f)
-        if guard_full:                          # three-part guard
-            ok &= (z <= Z_MAX) & (f >= 0.0) & (f <= 0.5) & (f < EPS_SAFE)
-        else:                                   # threshold-only, as executed
-            ok &= (f < EPS_SAFE)
+        if guard_full:                          # tests (i) + (ii)
+            ok &= (z <= Z_MAX) & (f >= 0.0) & (f <= 0.5)
+        else:                                   # test (ii) only, as executed
+            ok &= (f >= 0.0) & (f <= 0.5)
         fw = np.where(ok, f, np.inf)
 
         imp = fw < pbest_f
@@ -188,19 +266,25 @@ def optimise(rng, sigma_s, evaluate, guard_full):
 
 
 # ------------------------------------------------------------------- run
-def campaign(n_real=1000, seeds=(1, 2, 3, 4, 5), target=None, verbose=True):
+def campaign(target, n_real=1000, seeds=(1, 2, 3, 4, 5), verbose=True):
+    """`target` is the per-branch success threshold and is REQUIRED.
+
+    It used to default to None, which made `f <= target` a TypeError waiting
+    on any call that reached it -- masked only because the in-loop eps_safe
+    test meant nothing ever did.
+    """
     res = {}
     for arm, (use_exact, guard_full) in (("A_as_executed", (False, False)),
                                          ("B_as_described", (True, True))):
-        succ = tot = invalid_scored = 0
+        succ = tot = invalid_scored = eps_safe_ok = 0
         true_pe_of_success = []
         for sd in seeds:
             rng = np.random.default_rng(sd)
             for r in range(n_real // len(seeds)):
                 sigma_s = SIGMAS[rng.integers(len(SIGMAS))]
                 lut = LUTS[sigma_s]
-                ev = (lambda xi, A0: pe_exact(xi, A0)) if use_exact else \
-                     (lambda xi, A0: lut.pe(xi))
+                ev = ((lambda xi, A0: pe_exact(xi, A0)) if use_exact else
+                      (lambda xi, A0, L=lut: L.pe(xi)))
                 f, wz, inv = optimise(rng, sigma_s, ev, guard_full)
                 tot += 1
                 if inv:
@@ -209,10 +293,15 @@ def campaign(n_real=1000, seeds=(1, 2, 3, 4, 5), target=None, verbose=True):
                     A0t, wzeqt = geom(np.array([wz]))
                     xit = np.clip(wzeqt / (2 * sigma_s), NODES[0], NODES[-1])
                     true_pe = float(pe_exact(xit, A0t)[0])
+                    # test (iii) of the guard, applied where it belongs: once,
+                    # to the selected command. Unchanged at 1e-3.
+                    if true_pe < EPS_SAFE:
+                        eps_safe_ok += 1
                     if f <= target:
                         succ += 1
                         true_pe_of_success.append(true_pe)
         res[arm] = dict(succ=succ, tot=tot, invalid=invalid_scored,
+                        eps_safe=eps_safe_ok,
                         true=np.array(true_pe_of_success))
     return res
 
@@ -221,7 +310,6 @@ LUTS = {s: Lookup(s) for s in SIGMAS}
 
 if __name__ == "__main__":
     # calibrate a per-branch target that the exact kernel can sometimes meet
-    rng = np.random.default_rng(0)
     wz = np.linspace(0.055, 0.60, 4000)
     A0, wzeq = geom(wz)
     best = {}
@@ -231,19 +319,29 @@ if __name__ == "__main__":
     print("Best achievable per-branch ABER at 38 dB, by jitter level:")
     for s in SIGMAS:
         print("   sigma_s=%-5s  min Pe = %.3e" % (s, best[s]))
-    TARGET = 10 ** (np.floor(np.log10(np.median(list(best.values())))) + 1)
-    print("\nAdopted per-branch success threshold: %.1e" % TARGET)
+    TARGET = float(np.median(list(best.values())))
+    print("\nAdopted per-branch success threshold: %.3e" % TARGET)
+    print("(the median over jitter levels of the best per-branch ABER the box")
+    print(" contains, so roughly half the draws are winnable and the two arms")
+    print(" are separated by search quality rather than by the threshold.)")
     print("(the manuscript's 1e-6 is a POST-EGC system figure; the per-branch")
     print(" objective cannot reach it, so the threshold is calibrated here.)\n")
 
-    out = campaign(n_real=1000, seeds=(1, 2, 3, 4, 5), target=TARGET)
-    print("=" * 76)
-    print("%-16s %8s %10s %14s %16s" % ("arm", "success", "rate", "scored on", "true Pe of"))
-    print("%-16s %8s %10s %14s %16s" % ("", "", "", "invalid val", "'successes'"))
-    print("=" * 76)
+    out = campaign(TARGET, n_real=1000, seeds=(1, 2, 3, 4, 5))
+    print("=" * 88)
+    print("%-16s %8s %10s %14s %14s %16s"
+          % ("arm", "success", "rate", "scored on", "clears", "true Pe of"))
+    print("%-16s %8s %10s %14s %14s %16s"
+          % ("", "", "", "invalid val", "eps_safe=1e-3", "'successes'"))
+    print("=" * 88)
     for arm, d in out.items():
         med = np.median(d["true"]) if len(d["true"]) else float("nan")
-        print("%-16s %5d/%-4d %8.1f%% %11.1f%% %16.3e"
+        print("%-16s %5d/%-4d %8.1f%% %11.1f%% %11.1f%% %16.3e"
               % (arm, d["succ"], d["tot"], 100 * d["succ"] / d["tot"],
-                 100 * d["invalid"] / d["tot"], med))
-    print("=" * 76)
+                 100 * d["invalid"] / d["tot"], 100 * d["eps_safe"] / d["tot"], med))
+    print("=" * 88)
+    print("The eps_safe column is test (iii) of the Section VI-C guard applied")
+    print("to the selected command. A 0.0% there is the real finding of this")
+    print("script: the per-branch surrogate at 38 dB is of order 1e-1 and does")
+    print("not approach a 1e-3 threshold, which is why that test cannot live")
+    print("inside the swarm loop.")

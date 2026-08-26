@@ -1,28 +1,421 @@
 {
-  "generated_by": "generate.py",
-  "deadline": "2026-08-27 12:00",
-  "started": "2026-08-26T20:02:58",
+  "generated_by": "code/build_manifest.py",
+  "built": "2026-08-27T06:27:55",
+  "package_root": "data_and_code_availability",
+  "block_count": 11,
+  "blocks_with_provenance": 11,
+  "blocks_with_provenance_gaps": [
+    "10_platform"
+  ],
+  "provenance_note": "Every directory under data/ has an entry. `seconds` is wall-clock for the run that produced the files: for generate.py blocks it is measured by the driver and recorded in logs/provenance_<block>.json as the block finishes; for the campaign blocks it is the producing script's own embedded figure; for a block that is neither, it is whatever that block's own artefacts declare, and `provenance_source` says so. `status` is complete, partial (the run hit its deadline mid-block and the file holds what was finished), or unknown (nothing observed the run, so completeness cannot be asserted). Block 04 is open-ended by design and is therefore 'partial' on every full run; see its `describes` field. A block carrying `provenance_gap` is only partly accounted for and --check fails on it.",
   "blocks": {
     "01_admissibility": {
+      "files": [
+        {
+          "name": "admissibility_grid.csv",
+          "bytes": 581009,
+          "records": 5904,
+          "modified": "2026-08-27T08:20:09",
+          "sha256": "0aab39029279e6e852e5a1c71bd62fc059325b55fb7813dc3b0310ee3f796757"
+        }
+      ],
+      "bytes_total": 581009,
       "status": "complete",
+      "produced_by": "generate.py::block_admissibility",
+      "command": "python generate.py --only 01_admissibility",
+      "generated": "2026-08-27T08:20:09",
+      "seconds": 55.8,
       "records": 5904,
-      "seconds": 44.5
+      "scope": "full",
+      "describes": "truncation and round-off behaviour over the full (regime, sigma_s, xi, SNR, K) grid -- Table 7"
     },
     "02_z_map": {
+      "files": [
+        {
+          "name": "z_map.csv",
+          "bytes": 91198,
+          "records": 1968,
+          "modified": "2026-08-27T08:20:12",
+          "sha256": "a41c3ecb505a1474b5d1e81c7667b2afb572af1df119db847a966fb0f63d27ea"
+        },
+        {
+          "name": "z_map.npz",
+          "bytes": 15608,
+          "records": 8,
+          "modified": "2026-08-27T08:20:12",
+          "sha256": "217aae78ee1a5015ab9ba0dc22ea27e7a5d8d92f9ab8b6a906f8914850ae4807"
+        }
+      ],
+      "bytes_total": 106806,
       "status": "complete",
+      "produced_by": "generate.py::block_zmap",
+      "command": "python generate.py --only 02_z_map",
+      "generated": "2026-08-27T08:20:12",
+      "seconds": 2.8,
       "records": 1968,
-      "seconds": 2.4
+      "scope": "full",
+      "describes": "conditioning parameter z, A_0, ladder order and admissible flag on the same grid"
     },
     "03_coefficient_tensors": {
+      "files": [
+        {
+          "name": "lookup_tensor_moderate.npz",
+          "bytes": 16224,
+          "records": 9,
+          "modified": "2026-08-27T08:20:16",
+          "sha256": "96b851549fa3f6342130131120f7d0d797c45e88f353bd0d7cc339d4b33306ca"
+        },
+        {
+          "name": "lookup_tensor_strong.npz",
+          "bytes": 16222,
+          "records": 9,
+          "modified": "2026-08-27T08:20:18",
+          "sha256": "946f7dd395d9fea2575686104549f41d749f255994784196ca307c61b9797180"
+        },
+        {
+          "name": "lookup_tensor_weak.npz",
+          "bytes": 16235,
+          "records": 9,
+          "modified": "2026-08-27T08:20:14",
+          "sha256": "9c9ac7ceb278e169f7ba140ee79a752ada0337991f348c667ece2ad5befa5e6b"
+        }
+      ],
+      "bytes_total": 48681,
       "status": "complete",
+      "produced_by": "generate.py::block_tensors",
+      "command": "python generate.py --only 03_coefficient_tensors",
+      "generated": "2026-08-27T08:20:18",
+      "seconds": 5.5,
       "records": 5166,
-      "seconds": 4.5
+      "scope": "full",
+      "describes": "a_k(alpha,beta), a_k(beta,alpha), D and A_0 on the pole-free node grid up to K_max = 20"
+    },
+    "04_offgrid_error": {
+      "files": [
+        {
+          "name": "offgrid_error.csv",
+          "bytes": 5522568,
+          "records": 34864,
+          "modified": "2026-08-27T06:20:00",
+          "sha256": "c7c9c9e68182593bfb69c76dc9059ff55c2954518e4d3b2ea6e7b5e73d700ba8"
+        }
+      ],
+      "bytes_total": 5522568,
+      "status": "partial",
+      "produced_by": "generate.py::block_offgrid",
+      "command": "python generate.py --only 04_offgrid_error",
+      "generated": "2026-08-27T06:20:00",
+      "seconds": 2292.5,
+      "records": 34864,
+      "scope": "full",
+      "describes": "deployed float64 kernel (rtodt_fast.pe_series_f64) vs 200-digit mpmath reference at random off-grid xi. OPEN-ENDED: it samples until the run's deadline, so on a full run its status is always 'partial' and the record count is whatever the clock allowed -- that is the designed behaviour, not a failed run"
     },
     "05_eq22_validation": {
+      "files": [
+        {
+          "name": "eq22_vs_reference.csv",
+          "bytes": 16271,
+          "records": 132,
+          "modified": "2026-08-27T08:13:13",
+          "sha256": "9aebecb42e226a4f8390c1ce5bb9759eb24ad0763a3de6034d96996a3d2e2b2c"
+        },
+        {
+          "name": "summary.json",
+          "bytes": 4359,
+          "records": null,
+          "modified": "2026-08-27T06:26:20",
+          "sha256": "c207ed87e56a7b1421f764d24520b27eac6e70b61ae60ca5a6658e95bdd8fa54"
+        }
+      ],
+      "bytes_total": 20630,
       "status": "complete",
+      "produced_by": "generate.py::block_eq22",
+      "command": "python generate.py --only 05_eq22_validation",
+      "generated": "2026-08-27T08:13:13",
+      "seconds": 870.8,
       "records": 132,
-      "seconds": 2401.0
+      "scope": "full",
+      "describes": "eq. (22) convolved series vs two independent MN-fold convolution references, with the admissibility band recorded per row"
+    },
+    "06_system_aber": {
+      "files": [
+        {
+          "name": "system_aber_curves.csv",
+          "bytes": 222755,
+          "records": 1734,
+          "modified": "2026-08-27T05:41:47",
+          "sha256": "a153e9ad852146397e41c7621186de889497b79e29762e15b6b1311090f6d928"
+        }
+      ],
+      "bytes_total": 222755,
+      "status": "complete",
+      "produced_by": "generate.py::block_system_aber",
+      "command": "python generate.py --only 06_system_aber",
+      "generated": "2026-08-27T05:41:47",
+      "seconds": 4576.6,
+      "records": 1734,
+      "scope": "full",
+      "describes": "post-EGC system ABER curves on the corrected system_metric cell-mass machinery, two independent branch-density constructions per point"
+    },
+    "07_reference_campaign": {
+      "files": [
+        {
+          "name": "reference_campaign.csv",
+          "bytes": 16256,
+          "records": 30,
+          "modified": "2026-08-27T08:30:27",
+          "sha256": "c86ee18c4744fe1c69e052e61cc178cf5c49c36cbf2a79e33435a1fcef2a4cc3"
+        },
+        {
+          "name": "reference_campaign.json",
+          "bytes": 77101,
+          "records": 30,
+          "modified": "2026-08-27T08:30:27",
+          "sha256": "5ebb76c42ef874a196debdd4c33f6f21575a52eb3ca20a0e2cd4849d598a28a8"
+        }
+      ],
+      "bytes_total": 93357,
+      "status": "complete",
+      "produced_by": "code/run_campaign.py",
+      "command": "python code/run_campaign.py --realizations 300 --objective faithful --out ../data/07_reference_campaign",
+      "generated": "2026-08-27T08:30:27",
+      "seconds": 825.1,
+      "records": 30,
+      "scope": "full",
+      "describes": "A/B reference-implementation campaign: ablation arms x guard forms, per-branch surrogate AND post-EGC system success rate, plus a brute-force feasibility ceiling.",
+      "parameters": {
+        "realizations": 300,
+        "objective_mode": "faithful",
+        "gbar_db": 38.0,
+        "sigma_s_swept": [
+          0.05,
+          0.1,
+          0.2,
+          0.3
+        ]
+      },
+      "timing_source": "embedded 'seconds' field of reference_campaign.json"
+    },
+    "08_landscape_probe": {
+      "files": [
+        {
+          "name": "landscape_probe.json",
+          "bytes": 15904,
+          "records": 5,
+          "modified": "2026-08-26T23:19:54",
+          "sha256": "84122b86cce835b5b3572031d6dc0cc710836887250f2e02b952fcdfaafed9a9"
+        }
+      ],
+      "bytes_total": 15904,
+      "status": "complete",
+      "produced_by": "code/landscape_probe.py",
+      "command": "python code/landscape_probe.py --starts 120 --out ../data/08_landscape_probe",
+      "generated": "2026-08-26T23:19:54",
+      "seconds": null,
+      "records": 5,
+      "scope": "full",
+      "describes": "Objective-landscape diagnostics: finite fraction, local minima and argmin of the receding-horizon cost under each objective variant.",
+      "parameters": {
+        "gbar_db": 38.0,
+        "horizon": 20,
+        "sigma_s": 0.1
+      },
+      "timing_source": "not recorded by the producing script"
+    },
+    "09_ablation_faithful": {
+      "files": [
+        {
+          "name": "reference_campaign.csv",
+          "bytes": 4410,
+          "records": 30,
+          "modified": "2026-08-26T22:16:45",
+          "sha256": "830f0a3b407b6816597fe05aaeb9f13155c850f0ce150021f346604c6ada794e"
+        },
+        {
+          "name": "reference_campaign.json",
+          "bytes": 16588,
+          "records": 30,
+          "modified": "2026-08-26T22:16:45",
+          "sha256": "e5b0670069b80ea984bb410046cbb25bf4082a420060b9370ea8585684b9c84e"
+        }
+      ],
+      "bytes_total": 20998,
+      "status": "complete",
+      "produced_by": "code/run_campaign.py",
+      "command": "python code/run_campaign.py --realizations 60 --objective faithful --out ../data/09_ablation_faithful",
+      "generated": "2026-08-26T22:16:45",
+      "seconds": 95.4,
+      "records": 30,
+      "scope": "full",
+      "describes": "Ablation arms scored on the faithful objective (steering, manuscript box, strict admissibility, h in ABER).  Does NOT reproduce the Table 11 ordering.",
+      "parameters": {
+        "realizations": 60,
+        "objective_mode": "faithful",
+        "gbar_db": 38.0,
+        "sigma_s_swept": [
+          0.05,
+          0.1,
+          0.2,
+          0.3
+        ]
+      },
+      "timing_source": "embedded 'seconds' field of reference_campaign.json"
+    },
+    "09_ablation_legacy": {
+      "files": [
+        {
+          "name": "reference_campaign.csv",
+          "bytes": 4349,
+          "records": 30,
+          "modified": "2026-08-26T22:15:00",
+          "sha256": "a5b759cb3e63cfe5fe5562dace381e42ee467d67ed3e21b20a028f260c063896"
+        },
+        {
+          "name": "reference_campaign.json",
+          "bytes": 16529,
+          "records": 30,
+          "modified": "2026-08-26T22:15:00",
+          "sha256": "4a182bba00925c3671834441a8769126f6ae75a7ddd9ea324c070a4e7d2680f4"
+        }
+      ],
+      "bytes_total": 20878,
+      "status": "complete",
+      "produced_by": "code/run_campaign.py",
+      "command": "python code/run_campaign.py --realizations 60 --objective legacy --out ../data/09_ablation_legacy",
+      "generated": "2026-08-26T22:15:00",
+      "seconds": 23.1,
+      "records": 30,
+      "scope": "full",
+      "describes": "The same ablation on the legacy objective, kept so the two objective definitions can be compared directly.",
+      "parameters": {
+        "realizations": 60,
+        "objective_mode": "legacy",
+        "gbar_db": 38.0,
+        "sigma_s_swept": [
+          0.05,
+          0.1,
+          0.2,
+          0.3
+        ]
+      },
+      "timing_source": "embedded 'seconds' field of reference_campaign.json"
+    },
+    "10_platform": {
+      "files": [
+        {
+          "name": "cycle_latency.json",
+          "bytes": 83289,
+          "records": null,
+          "modified": "2026-08-27T06:07:26",
+          "sha256": "41d4e106b51c17f7ea819120793c06416cf3987af427aa451878ee9692f6fc3e"
+        },
+        {
+          "name": "cycle_latency.npz",
+          "bytes": 2111336,
+          "records": 77,
+          "modified": "2026-08-27T06:00:37",
+          "sha256": "5e7e07732bd17e9b7ec7443b73c9f6c6558bfb2bbe109d11f1d781c37ec57a05"
+        },
+        {
+          "name": "cycle_latency_tables.tex",
+          "bytes": 3767,
+          "records": null,
+          "modified": "2026-08-27T06:02:25",
+          "sha256": "4f6f68d2c7eb1bb3b336eb9431bf9a032c5c29c7d51e59b60e495b541bc27b45"
+        },
+        {
+          "name": "kernel_timing.json",
+          "bytes": 122648,
+          "records": null,
+          "modified": "2026-08-27T06:25:06",
+          "sha256": "1cf058984455a031671330a217a1009789ac95ca204a495b4f0b85a640ce1ee1"
+        },
+        {
+          "name": "kernel_timing_raw.npz",
+          "bytes": 635818,
+          "records": 83,
+          "modified": "2026-08-27T06:25:06",
+          "sha256": "4aae390fcdd44128bc14f9d2f2d89a0ff6129e4c4d3cfb620ad9b6e7f9ad372a"
+        },
+        {
+          "name": "kernel_timing_table.tex",
+          "bytes": 2461,
+          "records": null,
+          "modified": "2026-08-27T06:25:06",
+          "sha256": "daca57d9b5c1604d28b6e3b21e5b10f69669d1e31150f264501c59f40b256cfc"
+        },
+        {
+          "name": "platform.json",
+          "bytes": 31030,
+          "records": null,
+          "modified": "2026-08-27T05:18:15",
+          "sha256": "5bb3bd4b6a7c72610fb8b1e29ed6d6ef2b07b1781de2e38ce06553e37fcdafde"
+        },
+        {
+          "name": "platform_stanza.tex",
+          "bytes": 6534,
+          "records": null,
+          "modified": "2026-08-27T05:19:29",
+          "sha256": "be72110759405be0ce1446b59fa24453b04a512cb37d533e2dd9ccb184ca7c38"
+        },
+        {
+          "name": "portable_Jetson-TX2-pinned.json",
+          "bytes": 16299,
+          "records": null,
+          "modified": "2026-08-27T05:45:42",
+          "sha256": "54daeaa5353da40e870843cf7a82c97c1768b4ddf39b0cfa5c97d8d98e0de40c"
+        },
+        {
+          "name": "portable_Jetson-TX2.json",
+          "bytes": 16495,
+          "records": null,
+          "modified": "2026-08-27T05:35:49",
+          "sha256": "330c36ef5ae4448a4161840972ab3059fa30cda4ea5304da2fc723f4e108ee0f"
+        },
+        {
+          "name": "portable_PC-i5-14600KF.json",
+          "bytes": 16078,
+          "records": null,
+          "modified": "2026-08-27T05:23:07",
+          "sha256": "834eb4a5747058bb306570137402729d49e45cb1fa0613895ed86753041ebf0b"
+        }
+      ],
+      "bytes_total": 3045755,
+      "status": "unknown",
+      "generated": "2026-08-27T06:25:06",
+      "records": 83,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/bench_cycle.py, code/bench_kernel.py, code/platform_spec.py",
+      "seconds": 304.3,
+      "timing_source": "summed 'elapsed_s' of the block's own JSON artefacts",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "bench_cycle.py": [
+          "cycle_latency.json"
+        ],
+        "bench_kernel.py": [
+          "kernel_timing.json"
+        ],
+        "platform_spec.py": [
+          "platform.json"
+        ]
+      },
+      "files_without_declared_producer": [
+        "cycle_latency.npz",
+        "cycle_latency_tables.tex",
+        "kernel_timing_raw.npz",
+        "kernel_timing_table.tex",
+        "platform_stanza.tex",
+        "portable_Jetson-TX2-pinned.json",
+        "portable_Jetson-TX2.json",
+        "portable_PC-i5-14600KF.json"
+      ],
+      "generated_utc_stamps": [
+        "2026-08-26T22:18:15.373296+00:00",
+        "2026-08-26T23:20:47.099615+00:00"
+      ],
+      "provenance_gap": "Partial: 8 of 11 file(s) in this block declare no producer (cycle_latency.npz, cycle_latency_tables.tex, kernel_timing_raw.npz, kernel_timing_table.tex, platform_stanza.tex, portable_Jetson-TX2-pinned.json, portable_Jetson-TX2.json, portable_PC-i5-14600KF.json). The rest are attributed from their own 'generated_by'/'generator' field."
     }
-  },
-  "finished": "2026-08-26T20:43:51"
+  }
 }

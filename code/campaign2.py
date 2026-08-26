@@ -23,11 +23,16 @@ spurious minima will steer the optimizer to a worse beam while claiming a better
 number, and that shows up as a gap between REPORTED and TRUE.
 """
 import numpy as np
-from campaign import (geom, pe_exact, Lookup, levy, NODES, SIGMAS, ALPHA, BETA,
-                      GAMMA_OP, NP_SWARM, T_ITER, ELITE_FRAC, Z_MAX, LUTS, _invert_xi)
+from campaign import (geom, pe_exact, levy, NODES, SIGMAS, ALPHA, BETA,
+                      GAMMA_OP, NP_SWARM, T_ITER, ELITE_FRAC, Z_MAX, LUTS,
+                      _invert_xi, wzeq_min)
 
-# per-jitter decision box spanning the manuscript's full xi range
-BOX = {s: (_invert_xi(max(0.5, 0.0877/(2*s)), s), _invert_xi(4.888, s)) for s in SIGMAS}
+# Per-jitter decision box spanning the manuscript's full xi range. The lower
+# edge is max(0.5, min_w w_zeq(w) / (2 sigma_s)); the geometry minimum is
+# computed rather than pasted in as the literal 0.0877 it used to be.
+_WEQ_MIN = wzeq_min()
+BOX = {s: (_invert_xi(max(0.5, _WEQ_MIN / (2 * s)), s), _invert_xi(4.888, s))
+       for s in SIGMAS}
 
 
 def optimise(rng, sigma_s, evaluate, guard_full):
@@ -130,9 +135,26 @@ if __name__ == "__main__":
     a_t = res["A_as_executed"][1]
     b_t = res["B_as_described"][1]
     ga, gb = np.isfinite(a_t), np.isfinite(b_t)
+    ma, mb = float(np.median(a_t[ga])), float(np.median(b_t[gb]))
     print("\n" + "=" * 78)
-    print("  median TRUE ABER, arm A (as executed) : %.4e" % np.median(a_t[ga]))
-    print("  median TRUE ABER, arm B (as described): %.4e" % np.median(b_t[gb]))
-    print("  arm A is %.2fx WORSE in true beam quality"
-          % (np.median(a_t[ga]) / np.median(b_t[gb])))
+    print("  median TRUE ABER, arm A (as executed) : %.4e" % ma)
+    print("  median TRUE ABER, arm B (as described): %.4e" % mb)
+    # The direction is READ OFF the two medians. It used to be hardcoded as
+    # "arm A is <ratio>x WORSE", which printed "0.84x WORSE" whenever arm A
+    # came out ahead -- i.e. the script announced its expected conclusion
+    # while displaying the numbers that contradict it.
+    ratio = ma / mb
+    if ratio > 1.0:
+        print("  arm A selects a %.2fx WORSE beam than arm B (lower ABER is better)"
+              % ratio)
+    elif ratio < 1.0:
+        print("  arm A selects a %.2fx BETTER beam than arm B (lower ABER is better)"
+              % (1.0 / ratio))
+        print("  NOTE: this run does NOT support the hypothesis in the module")
+        print("  docstring. The interpolated kernel did not steer the optimizer")
+        print("  to a worse beam here; it reported spurious minima (see the")
+        print("  negative-optimum line above) without that costing it beam")
+        print("  quality on the median draw.")
+    else:
+        print("  the two arms select beams of identical median quality")
     print("=" * 78)
