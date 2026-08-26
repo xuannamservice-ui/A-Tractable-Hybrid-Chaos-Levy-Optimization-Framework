@@ -1,0 +1,23 @@
+{
+  "generated_by": "generate.py",
+  "deadline": "2026-08-27 12:00",
+  "started": "2026-08-26T20:02:58",
+  "blocks": {
+    "01_admissibility": {
+      "status": "complete",
+      "records": 5904,
+      "seconds": 44.5
+    },
+    "02_z_map": {
+      "status": "complete",
+      "records": 1968,
+      "seconds": 2.4
+    },
+    "03_coefficient_tensors": {
+      "status": "complete",
+      "records": 5166,
+      "seconds": 4.5
+    }
+  },
+  "finished": "2026-08-26T20:03:50"
+}
