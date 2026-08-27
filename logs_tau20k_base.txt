@@ -1,0 +1,18 @@
+C:\Users\xuann\AppData\Roaming\Python\Python314\site-packages\scipy\optimize\_numdiff.py:710: RuntimeWarning: invalid value encountered in subtract
+  df = [f_eval - f0 for f_eval in f_evals]
+solver budget overridden to 20000 us
+
+========================================================================
+PART 2  BASELINES, SAME CRITERION AND BUDGET
+========================================================================
+  pinning {'pinned': [0, 1, 2, 3], 'verified': True, 'priority': 'HIGH'} | background CPU 9.9%
+    200 trials done (36s)
+
+  method            k/n     rate  CP95                per sigma_s
+  hclpso_ga      50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  pso            50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  cma_es         50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  sqp             0/200     0.00%  [ 0.00,  1.83]%  0.05:0 0.10:0 0.20:0 0.30:0
+  random         50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+
+wrote C:\Users\xuann\Downloads\A_Tractable_Hybrid_Chaos_Levy_Optimization_Framework (6)\data_and_code_availability\data\11_measured

@@ -1,0 +1,106 @@
+{
+  "rank_stages": 1,
+  "criterion": "post-EGC system ABER <= 1e-6 at 38 dB, strong, all four sigma_s; tau_O = 600 us for every method",
+  "trials_per_cell": 5,
+  "results": {
+    "hclpso_ga": {
+      "k": 5,
+      "n": 20,
+      "rate": 0.25,
+      "ci95": [
+        0.08657146910143462,
+        0.49104587170795744
+      ],
+      "per_sigma": {
+        "0.05": 5,
+        "0.10": 0,
+        "0.20": 0,
+        "0.30": 0
+      }
+    },
+    "pso": {
+      "k": 5,
+      "n": 20,
+      "rate": 0.25,
+      "ci95": [
+        0.08657146910143462,
+        0.49104587170795744
+      ],
+      "per_sigma": {
+        "0.05": 5,
+        "0.10": 0,
+        "0.20": 0,
+        "0.30": 0
+      },
+      "mcnemar_vs_proposed": {
+        "b": 0,
+        "c": 0,
+        "p_two_sided_exact": 1.0,
+        "improvement": 0.0
+      }
+    },
+    "cma_es": {
+      "k": 5,
+      "n": 20,
+      "rate": 0.25,
+      "ci95": [
+        0.08657146910143462,
+        0.49104587170795744
+      ],
+      "per_sigma": {
+        "0.05": 5,
+        "0.10": 0,
+        "0.20": 0,
+        "0.30": 0
+      },
+      "mcnemar_vs_proposed": {
+        "b": 0,
+        "c": 0,
+        "p_two_sided_exact": 1.0,
+        "improvement": 0.0
+      }
+    },
+    "sqp": {
+      "k": 1,
+      "n": 20,
+      "rate": 0.05,
+      "ci95": [
+        0.0012650894979498047,
+        0.24873276277202777
+      ],
+      "per_sigma": {
+        "0.05": 1,
+        "0.10": 0,
+        "0.20": 0,
+        "0.30": 0
+      },
+      "mcnemar_vs_proposed": {
+        "b": 4,
+        "c": 0,
+        "p_two_sided_exact": 0.125,
+        "improvement": 0.2
+      }
+    },
+    "random": {
+      "k": 5,
+      "n": 20,
+      "rate": 0.25,
+      "ci95": [
+        0.08657146910143462,
+        0.49104587170795744
+      ],
+      "per_sigma": {
+        "0.05": 5,
+        "0.10": 0,
+        "0.20": 0,
+        "0.30": 0
+      },
+      "mcnemar_vs_proposed": {
+        "b": 0,
+        "c": 0,
+        "p_two_sided_exact": 1.0,
+        "improvement": 0.0
+      }
+    }
+  }
+}

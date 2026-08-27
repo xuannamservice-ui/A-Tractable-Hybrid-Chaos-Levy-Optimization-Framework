@@ -48,6 +48,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import time
+
 import numpy as np
 
 from channel import beam_geometry, branch_min_wz, xi_effective
@@ -189,7 +191,8 @@ class BeamSteeringMPC:
                  three_part_guard=True, config: SolverConfig = None,
                  slew_limit=0.05, lambda_u=2.0,
                  steering=True, manuscript_box=True, strict_admissibility=True,
-                 h_in_aber=True, link_length=LINK_LENGTH, rank_stages=None):
+                 h_in_aber=True, link_length=LINK_LENGTH, rank_stages=None,
+                 tau_o=TAU_O):
         self.alpha, self.beta = alpha, beta
         self.sigma_s, self.gbar = sigma_s, gbar
         self.horizon = horizon
@@ -212,6 +215,10 @@ class BeamSteeringMPC:
         # optimise different objectives and their optima need not coincide.
         # Both are measured in the release rather than one being assumed.
         self.rank_stages = rank_stages
+        # Wall-clock budget for the solver, Sec. VI-A. None disables the
+        # checkpoint and runs the full iteration budget, which is what the
+        # released code did unconditionally.
+        self.tau_o = tau_o
 
         # --- faithfulness switches ------------------------------------
         # Each isolates one manuscript feature so `landscape_probe.py` can
@@ -530,4 +537,14 @@ class BeamSteeringMPC:
             self.guard_stats["threshold"] += rep.n_threshold
             return rep.admissible
 
-        return solver.minimise(obj, guard=guard)
+        # Anytime checkpoint, Sec. VI-A. The solver is stopped once tau_O of
+        # solver time has elapsed and returns whatever monotone incumbent it
+        # holds at that instant. Without it the loop runs the full T_iter budget
+        # and the paper's real-time argument has no mechanism behind it: `step`
+        # previously called `minimise` with no checkpoint at all, so tau_O was a
+        # number in the text and nothing in the code.
+        if self.tau_o is None:
+            return solver.minimise(obj, guard=guard)
+        t_end = time.perf_counter() + self.tau_o
+        return solver.minimise(obj, guard=guard,
+                               checkpoint=lambda it, bf: time.perf_counter() >= t_end)

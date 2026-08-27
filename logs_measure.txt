@@ -1,0 +1,48 @@
+########## tau_O = 600 us ##########
+
+  method            k/n     rate  CP95                per sigma_s
+  hclpso_ga      50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  pso            47/200    23.50%  [17.81, 30.00]%  0.05:47 0.10:0 0.20:0 0.30:0
+  cma_es         50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  sqp             6/200     3.00%  [ 1.11,  6.42]%  0.05:6 0.10:0 0.20:0 0.30:0
+  random         50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+
+wrote C:\Users\xuann\Downloads\A_Tractable_Hybrid_Chaos_Levy_Optimization_Framework (6)\data_and_code_availability\data\11_measured
+
+  arm                     k/n     rate  CP95             med it     b     c p (exact)
+  full                 50/200    25.00%  [19.16,31.60]%      1     -     -         -
+  no_chaotic_init      50/200    25.00%  [19.16,31.60]%      1     0     0 1.000e+00
+  no_levy_flight       50/200    25.00%  [19.16,31.60]%      1     0     0 1.000e+00
+  no_ga_refinement     50/200    25.00%  [19.16,31.60]%      1     0     0 1.000e+00
+  fixed_fidelity       50/200    25.00%  [19.16,31.60]%      1     0     0 1.000e+00
+    full               successes   50 (multiple of 10: True) | transitions 1
+    no_chaotic_init    successes   50 (multiple of 10: True) | transitions 1
+    no_levy_flight     successes   50 (multiple of 10: True) | transitions 1
+    no_ga_refinement   successes   50 (multiple of 10: True) | transitions 1
+    fixed_fidelity     successes   50 (multiple of 10: True) | transitions 1
+
+wrote C:\Users\xuann\Downloads\A_Tractable_Hybrid_Chaos_Levy_Optimization_Framework (6)\data_and_code_availability\data\11_measured
+########## tau_O = 20000 us ##########
+
+  method            k/n     rate  CP95                per sigma_s
+  hclpso_ga      50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  pso            50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  cma_es         50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+  sqp             0/200     0.00%  [ 0.00,  1.83]%  0.05:0 0.10:0 0.20:0 0.30:0
+  random         50/200    25.00%  [19.16, 31.60]%  0.05:50 0.10:0 0.20:0 0.30:0
+
+wrote C:\Users\xuann\Downloads\A_Tractable_Hybrid_Chaos_Levy_Optimization_Framework (6)\data_and_code_availability\data\11_measured
+
+  arm                     k/n     rate  CP95             med it     b     c p (exact)
+  full                 50/200    25.00%  [19.16,31.60]%     25     -     -         -
+  no_chaotic_init      50/200    25.00%  [19.16,31.60]%     25     0     0 1.000e+00
+  no_levy_flight       50/200    25.00%  [19.16,31.60]%     25     0     0 1.000e+00
+  no_ga_refinement     50/200    25.00%  [19.16,31.60]%     25     0     0 1.000e+00
+  fixed_fidelity       50/200    25.00%  [19.16,31.60]%     25     0     0 1.000e+00
+    full               successes   50 (multiple of 10: True) | transitions 1
+    no_chaotic_init    successes   50 (multiple of 10: True) | transitions 1
+    no_levy_flight     successes   50 (multiple of 10: True) | transitions 1
+    no_ga_refinement   successes   50 (multiple of 10: True) | transitions 1
+    fixed_fidelity     successes   50 (multiple of 10: True) | transitions 1
+
+wrote C:\Users\xuann\Downloads\A_Tractable_Hybrid_Chaos_Levy_Optimization_Framework (6)\data_and_code_availability\data\11_measured
