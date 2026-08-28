@@ -1,0 +1,97 @@
+{
+ "criterion": "achieved post-EGC system ABER at 38 dB, strong turbulence, all four sigma_s, paired draws and seeds identical to the binary ablation",
+ "binary_threshold_for_reference": 1e-06,
+ "tau_o_us": 20000.0,
+ "trials_per_cell": 500,
+ "n_trials": 2000,
+ "arms": {
+  "full": {
+   "median_aber": 1.949414210014271e-05,
+   "mean_log10_aber": -5.10355994187835,
+   "n_finite": 1999,
+   "n_nonfinite": 1,
+   "binary_rate": 0.25,
+   "median_iterations": 25.0
+  },
+  "no_chaotic_init": {
+   "median_aber": 0.0014158008063901815,
+   "mean_log10_aber": -5.095313993269863,
+   "n_finite": 2000,
+   "n_nonfinite": 0,
+   "binary_rate": 0.25,
+   "median_iterations": 25.0,
+   "n_paired": 1999,
+   "n_unpaired_dropped": 1,
+   "median_log10_delta_vs_full": 0.000718205479031786,
+   "arm_better": 943,
+   "arm_worse": 1056,
+   "tie": 0,
+   "wilcoxon": {
+    "n": 1999,
+    "W": 878974.0,
+    "p": 3.0163538157339014e-06,
+    "method": "scipy normal approx"
+   }
+  },
+  "no_levy_flight": {
+   "median_aber": 1.9570181712982237e-05,
+   "mean_log10_aber": -5.1037165187373885,
+   "n_finite": 1999,
+   "n_nonfinite": 1,
+   "binary_rate": 0.25,
+   "median_iterations": 25.0,
+   "n_paired": 1999,
+   "n_unpaired_dropped": 1,
+   "median_log10_delta_vs_full": 0.0,
+   "arm_better": 967,
+   "arm_worse": 939,
+   "tie": 93,
+   "wilcoxon": {
+    "n": 1906,
+    "W": 895262.0,
+    "p": 0.576434512340675,
+    "method": "scipy normal approx"
+   }
+  },
+  "no_ga_refinement": {
+   "median_aber": 1.9878964624104625e-05,
+   "mean_log10_aber": -5.101400365763703,
+   "n_finite": 1999,
+   "n_nonfinite": 1,
+   "binary_rate": 0.25,
+   "median_iterations": 25.0,
+   "n_paired": 1999,
+   "n_unpaired_dropped": 1,
+   "median_log10_delta_vs_full": 0.0,
+   "arm_better": 855,
+   "arm_worse": 922,
+   "tie": 222,
+   "wilcoxon": {
+    "n": 1777,
+    "W": 693232.0,
+    "p": 7.918159773202104e-06,
+    "method": "scipy normal approx"
+   }
+  },
+  "fixed_fidelity": {
+   "median_aber": 1.949414210014271e-05,
+   "mean_log10_aber": -5.103567077013565,
+   "n_finite": 1999,
+   "n_nonfinite": 1,
+   "binary_rate": 0.25,
+   "median_iterations": 25.0,
+   "n_paired": 1999,
+   "n_unpaired_dropped": 1,
+   "median_log10_delta_vs_full": 0.0,
+   "arm_better": 1,
+   "arm_worse": 0,
+   "tie": 1998,
+   "wilcoxon": {
+    "n": 1,
+    "W": 0.0,
+    "p": 1.0,
+    "method": "scipy exact"
+   }
+  }
+ }
+}

@@ -75,6 +75,14 @@ class SolverConfig:
     social: float = 1.5
     jump_probability: float = 0.25
     jump_scale: float = 0.02
+    # Stagnation gate. OFF by default: with stagnation_gated False the jump fires
+    # unconditionally at jump_probability, which is what every published measurement in
+    # this repository was taken under. Turning it on reproduces the mechanism the
+    # manuscript describes, Var(J_gbest) < epsilon_s over a short window, so that the
+    # described operator can be measured rather than only asserted.
+    stagnation_gated: bool = False
+    stagnation_window: int = 5       # W: incumbents inspected
+    stagnation_eps: float = 1e-6     # epsilon_s, RELATIVE variance of the window
     use_chaos: bool = True
     use_levy: bool = True
     use_ga: bool = True
@@ -165,6 +173,8 @@ class HCLPSOGA:
         best_x, best_f = None, np.inf
         evals, rejected = 0, 0
         trace = []
+        self._jump_fired = 0
+        self._gate_open_iters = 0
 
         for it in range(cfg.max_iters):
             x = self._feasible(x)
@@ -200,8 +210,30 @@ class HCLPSOGA:
             x = x + v
 
             # --- heavy-tailed exploration ---------------------------------
-            jump = self.rng.random(cfg.n_particles) < cfg.jump_probability
+            # The gate, when enabled, is the manuscript's Var(J_gbest) < epsilon_s. The
+            # incumbent is monotone here, so a flat window means no improvement landed in
+            # it; the variance is taken relative to the window mean so the threshold does
+            # not depend on the absolute scale of J, which spans orders of magnitude
+            # across jitter strata. With the gate off this is unconditional, exactly as
+            # every measurement already in this repository was taken.
+            gate_open = True
+            if cfg.stagnation_gated:
+                w = trace[-cfg.stagnation_window:]
+                if len(w) < cfg.stagnation_window:
+                    gate_open = False          # not enough history to call it stagnant
+                else:
+                    aw = np.asarray(w, float)
+                    aw = aw[np.isfinite(aw)]
+                    if aw.size < 2:
+                        gate_open = False
+                    else:
+                        scale = max(abs(float(np.mean(aw))), 1e-300)
+                        gate_open = bool(np.var(aw) / (scale ** 2) < cfg.stagnation_eps)
+            jump = ((self.rng.random(cfg.n_particles) < cfg.jump_probability)
+                    if gate_open else np.zeros(cfg.n_particles, bool))
             k = int(jump.sum())
+            self._jump_fired += k
+            self._gate_open_iters += int(gate_open)
             if k:
                 span = (self.hi - self.lo)
                 if cfg.use_levy:

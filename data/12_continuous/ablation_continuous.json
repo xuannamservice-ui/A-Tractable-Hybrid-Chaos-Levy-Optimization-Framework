@@ -1,0 +1,92 @@
+{
+ "criterion": "achieved post-EGC system ABER at 38 dB, strong turbulence, all four sigma_s, paired draws and seeds identical to the binary ablation",
+ "binary_threshold_for_reference": 1e-06,
+ "tau_o_us": 600.0,
+ "trials_per_cell": 10,
+ "n_trials": 40,
+ "arms": {
+  "full": {
+   "median_aber": 0.001496645054001026,
+   "mean_log10_aber": -5.067240982757135,
+   "n_finite": 40,
+   "n_nonfinite": 0,
+   "binary_rate": 0.25
+  },
+  "no_chaotic_init": {
+   "median_aber": 0.0015581949778540665,
+   "mean_log10_aber": -5.03583265064435,
+   "n_finite": 40,
+   "n_nonfinite": 0,
+   "binary_rate": 0.25,
+   "n_paired": 40,
+   "n_unpaired_dropped": 0,
+   "median_log10_delta_vs_full": -0.000534821904345506,
+   "arm_better": 22,
+   "arm_worse": 18,
+   "tie": 0,
+   "wilcoxon": {
+    "n": 40,
+    "W": 399.0,
+    "p": 0.8824577783798314,
+    "method": "scipy normal approx"
+   }
+  },
+  "no_levy_flight": {
+   "median_aber": 0.001496645054001026,
+   "mean_log10_aber": -5.067240982757135,
+   "n_finite": 40,
+   "n_nonfinite": 0,
+   "binary_rate": 0.25,
+   "n_paired": 40,
+   "n_unpaired_dropped": 0,
+   "median_log10_delta_vs_full": 0.0,
+   "arm_better": 0,
+   "arm_worse": 0,
+   "tie": 40,
+   "wilcoxon": {
+    "n": 0,
+    "W": NaN,
+    "p": NaN,
+    "method": "no non-zero pairs"
+   }
+  },
+  "no_ga_refinement": {
+   "median_aber": 0.001496645054001026,
+   "mean_log10_aber": -5.067240982757135,
+   "n_finite": 40,
+   "n_nonfinite": 0,
+   "binary_rate": 0.25,
+   "n_paired": 40,
+   "n_unpaired_dropped": 0,
+   "median_log10_delta_vs_full": 0.0,
+   "arm_better": 0,
+   "arm_worse": 0,
+   "tie": 40,
+   "wilcoxon": {
+    "n": 0,
+    "W": NaN,
+    "p": NaN,
+    "method": "no non-zero pairs"
+   }
+  },
+  "fixed_fidelity": {
+   "median_aber": 0.001496645054001026,
+   "mean_log10_aber": -5.067240982757135,
+   "n_finite": 40,
+   "n_nonfinite": 0,
+   "binary_rate": 0.25,
+   "n_paired": 40,
+   "n_unpaired_dropped": 0,
+   "median_log10_delta_vs_full": 0.0,
+   "arm_better": 0,
+   "arm_worse": 0,
+   "tie": 40,
+   "wilcoxon": {
+    "n": 0,
+    "W": NaN,
+    "p": NaN,
+    "method": "no non-zero pairs"
+   }
+  }
+ }
+}

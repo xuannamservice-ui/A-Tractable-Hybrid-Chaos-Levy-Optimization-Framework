@@ -66,6 +66,36 @@ it by trying:
 
 ---
 
+## The component ablation, and why the paper reports a null
+
+`code/ablation_continuous.py` and `code/levy_mechanism_probe.py` re-score the ablation on a
+continuous metric and probe the Lévy operator directly. They take a few minutes each and
+are not part of the 7-check run, because their outputs are measurements rather than
+pass/fail assertions. Both write to `data/12_continuous/`.
+
+The short version of what they establish, which the manuscript states in
+Section VII-C:
+
+- At the deployed budget the ablation arms are not merely indistinguishable but
+  **bit-identical**. One iteration completes in 600 µs, so the Lévy jump perturbs a swarm
+  that has not moved, GA refinement recombines an elite that does not exist, and the
+  fidelity ladder has nothing to adapt across. The components are inert at that budget,
+  not weak.
+- On the continuous metric with all 25 iterations running, **chaotic initialisation** is
+  the component that pays: p < 10⁻⁴, and its benefit is 15× larger over the coupled
+  20-stage trajectory (2.4% ABER) than over one ranked stage (0.16%) — which is the
+  paper's own multimodality argument coming out the way it predicted.
+- **The Lévy operator does not separate from a Gaussian step of the same scale** under any
+  configuration tested: p = 0.58 (one stage), 0.084 (twenty stages), 0.72 (stagnation-gated
+  and run to 200 iterations, where the gate is open on 193.8 of them), 0.997 (ungated).
+
+One discrepancy was found and corrected in the manuscript rather than left for a reader to
+discover: earlier text described the Lévy jump as gated on a stagnation threshold
+`Var(J_gbest) < ε_s`. The released solver has never contained that trigger; it fires
+unconditionally at 25% per particle per iteration. The gated form is now implemented in
+`hclpso_ga.py` behind `stagnation_gated`, **off by default** — the default path was verified
+bit-identical to the pre-patch solver, so every previously published number is unaffected.
+
 ## Platforms
 
 The kernel benchmark `code/bench_portable.py` runs on both machines used in the paper and
