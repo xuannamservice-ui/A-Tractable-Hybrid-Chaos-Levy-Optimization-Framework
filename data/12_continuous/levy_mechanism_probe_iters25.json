@@ -1,0 +1,36 @@
+{
+ "iters": 25,
+ "n_trials": 600,
+ "comparisons": {
+  "stagnation-gated": {
+   "n_paired": 600,
+   "median_log10_levy_minus_gaussian": 0.0,
+   "levy_better": 278,
+   "levy_worse": 277,
+   "tie": 45,
+   "wilcoxon": {
+    "n": 555,
+    "W": 74089.0,
+    "p": 0.4187620659547988,
+    "method": "scipy normal approx"
+   },
+   "mean_jumps_per_solve": 141.445,
+   "mean_gate_open_iters": 18.848333333333333
+  },
+  "ungated (as deployed)": {
+   "n_paired": 600,
+   "median_log10_levy_minus_gaussian": 0.0,
+   "levy_better": 288,
+   "levy_worse": 287,
+   "tie": 25,
+   "wilcoxon": {
+    "n": 575,
+    "W": 81961.0,
+    "p": 0.8332650990196162,
+    "method": "scipy normal approx"
+   },
+   "mean_jumps_per_solve": 187.78166666666667,
+   "mean_gate_open_iters": 25.0
+  }
+ }
+}

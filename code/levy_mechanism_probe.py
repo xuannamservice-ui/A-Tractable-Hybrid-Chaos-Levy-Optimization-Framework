@@ -11,29 +11,28 @@ very different readings, and the paper must not pick one by assertion:
 
 Instrumenting the solver settles it. Counting jumps over 25 iterations:
 
-    deployed code, ungated     gate open 25.0/25 iterations, 185.6 jumps per solve
-    as the manuscript describes, stagnation-gated   0.2/25 iterations, 1.3 jumps
+    deployed code, ungated                        gate open 25.0/25, 187.8 jumps per solve
+    stagnation-gated, as the manuscript describes   gate open 18.8/25, 141.4 jumps per solve
 
-Neither configuration tests the claim. The deployed one fires a jump on a quarter of the
-particles every single iteration at 2% of the box: that is persistent small noise, and
-against persistent small noise a heavy tail has no advantage over a Gaussian of the same
-scale, which is exactly the measured null. The manuscript's own gated mechanism almost
-never fires, because within T_iter = 25 the incumbent is still improving and the swarm
-never stagnates.
+Both configurations reach the regime. The swarm is stagnant on three quarters of the
+iterations even inside the real-time cap, so the gated operator fires freely, 141 times per
+solve, which is squarely what it was designed for. An early check on a synthetic sphere
+function suggested the gate almost never opens; that was an artefact of the test problem and
+is not what the deployed objective does.
 
-So the claim in Lemma 2, a heavy-tailed advantage over Gaussian perturbation, has not been
-tested by either configuration. This script tests it, by running the gated mechanism long
-enough that stagnation actually occurs, and comparing Levy against Gaussian steps under an
-identical trigger. The comparison is then purely one of step DISTRIBUTION.
+So the trigger is not what withholds the advantage from Lemma 2. This script measures the
+advantage itself, comparing Levy against Gaussian steps under an identical trigger so that
+the comparison is purely one of step DISTRIBUTION, at the deployed cap and at a lifted one.
 
 WHAT IS AND IS NOT ESTABLISHED
 
-This runs on the deployed objective at the deployed operating point, with the iteration cap
-lifted. It answers "does the heavy tail pay off once the trigger fires", which is a
-question about the operator. It does NOT show that the deployed configuration benefits,
-and it must not be reported as if it did: at T_iter = 25 the trigger fires 0.2 times in 25
-iterations, so whatever this measures is unavailable to the real-time loop as configured.
-That gap is the finding, and it belongs in the paper next to this number.
+The comparison isolates the step distribution and nothing else: same draws, same seeds, same
+trigger, same scale. A null here is therefore about the heavy tail rather than about when it
+fires, which is what makes it worth reporting.
+
+It does not explain itself. Why a heavy tail buys nothing when it fires 141 times per solve
+is answered by levy_truncation.py, which measures the slew-feasibility projection removing
+83% of the tail advantage before it can act.
 
 Usage:
     python levy_mechanism_probe.py [--trials 300] [--iters 200]
@@ -47,7 +46,7 @@ import time
 
 import numpy as np
 
-from measure_all import (N_P, SIGMAS, GBAR_OP_DB, _make_problem, system_success,
+from measure_all import (N_P, SIGMAS, _make_problem, system_success,
                          pin_and_prioritise)
 from ablation_continuous import wilcoxon_signed_rank
 
@@ -57,7 +56,7 @@ def main():
     ap.add_argument("--trials", type=int, default=300)
     ap.add_argument("--iters", type=int, default=200,
                     help="iteration cap; the deployed value is 25, at which the "
-                         "stagnation gate fires 0.2 times per solve")
+                         "stagnation gate is already open on 18.8 of 25 iterations")
     ap.add_argument("--out", default=os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "..", "data", "12_continuous"))
     a = ap.parse_args()
@@ -142,12 +141,14 @@ def main():
                  int((d < 0).sum()), int((d > 0).sum())))
 
     os.makedirs(a.out, exist_ok=True)
-    with open(os.path.join(a.out, "levy_mechanism_probe.json"), "w") as fh:
+    with open(os.path.join(a.out, "levy_mechanism_probe_iters%d.json" % a.iters), "w") as fh:
         json.dump(out, fh, indent=1)
     print()
     print("  NEGATIVE median means Levy reached a LOWER (better) ABER than Gaussian.")
-    print("  Whatever this shows, the deployed loop runs T_iter=25, where the gate opens")
-    print("  0.2 times per solve, so a gated benefit measured here is not available to it.")
+    print("  At the deployed T_iter=25 the gate is already open on 18.8 of 25 iterations")
+    print("  and the operator fires ~141 times per solve, so this is not a regime the")
+    print("  real-time loop fails to reach. For why the tail still buys nothing there,")
+    print("  see levy_truncation.py: the slew projection removes 83% of the advantage.")
 
 
 if __name__ == "__main__":
