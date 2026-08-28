@@ -74,7 +74,7 @@ are not part of the 7-check run, because their outputs are measurements rather t
 pass/fail assertions. Both write to `data/12_continuous/`.
 
 The short version of what they establish, which the manuscript states in
-Section VII-C:
+Section VII-D6:
 
 - At the deployed budget the ablation arms are not merely indistinguishable but
   **bit-identical**. One iteration completes in 600 µs, so the Lévy jump perturbs a swarm
