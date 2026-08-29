@@ -1,34 +1,37 @@
 {
-  "note": "Windows priority-class analogue of the Linux SCHED_OTHER/chrt/isolcpus arms. NOT a reproduction of them; Windows has no such mechanisms and no real-time guarantee.",
-  "rank_stages": 1,
-  "budget_us": 800,
-  "arms": {
-    "normal, unpinned": {
-      "median": 809.4,
-      "p95": 986.005,
-      "p99": 1118.207,
-      "p999": 1383.6075000000083,
-      "max": 1988.5,
-      "deadline_pct": 27.55,
-      "n": 6000
-    },
-    "high, P-cores pinned": {
-      "median": 818.45,
-      "p95": 1022.2,
-      "p99": 1142.306,
-      "p999": 1447.8518000000577,
-      "max": 4205.5,
-      "deadline_pct": 13.633333333333333,
-      "n": 6000
-    },
-    "realtime, P-cores pinned": {
-      "median": 812.6,
-      "p95": 995.335,
-      "p99": 1106.103,
-      "p999": 1296.302600000003,
-      "max": 3136.1,
-      "deadline_pct": 21.866666666666667,
-      "n": 6000
-    }
+ "generated_by": "code/measure_all.py",
+ "block_describes": "closed-loop latency, solver baselines and the component ablation, all re-measured on the interpolation-free kernel with the anytime checkpoint active -- Tables 6, 11 and 12",
+ "note": "Windows priority-class analogue of the Linux SCHED_OTHER/chrt/isolcpus arms. NOT a reproduction of them; Windows has no such mechanisms and no real-time guarantee.",
+ "rank_stages": 1,
+ "budget_us": 800,
+ "arms": {
+  "normal, unpinned": {
+   "median": 809.4,
+   "p95": 986.005,
+   "p99": 1118.207,
+   "p999": 1383.6075000000083,
+   "max": 1988.5,
+   "deadline_pct": 27.55,
+   "n": 6000
+  },
+  "high, P-cores pinned": {
+   "median": 818.45,
+   "p95": 1022.2,
+   "p99": 1142.306,
+   "p999": 1447.8518000000577,
+   "max": 4205.5,
+   "deadline_pct": 13.633333333333333,
+   "n": 6000
+  },
+  "realtime, P-cores pinned": {
+   "median": 812.6,
+   "p95": 995.335,
+   "p99": 1106.103,
+   "p999": 1296.302600000003,
+   "max": 3136.1,
+   "deadline_pct": 21.866666666666667,
+   "n": 6000
   }
+ },
+ "command": "python code/measure_all.py --part latency"
 }

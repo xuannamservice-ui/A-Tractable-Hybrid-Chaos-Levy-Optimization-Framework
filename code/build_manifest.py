@@ -169,13 +169,57 @@ def self_declared(block_dir: str, pkg: str) -> dict | None:
         p = os.path.join(block_dir, fn)
         if not os.path.isfile(p):
             continue
-        if not fn.lower().endswith(".json"):
-            silent.append(fn)
-            continue
-        try:
-            with open(p, encoding="utf-8") as f:
-                d = json.load(f)
-        except Exception:
+        low = fn.lower()
+        if low.endswith(".npz"):
+            # an .npz is a zip of named arrays and can carry its own provenance;
+            # only the one key is materialised, so the 83-array timing archives
+            # stay cheap to scan
+            try:
+                import numpy as _np
+                with _np.load(p, allow_pickle=False) as _z:
+                    if "generated_by" not in _z.files:
+                        silent.append(fn)
+                        continue
+                    d = {"generated_by": str(_z["generated_by"])}
+                    if "command" in _z.files:
+                        d["command"] = str(_z["command"])
+                    for _k in ("elapsed_s", "seconds"):
+                        if _k in _z.files:
+                            try:
+                                d[_k] = float(_z[_k])
+                            except Exception:
+                                pass
+            except Exception:
+                silent.append(fn)
+                continue
+        elif low.endswith(".tex"):
+            # a generated LaTeX fragment declares itself in a leading comment,
+            # which does not disturb what it typesets
+            try:
+                d = {}
+                with open(p, encoding="utf-8", errors="replace") as f:
+                    for _line in range(8):
+                        _s = f.readline()
+                        if not _s:
+                            break
+                        _s = _s.strip()
+                        if _s.startswith("%") and "generated_by:" in _s:
+                            d["generated_by"] = _s.split("generated_by:", 1)[1].strip()
+                            break
+                if not d:
+                    silent.append(fn)
+                    continue
+            except Exception:
+                silent.append(fn)
+                continue
+        elif low.endswith(".json"):
+            try:
+                with open(p, encoding="utf-8") as f:
+                    d = json.load(f)
+            except Exception:
+                silent.append(fn)
+                continue
+        else:
             silent.append(fn)
             continue
         if not isinstance(d, dict):
@@ -195,8 +239,8 @@ def self_declared(block_dir: str, pkg: str) -> dict | None:
     if not producers:
         return None
     return {
-        "produced_by": ", ".join("code/%s" % os.path.basename(w)
-                                 for w in sorted(producers)),
+        "produced_by": ", ".join(sorted({"code/%s" % os.path.basename(w)
+                                        for w in producers})),
         "seconds": round(seconds, 1) if seconds is not None else None,
         "timing_source": ("summed 'elapsed_s' of the block's own JSON artefacts"
                           if seconds is not None

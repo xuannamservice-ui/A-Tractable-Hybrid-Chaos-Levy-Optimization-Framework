@@ -1,74 +1,77 @@
 {
-  "rank_stages": 1,
-  "tau_o_us": 600.0,
-  "criterion": "post-EGC system ABER <= 1e-6 at 38 dB, strong, all four sigma_s; paired draws; tau_O = 600 us",
-  "trials_per_cell": 50,
-  "results": {
-    "full": {
-      "k": 50,
-      "n": 200,
-      "rate": 0.25,
-      "ci95": [
-        0.19160716962258748,
-        0.315962833329869
-      ],
-      "median_iterations": 1.0
-    },
-    "no_chaotic_init": {
-      "k": 50,
-      "n": 200,
-      "rate": 0.25,
-      "ci95": [
-        0.19160716962258748,
-        0.315962833329869
-      ],
-      "median_iterations": 1.0,
-      "b": 0,
-      "c": 0,
-      "p_two_sided_exact": 1.0,
-      "improvement": 0.0
-    },
-    "no_levy_flight": {
-      "k": 50,
-      "n": 200,
-      "rate": 0.25,
-      "ci95": [
-        0.19160716962258748,
-        0.315962833329869
-      ],
-      "median_iterations": 1.0,
-      "b": 0,
-      "c": 0,
-      "p_two_sided_exact": 1.0,
-      "improvement": 0.0
-    },
-    "no_ga_refinement": {
-      "k": 50,
-      "n": 200,
-      "rate": 0.25,
-      "ci95": [
-        0.19160716962258748,
-        0.315962833329869
-      ],
-      "median_iterations": 1.0,
-      "b": 0,
-      "c": 0,
-      "p_two_sided_exact": 1.0,
-      "improvement": 0.0
-    },
-    "fixed_fidelity": {
-      "k": 50,
-      "n": 200,
-      "rate": 0.25,
-      "ci95": [
-        0.19160716962258748,
-        0.315962833329869
-      ],
-      "median_iterations": 1.0,
-      "b": 0,
-      "c": 0,
-      "p_two_sided_exact": 1.0,
-      "improvement": 0.0
-    }
+ "generated_by": "code/measure_all.py",
+ "block_describes": "closed-loop latency, solver baselines and the component ablation, all re-measured on the interpolation-free kernel with the anytime checkpoint active -- Tables 6, 11 and 12",
+ "rank_stages": 1,
+ "tau_o_us": 600.0,
+ "criterion": "post-EGC system ABER <= 1e-6 at 38 dB, strong, all four sigma_s; paired draws; tau_O = 600 us",
+ "trials_per_cell": 50,
+ "results": {
+  "full": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 1.0
+  },
+  "no_chaotic_init": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 1.0,
+   "b": 0,
+   "c": 0,
+   "p_two_sided_exact": 1.0,
+   "improvement": 0.0
+  },
+  "no_levy_flight": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 1.0,
+   "b": 0,
+   "c": 0,
+   "p_two_sided_exact": 1.0,
+   "improvement": 0.0
+  },
+  "no_ga_refinement": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 1.0,
+   "b": 0,
+   "c": 0,
+   "p_two_sided_exact": 1.0,
+   "improvement": 0.0
+  },
+  "fixed_fidelity": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 1.0,
+   "b": 0,
+   "c": 0,
+   "p_two_sided_exact": 1.0,
+   "improvement": 0.0
   }
+ },
+ "command": "python code/measure_all.py --part ablation"
 }

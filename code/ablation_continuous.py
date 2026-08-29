@@ -60,6 +60,22 @@ from measure_all import (ARMS, N_P, SIGMAS, TAU_O, T_ITER, GBAR_OP_DB, TARGET,
                          background_load)
 
 
+def _stamp(obj, script, argv=None):
+    """Record what produced this artefact, in the two fields build_manifest.py reads.
+
+    `generated_by` must be a bare path: the manifest validates it with os.path.basename
+    and requires the result to exist under code/, so anything carrying arguments is
+    rejected. The full invocation goes in `command`, which is what a reader needs to
+    reproduce this particular run rather than the script's defaults.
+    """
+    import sys as _sys
+    args = " ".join(argv if argv is not None else _sys.argv[1:])
+    out = {"generated_by": "code/%s" % script,
+           "command": ("python code/%s %s" % (script, args)).rstrip()}
+    out.update(obj)
+    return out
+
+
 def wilcoxon_signed_rank(d):
     """Exact-ish Wilcoxon signed-rank on paired differences d.
 
@@ -238,7 +254,7 @@ def main():
                         sigma_s=cells,
                         **{arm: np.array(aber[arm], float) for arm in ARMS})
     with open(os.path.join(a.out, "ablation_continuous_tau%.0f_rank%d.json" % (tau*1e6, _ma.RANK_STAGES)), "w") as fh:
-        json.dump(out, fh, indent=1)
+        json.dump(_stamp(out, "ablation_continuous.py"), fh, indent=1)
 
     print()
     print("  wrote %s" % os.path.join(a.out, "ablation_continuous_tau%.0f_rank%d.json" % (tau*1e6, _ma.RANK_STAGES)))

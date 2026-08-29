@@ -1,4 +1,6 @@
 {
+ "generated_by": "code/ablation_continuous.py",
+ "block_describes": "the Levy investigation: the ablation re-scored on achieved post-EGC ABER instead of a binary threshold, the operator probed under its own stagnation trigger, the step-scale envelope swept, and the slew-projection truncation measured -- Section VII-D6",
  "criterion": "achieved post-EGC system ABER at 38 dB, strong turbulence, all four sigma_s, paired draws and seeds identical to the binary ablation",
  "binary_threshold_for_reference": 1e-06,
  "tau_o_us": 20000.0,
@@ -94,5 +96,6 @@
     "method": "scipy exact"
    }
   }
- }
+ },
+ "command": "python code/ablation_continuous.py --trials 2000 --tau-us 20000 --rank-stages 20"
 }

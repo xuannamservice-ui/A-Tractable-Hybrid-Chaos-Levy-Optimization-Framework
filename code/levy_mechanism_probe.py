@@ -51,6 +51,22 @@ from measure_all import (N_P, SIGMAS, _make_problem, system_success,
 from ablation_continuous import wilcoxon_signed_rank
 
 
+def _stamp(obj, script, argv=None):
+    """Record what produced this artefact, in the two fields build_manifest.py reads.
+
+    `generated_by` must be a bare path: the manifest validates it with os.path.basename
+    and requires the result to exist under code/, so anything carrying arguments is
+    rejected. The full invocation goes in `command`, which is what a reader needs to
+    reproduce this particular run rather than the script's defaults.
+    """
+    import sys as _sys
+    args = " ".join(argv if argv is not None else _sys.argv[1:])
+    out = {"generated_by": "code/%s" % script,
+           "command": ("python code/%s %s" % (script, args)).rstrip()}
+    out.update(obj)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--trials", type=int, default=300)
@@ -142,7 +158,7 @@ def main():
 
     os.makedirs(a.out, exist_ok=True)
     with open(os.path.join(a.out, "levy_mechanism_probe_iters%d.json" % a.iters), "w") as fh:
-        json.dump(out, fh, indent=1)
+        json.dump(_stamp(out, "levy_mechanism_probe.py"), fh, indent=1)
     print()
     print("  NEGATIVE median means Levy reached a LOWER (better) ABER than Gaussian.")
     print("  At the deployed T_iter=25 the gate is already open on 18.8 of 25 iterations")

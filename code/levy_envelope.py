@@ -73,6 +73,21 @@ from measure_all import (N_P, SIGMAS, GBAR_OP_DB, _make_problem, system_success,
 from ablation_continuous import wilcoxon_signed_rank
 
 
+def _stamp(obj, script, argv=None):
+    """Record what produced this artefact, in the two fields build_manifest.py reads.
+
+    generated_by must be a bare path: the manifest validates it with os.path.basename and
+    requires the result to exist under code/, so a value carrying arguments is rejected.
+    The full invocation goes in command, which is what reproduces this particular run.
+    """
+    import sys as _sys
+    args = " ".join(argv if argv is not None else _sys.argv[1:])
+    out = {"generated_by": "code/%s" % script,
+           "command": ("python code/%s %s" % (script, args)).rstrip()}
+    out.update(obj)
+    return out
+
+
 def holm(pvals):
     """Holm-Bonferroni adjusted p-values, order preserved."""
     idx = np.argsort(pvals)
@@ -200,7 +215,8 @@ def main():
 
     os.makedirs(a.out, exist_ok=True)
     with open(os.path.join(a.out, "levy_envelope.json"), "w") as fh:
-        json.dump({"iters": a.iters, "trials": len(order), "cells": rows}, fh, indent=1)
+        json.dump(_stamp({"iters": a.iters, "trials": len(order), "cells": rows},
+                          "levy_envelope.py"), fh, indent=1)
     print()
     print("  wrote levy_envelope.json")
     print()

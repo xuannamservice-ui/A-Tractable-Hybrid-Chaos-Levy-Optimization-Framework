@@ -1,12 +1,10 @@
 {
   "generated_by": "code/build_manifest.py",
-  "built": "2026-08-27T06:27:55",
+  "built": "2026-08-29T10:10:09",
   "package_root": "data_and_code_availability",
-  "block_count": 11,
-  "blocks_with_provenance": 11,
-  "blocks_with_provenance_gaps": [
-    "10_platform"
-  ],
+  "block_count": 13,
+  "blocks_with_provenance": 13,
+  "blocks_with_provenance_gaps": [],
   "provenance_note": "Every directory under data/ has an entry. `seconds` is wall-clock for the run that produced the files: for generate.py blocks it is measured by the driver and recorded in logs/provenance_<block>.json as the block finishes; for the campaign blocks it is the producing script's own embedded figure; for a block that is neither, it is whatever that block's own artefacts declare, and `provenance_source` says so. `status` is complete, partial (the run hit its deadline mid-block and the file holds what was finished), or unknown (nothing observed the run, so completeness cannot be asserted). Block 04 is open-ended by design and is therefore 'partial' on every full run; see its `describes` field. A block carrying `provenance_gap` is only partly accounted for and --check fails on it.",
   "blocks": {
     "01_admissibility": {
@@ -311,38 +309,38 @@
         },
         {
           "name": "cycle_latency.npz",
-          "bytes": 2111336,
-          "records": 77,
-          "modified": "2026-08-27T06:00:37",
-          "sha256": "5e7e07732bd17e9b7ec7443b73c9f6c6558bfb2bbe109d11f1d781c37ec57a05"
+          "bytes": 2111824,
+          "records": 79,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "5a47227dc79937a3fa6ef572115e59d01cda48a8ed18e7bec286ad9ed4ba2e3a"
         },
         {
           "name": "cycle_latency_tables.tex",
-          "bytes": 3767,
+          "bytes": 3804,
           "records": null,
-          "modified": "2026-08-27T06:02:25",
-          "sha256": "4f6f68d2c7eb1bb3b336eb9431bf9a032c5c29c7d51e59b60e495b541bc27b45"
+          "modified": "2026-08-29T10:02:08",
+          "sha256": "807acf91cf272f6e9e51383f62e60e9d67e4c92c096f1bf12d11205e2a8c0ed5"
         },
         {
           "name": "kernel_timing.json",
-          "bytes": 122648,
+          "bytes": 122601,
           "records": null,
-          "modified": "2026-08-27T06:25:06",
-          "sha256": "1cf058984455a031671330a217a1009789ac95ca204a495b4f0b85a640ce1ee1"
+          "modified": "2026-08-27T06:30:12",
+          "sha256": "f061379c54438db164cdb1656c0364b9f2644a4465312d94b97055344a35b5ec"
         },
         {
           "name": "kernel_timing_raw.npz",
-          "bytes": 635818,
-          "records": 83,
-          "modified": "2026-08-27T06:25:06",
-          "sha256": "4aae390fcdd44128bc14f9d2f2d89a0ff6129e4c4d3cfb620ad9b6e7f9ad372a"
+          "bytes": 581741,
+          "records": 85,
+          "modified": "2026-08-29T10:00:49",
+          "sha256": "95d13d26fc6d6a6e67888ae437b99a66b95e528192fae5c06d19633b6db4b44c"
         },
         {
           "name": "kernel_timing_table.tex",
-          "bytes": 2461,
+          "bytes": 2963,
           "records": null,
-          "modified": "2026-08-27T06:25:06",
-          "sha256": "daca57d9b5c1604d28b6e3b21e5b10f69669d1e31150f264501c59f40b256cfc"
+          "modified": "2026-08-29T10:02:08",
+          "sha256": "be959cb3d1e9772bfaa822481311d52386d81baa9a6084a539d4374176c9b59c"
         },
         {
           "name": "platform.json",
@@ -353,41 +351,41 @@
         },
         {
           "name": "platform_stanza.tex",
-          "bytes": 6534,
+          "bytes": 6573,
           "records": null,
-          "modified": "2026-08-27T05:19:29",
-          "sha256": "be72110759405be0ce1446b59fa24453b04a512cb37d533e2dd9ccb184ca7c38"
+          "modified": "2026-08-29T10:02:08",
+          "sha256": "7890b2a9ddd7b84f34319f52644f1d0be2011b7120b6a0d4d4ebd8c50e636d36"
         },
         {
           "name": "portable_Jetson-TX2-pinned.json",
-          "bytes": 16299,
+          "bytes": 14904,
           "records": null,
-          "modified": "2026-08-27T05:45:42",
-          "sha256": "54daeaa5353da40e870843cf7a82c97c1768b4ddf39b0cfa5c97d8d98e0de40c"
+          "modified": "2026-08-29T10:02:08",
+          "sha256": "c536be755f183d0ca87811f50b7e8ba2ff724d511dc88856219dcd805d054976"
         },
         {
           "name": "portable_Jetson-TX2.json",
-          "bytes": 16495,
+          "bytes": 15118,
           "records": null,
-          "modified": "2026-08-27T05:35:49",
-          "sha256": "330c36ef5ae4448a4161840972ab3059fa30cda4ea5304da2fc723f4e108ee0f"
+          "modified": "2026-08-29T10:02:08",
+          "sha256": "decfc61eb1472a2c459c3b19ff3e29d524c21e6dbaea25993ee67ca89cb57888"
         },
         {
           "name": "portable_PC-i5-14600KF.json",
-          "bytes": 16078,
+          "bytes": 14130,
           "records": null,
-          "modified": "2026-08-27T05:23:07",
-          "sha256": "834eb4a5747058bb306570137402729d49e45cb1fa0613895ed86753041ebf0b"
+          "modified": "2026-08-29T10:02:08",
+          "sha256": "432dffa26f65e06873187f5534a4f22f79c2a63f69af794b6a79a66dabdb80f6"
         }
       ],
-      "bytes_total": 3045755,
+      "bytes_total": 2987977,
       "status": "unknown",
-      "generated": "2026-08-27T06:25:06",
-      "records": 83,
+      "generated": "2026-08-29T10:02:08",
+      "records": 85,
       "scope": "unknown",
       "describes": null,
-      "produced_by": "code/bench_cycle.py, code/bench_kernel.py, code/platform_spec.py",
-      "seconds": 304.3,
+      "produced_by": "code/bench_cycle.py, code/bench_kernel.py, code/bench_portable.py, code/platform_spec.py",
+      "seconds": 231.1,
       "timing_source": "summed 'elapsed_s' of the block's own JSON artefacts",
       "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
       "declared_by_file": {
@@ -397,25 +395,277 @@
         "bench_kernel.py": [
           "kernel_timing.json"
         ],
+        "code/bench_cycle.py": [
+          "cycle_latency.npz",
+          "cycle_latency_tables.tex"
+        ],
+        "code/bench_kernel.py": [
+          "kernel_timing_raw.npz",
+          "kernel_timing_table.tex"
+        ],
+        "code/bench_portable.py": [
+          "portable_Jetson-TX2-pinned.json",
+          "portable_Jetson-TX2.json",
+          "portable_PC-i5-14600KF.json"
+        ],
+        "code/platform_spec.py": [
+          "platform_stanza.tex"
+        ],
         "platform_spec.py": [
           "platform.json"
         ]
       },
-      "files_without_declared_producer": [
-        "cycle_latency.npz",
-        "cycle_latency_tables.tex",
-        "kernel_timing_raw.npz",
-        "kernel_timing_table.tex",
-        "platform_stanza.tex",
-        "portable_Jetson-TX2-pinned.json",
-        "portable_Jetson-TX2.json",
-        "portable_PC-i5-14600KF.json"
-      ],
+      "files_without_declared_producer": [],
       "generated_utc_stamps": [
         "2026-08-26T22:18:15.373296+00:00",
-        "2026-08-26T23:20:47.099615+00:00"
+        "2026-08-26T23:27:06.116799+00:00"
+      ]
+    },
+    "11_measured": {
+      "files": [
+        {
+          "name": "ablation_measured_tau20000.json",
+          "bytes": 1674,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "20235d37ab50334f2d0776a6b3ae89841280c48ed0c47f007abfa8e86e1c578f"
+        },
+        {
+          "name": "ablation_measured_tau600.json",
+          "bytes": 1667,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "756817e43e62439bf1566e0103cf9aa9eb08df20db60a7c35cef7805c9432e67"
+        },
+        {
+          "name": "ablation_success_measured.npz",
+          "bytes": 1791,
+          "records": 8,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "933dd4ee5ce55bf0c93c790a9c0d343c304f596773c1ba6ac2dace2813efdbdf"
+        },
+        {
+          "name": "baseline_indicators.npz",
+          "bytes": 2054,
+          "records": 8,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "343c55826215e241c0c48ec606b132d0cea3d85a4a507e7405e7952f06615569"
+        },
+        {
+          "name": "baselines_measured.json",
+          "bytes": 2068,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "eed12d35b16bc5130225723526c57308931002508d61a2dee602bfe7c279751a"
+        },
+        {
+          "name": "baselines_measured_tau20000.json",
+          "bytes": 2098,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "727ceab38ee8a7895b4e2b60e5881cae48f070aaca13a87486cb038c863bf671"
+        },
+        {
+          "name": "baselines_measured_tau600.json",
+          "bytes": 2117,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "7b9cbfe0ec311b299d226704c3d09ad905929ccdcb0eef1caf16008af67ee357"
+        },
+        {
+          "name": "cycle_latency_measured.json",
+          "bytes": 2206,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "1ed55b5c74a2efb0f39c754bc3ce2aed3991cd5d99236a20cf3bac18f749c262"
+        },
+        {
+          "name": "cycle_latency_measured.npz",
+          "bytes": 31661,
+          "records": 9,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "cc29d7c3822a82332a801d0b67335d393c1b423e8ea63d6ff736c5a8d43ac1cd"
+        },
+        {
+          "name": "tail_mitigation_measured.json",
+          "bytes": 1124,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "0d151e3c49faad365a22cdf068aa99f754db1cd123c9a15491f5a88adfd3460f"
+        },
+        {
+          "name": "tail_mitigation_measured.npz",
+          "bytes": 43198,
+          "records": 5,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "ac6c32c03bb5a348a51140e114e2156b7a82b5e50e125b8675e6f7b783468929"
+        }
       ],
-      "provenance_gap": "Partial: 8 of 11 file(s) in this block declare no producer (cycle_latency.npz, cycle_latency_tables.tex, kernel_timing_raw.npz, kernel_timing_table.tex, platform_stanza.tex, portable_Jetson-TX2-pinned.json, portable_Jetson-TX2.json, portable_PC-i5-14600KF.json). The rest are attributed from their own 'generated_by'/'generator' field."
+      "bytes_total": 91658,
+      "status": "unknown",
+      "generated": "2026-08-29T10:00:48",
+      "records": 9,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/measure_all.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/measure_all.py": [
+          "ablation_measured_tau20000.json",
+          "ablation_measured_tau600.json",
+          "ablation_success_measured.npz",
+          "baseline_indicators.npz",
+          "baselines_measured.json",
+          "baselines_measured_tau20000.json",
+          "baselines_measured_tau600.json",
+          "cycle_latency_measured.json",
+          "cycle_latency_measured.npz",
+          "tail_mitigation_measured.json",
+          "tail_mitigation_measured.npz"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "12_continuous": {
+      "files": [
+        {
+          "name": "ablation_continuous.json",
+          "bytes": 2516,
+          "records": null,
+          "modified": "2026-08-29T09:59:10",
+          "sha256": "72230643da96b638de02535010d065a54ee24e52ea7fe48a7f2ec434ab9c56ad"
+        },
+        {
+          "name": "ablation_continuous.npz",
+          "bytes": 3467,
+          "records": 8,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "74d36f6b4c46feed72198ce92576415a3a06dd65bdc5086c37245f990a1bf233"
+        },
+        {
+          "name": "ablation_continuous_tau20000.json",
+          "bytes": 2849,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "a47d18b16b0851a3a7d6e40f4fea5c2148996d2f336cbf6e88a6c135bde42a1a"
+        },
+        {
+          "name": "ablation_continuous_tau20000.npz",
+          "bytes": 79741,
+          "records": 8,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "9a11c61552d2270c42bc5b58702587148eb8452b2b428d170f19f1974ae8ec44"
+        },
+        {
+          "name": "ablation_continuous_tau20000_rank20.json",
+          "bytes": 2895,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "d84ddd82c55b7f40a77fd28b94b05ac82b2954d4fe065de029854936e3b4aa20"
+        },
+        {
+          "name": "ablation_continuous_tau20000_rank20.npz",
+          "bytes": 79842,
+          "records": 8,
+          "modified": "2026-08-29T10:00:48",
+          "sha256": "5e22c4a97f55b834285efec0f9279c1e2285ba2fdbf2fd9223f9829eca153ce3"
+        },
+        {
+          "name": "levy_envelope.json",
+          "bytes": 3046,
+          "records": null,
+          "modified": "2026-08-29T10:09:56",
+          "sha256": "1bb182ea9ec552354dea2169c2767b8cd52dfd026ba428e5ac6b1cb912d1d9cc"
+        },
+        {
+          "name": "levy_mechanism_probe_iters200.json",
+          "bytes": 1233,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "4740983b41c02cf648ed20cad346763bbf5d18d71da1c93aeafd6e557ac8e419"
+        },
+        {
+          "name": "levy_mechanism_probe_iters25.json",
+          "bytes": 1201,
+          "records": null,
+          "modified": "2026-08-29T10:00:07",
+          "sha256": "b8377f14ed42abfedc250d1fbc1ae4c821b5c10e594396c404206f8f26147ae6"
+        },
+        {
+          "name": "levy_truncation_s0p002.json",
+          "bytes": 908,
+          "records": null,
+          "modified": "2026-08-29T10:06:53",
+          "sha256": "378a6cb5600c0fb8ff66f96ffdf9a49e688291e086fb3485079708ca545382ef"
+        },
+        {
+          "name": "levy_truncation_s0p005.json",
+          "bytes": 904,
+          "records": null,
+          "modified": "2026-08-29T10:06:56",
+          "sha256": "c7fb0511750ef14dae7f4b969ce7023d59b4c5d66ce7e21bdd89d3837f6304a1"
+        },
+        {
+          "name": "levy_truncation_s0p02.json",
+          "bytes": 900,
+          "records": null,
+          "modified": "2026-08-29T10:06:58",
+          "sha256": "1fc830ba8ab40c2212ec46c551bd9757e28b489d6d74d79012a9530452a7d257"
+        },
+        {
+          "name": "levy_truncation_s0p08.json",
+          "bytes": 900,
+          "records": null,
+          "modified": "2026-08-29T10:07:00",
+          "sha256": "c14c0b21bb2b208868cd26b7331aa50d12e1b83f82f7aa0bc8251dd8a5f7d1e3"
+        },
+        {
+          "name": "levy_truncation_s0p3.json",
+          "bytes": 892,
+          "records": null,
+          "modified": "2026-08-29T10:07:03",
+          "sha256": "fcc5fb59968f83bcc964375ac7d1c60b0879c8cf54c22ac97266f421cc875215"
+        }
+      ],
+      "bytes_total": 181294,
+      "status": "unknown",
+      "generated": "2026-08-29T10:09:56",
+      "records": 8,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/ablation_continuous.py, code/levy_envelope.py, code/levy_mechanism_probe.py, code/levy_truncation.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/ablation_continuous.py": [
+          "ablation_continuous.json",
+          "ablation_continuous.npz",
+          "ablation_continuous_tau20000.json",
+          "ablation_continuous_tau20000.npz",
+          "ablation_continuous_tau20000_rank20.json",
+          "ablation_continuous_tau20000_rank20.npz"
+        ],
+        "code/levy_envelope.py": [
+          "levy_envelope.json"
+        ],
+        "code/levy_mechanism_probe.py": [
+          "levy_mechanism_probe_iters200.json",
+          "levy_mechanism_probe_iters25.json"
+        ],
+        "code/levy_truncation.py": [
+          "levy_truncation_s0p002.json",
+          "levy_truncation_s0p005.json",
+          "levy_truncation_s0p02.json",
+          "levy_truncation_s0p08.json",
+          "levy_truncation_s0p3.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
     }
   }
 }

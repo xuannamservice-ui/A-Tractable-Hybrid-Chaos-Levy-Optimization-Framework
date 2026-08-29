@@ -1,4 +1,6 @@
 {
+ "generated_by": "code/levy_mechanism_probe.py",
+ "block_describes": "the Levy investigation: the ablation re-scored on achieved post-EGC ABER instead of a binary threshold, the operator probed under its own stagnation trigger, the step-scale envelope swept, and the slew-projection truncation measured -- Section VII-D6",
  "iters": 25,
  "n_trials": 600,
  "comparisons": {
@@ -32,5 +34,6 @@
    "mean_jumps_per_solve": 187.78166666666667,
    "mean_gate_open_iters": 25.0
   }
- }
+ },
+ "command": "python code/levy_mechanism_probe.py --trials 600 --iters 25"
 }

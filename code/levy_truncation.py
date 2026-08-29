@@ -52,6 +52,22 @@ from measure_all import N_P, SIGMAS, _make_problem
 from hclpso_ga import levy
 
 
+def _stamp(obj, script, argv=None):
+    """Record what produced this artefact, in the two fields build_manifest.py reads.
+
+    `generated_by` must be a bare path: the manifest validates it with os.path.basename
+    and requires the result to exist under code/, so anything carrying arguments is
+    rejected. The full invocation goes in `command`, which is what a reader needs to
+    reproduce this particular run rather than the script's defaults.
+    """
+    import sys as _sys
+    args = " ".join(argv if argv is not None else _sys.argv[1:])
+    out = {"generated_by": "code/%s" % script,
+           "command": ("python code/%s %s" % (script, args)).rstrip()}
+    out.update(obj)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--draws", type=int, default=240,
@@ -155,10 +171,10 @@ def main():
             print("    which is sufficient to explain every null measured so far")
 
     os.makedirs(a.out, exist_ok=True)
-    with open(os.path.join(a.out, "levy_truncation.json"), "w") as fh:
-        json.dump(out, fh, indent=1)
+    with open(os.path.join(a.out, "levy_truncation_s%s.json" % ("%g" % a.jump_scale).replace(".", "p")), "w") as fh:
+        json.dump(_stamp(out, "levy_truncation.py"), fh, indent=1)
     print()
-    print("  wrote levy_truncation.json")
+    print("  wrote levy_truncation_s%s.json" % ("%g" % a.jump_scale).replace(".", "p"))
 
 
 if __name__ == "__main__":
