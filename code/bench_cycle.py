@@ -600,7 +600,13 @@ def check_equivalence():
     """
     theta = np.array([2.0e-4, 1.0e-4])
     h = 0.0137
-    ref = BeamSteeringMPC(ALPHA, BETA, SIGMA_S, GBAR, horizon=HORIZON, seed=4242)
+    # tau_o=None so the reference runs its FULL iteration budget: the point of
+    # the check is that the instrumented take-apart computes exactly what
+    # step() computes, and with the default tau_o checkpoint the wall-clock
+    # cut-off makes the two runs a comparison of different iteration counts
+    # (1 on a slow host vs 25), which no correct take-apart can match.
+    ref = BeamSteeringMPC(ALPHA, BETA, SIGMA_S, GBAR, horizon=HORIZON, seed=4242,
+                          tau_o=None)
     r_ref = ref.step(theta.copy(), h_meas=h)
     run = CycleRunner(4242, anytime=False)
     _, _, diag = run.cycle(theta.copy(), h)
