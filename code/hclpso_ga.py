@@ -83,6 +83,14 @@ class SolverConfig:
     stagnation_gated: bool = False
     stagnation_window: int = 5       # W: incumbents inspected
     stagnation_eps: float = 1e-6     # epsilon_s, RELATIVE variance of the window
+    # Jump geometry. "per_dim" is the deployed mechanism: an i.i.d. step per
+    # stage, most of which the slew rate-limiter then deletes (a forward sweep
+    # is a low-pass filter; the Levy tail lives in the high frequencies).
+    # "feas_shift" draws ONE heavy-tailed scalar per physical block and shifts
+    # all T stages of that block together: stage-to-stage differences are
+    # unchanged, so the slew tube is preserved by construction and only the
+    # box can clip -- the tail survives (see code/levy_feasible_jump.py).
+    jump_mode: str = "per_dim"       # "per_dim" | "feas_shift"
     use_chaos: bool = True
     use_levy: bool = True
     use_ga: bool = True
@@ -105,7 +113,8 @@ class HCLPSOGA:
     """Anytime hybrid solver over a box-constrained decision vector."""
 
     def __init__(self, lower, upper, config: SolverConfig = SolverConfig(), seed: int = 0,
-                 blocks=None, repair: Optional[Callable] = None):
+                 blocks=None, repair: Optional[Callable] = None,
+                 block_slew: Optional[list] = None):
         self.lo = np.atleast_1d(np.asarray(lower, dtype=float))
         self.hi = np.atleast_1d(np.asarray(upper, dtype=float))
         self.dim = self.lo.size
@@ -116,6 +125,9 @@ class HCLPSOGA:
         # one level for the whole concatenated vector -- the blocks of a 60-D
         # trajectory carry different units and box widths.
         self.blocks = list(blocks) if blocks is not None else [(0, self.dim)]
+        # Per-block slew limit (|x_k - x_{k-1}| per cycle) for the feas_shift
+        # jump mode; None keeps the deployed per_dim geometry.
+        self.block_slew = list(block_slew) if block_slew is not None else None
         # `repair` maps an arbitrary point to a feasible one.  Section V-B2:
         # "When a jump generates a coordinate exceeding the physical slew-rate
         # or angular limits, the particle is not simply truncated; instead, it
@@ -236,11 +248,31 @@ class HCLPSOGA:
             self._gate_open_iters += int(gate_open)
             if k:
                 span = (self.hi - self.lo)
-                if cfg.use_levy:
-                    steps = levy(self.rng, k * self.dim, cfg.levy_lambda).reshape(k, self.dim)
-                else:                                  # ablation: Gaussian instead
-                    steps = self.rng.normal(size=(k, self.dim))
-                x[jump] += cfg.jump_scale * steps * span
+                if cfg.jump_mode == "feas_shift" and self.block_slew is not None:
+                    # One heavy-tailed scalar per physical block, shifting all
+                    # T stages of that block together.  Stage-to-stage
+                    # differences are unchanged, so the slew tube is preserved
+                    # by construction; only the box can clip.  A small jitter
+                    # at 0.3x the block slew limit adds shape without leaving
+                    # the tube.  This is the jump geometry under which the
+                    # heavy tail survives the feasibility repair; the per_dim
+                    # geometry deletes it (forward sweep = low-pass filter).
+                    nb = len(self.blocks)
+                    if cfg.use_levy:
+                        steps = levy(self.rng, k * nb, cfg.levy_lambda).reshape(k, nb)
+                    else:                                  # ablation: Gaussian
+                        steps = self.rng.normal(size=(k, nb))
+                    for bi, ((s, e), sl) in enumerate(
+                            zip(self.blocks, self.block_slew)):
+                        spanb = float(np.max(span[s:e]))
+                        x[jump, s:e] += cfg.jump_scale * steps[:, bi, None] * spanb
+                        x[jump, s:e] += self.rng.normal(size=(k, e - s)) * (0.3 * sl)
+                else:
+                    if cfg.use_levy:
+                        steps = levy(self.rng, k * self.dim, cfg.levy_lambda).reshape(k, self.dim)
+                    else:                                  # ablation: Gaussian instead
+                        steps = self.rng.normal(size=(k, self.dim))
+                    x[jump] += cfg.jump_scale * steps * span
 
             # --- GA refinement on the elite -------------------------------
             if cfg.use_ga:
