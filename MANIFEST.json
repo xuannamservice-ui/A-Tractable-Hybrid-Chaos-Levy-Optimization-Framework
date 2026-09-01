@@ -1,7 +1,7 @@
 {
   "generated_by": "code/build_manifest.py",
-  "built": "2026-08-29T10:10:09",
-  "package_root": "data_and_code_availability",
+  "built": "2026-09-01T03:57:00",
+  "package_root": "A-Tractable-Hybrid-Chaos-Levy-Optimization-Framework",
   "block_count": 13,
   "blocks_with_provenance": 13,
   "blocks_with_provenance_gaps": [],
@@ -11,18 +11,18 @@
       "files": [
         {
           "name": "admissibility_grid.csv",
-          "bytes": 581009,
+          "bytes": 575104,
           "records": 5904,
-          "modified": "2026-08-27T08:20:09",
-          "sha256": "0aab39029279e6e852e5a1c71bd62fc059325b55fb7813dc3b0310ee3f796757"
+          "modified": "2026-08-31T23:58:30",
+          "sha256": "ab3da015ce51edaa86ad7e0c2a7e19680d10bfd0674f568b95407eb21d5074f1"
         }
       ],
-      "bytes_total": 581009,
+      "bytes_total": 575104,
       "status": "complete",
       "produced_by": "generate.py::block_admissibility",
       "command": "python generate.py --only 01_admissibility",
-      "generated": "2026-08-27T08:20:09",
-      "seconds": 55.8,
+      "generated": "2026-08-31T23:58:30",
+      "seconds": 34.4,
       "records": 5904,
       "scope": "full",
       "describes": "truncation and round-off behaviour over the full (regime, sigma_s, xi, SNR, K) grid -- Table 7"
@@ -31,25 +31,25 @@
       "files": [
         {
           "name": "z_map.csv",
-          "bytes": 91198,
+          "bytes": 89229,
           "records": 1968,
-          "modified": "2026-08-27T08:20:12",
-          "sha256": "a41c3ecb505a1474b5d1e81c7667b2afb572af1df119db847a966fb0f63d27ea"
+          "modified": "2026-08-31T23:58:32",
+          "sha256": "b94c367df6a42ea75ab82c9398fc5fef9783fb7d9c2eb2aabe25ae9b446f7932"
         },
         {
           "name": "z_map.npz",
-          "bytes": 15608,
+          "bytes": 15650,
           "records": 8,
-          "modified": "2026-08-27T08:20:12",
-          "sha256": "217aae78ee1a5015ab9ba0dc22ea27e7a5d8d92f9ab8b6a906f8914850ae4807"
+          "modified": "2026-08-31T23:58:32",
+          "sha256": "ae24e68873758baef4d0b39ac550d7fe05bf79a6cc03f285d14d844ea9323aaa"
         }
       ],
-      "bytes_total": 106806,
+      "bytes_total": 104879,
       "status": "complete",
       "produced_by": "generate.py::block_zmap",
       "command": "python generate.py --only 02_z_map",
-      "generated": "2026-08-27T08:20:12",
-      "seconds": 2.8,
+      "generated": "2026-08-31T23:58:32",
+      "seconds": 1.8,
       "records": 1968,
       "scope": "full",
       "describes": "conditioning parameter z, A_0, ladder order and admissible flag on the same grid"
@@ -58,32 +58,32 @@
       "files": [
         {
           "name": "lookup_tensor_moderate.npz",
-          "bytes": 16224,
+          "bytes": 16214,
           "records": 9,
-          "modified": "2026-08-27T08:20:16",
-          "sha256": "96b851549fa3f6342130131120f7d0d797c45e88f353bd0d7cc339d4b33306ca"
+          "modified": "2026-08-31T23:58:34",
+          "sha256": "b0ec8766afad44bfd19f85a02c53fa2577b71dab315f9ce9417e52d1efcb9241"
         },
         {
           "name": "lookup_tensor_strong.npz",
-          "bytes": 16222,
+          "bytes": 16210,
           "records": 9,
-          "modified": "2026-08-27T08:20:18",
-          "sha256": "946f7dd395d9fea2575686104549f41d749f255994784196ca307c61b9797180"
+          "modified": "2026-08-31T23:58:35",
+          "sha256": "07960bd81a750b86dcbfa227f19f3c4a60596d463ad678c8cf2220ebb733f2a6"
         },
         {
           "name": "lookup_tensor_weak.npz",
-          "bytes": 16235,
+          "bytes": 16223,
           "records": 9,
-          "modified": "2026-08-27T08:20:14",
-          "sha256": "9c9ac7ceb278e169f7ba140ee79a752ada0337991f348c667ece2ad5befa5e6b"
+          "modified": "2026-08-31T23:58:33",
+          "sha256": "15303ed5629a50075bb2d55a2ae6514fe159375e821b108233eac27a219c5b68"
         }
       ],
-      "bytes_total": 48681,
+      "bytes_total": 48647,
       "status": "complete",
       "produced_by": "generate.py::block_tensors",
       "command": "python generate.py --only 03_coefficient_tensors",
-      "generated": "2026-08-27T08:20:18",
-      "seconds": 5.5,
+      "generated": "2026-08-31T23:58:35",
+      "seconds": 3.4,
       "records": 5166,
       "scope": "full",
       "describes": "a_k(alpha,beta), a_k(beta,alpha), D and A_0 on the pole-free node grid up to K_max = 20"
@@ -92,19 +92,19 @@
       "files": [
         {
           "name": "offgrid_error.csv",
-          "bytes": 5522568,
-          "records": 34864,
-          "modified": "2026-08-27T06:20:00",
-          "sha256": "c7c9c9e68182593bfb69c76dc9059ff55c2954518e4d3b2ea6e7b5e73d700ba8"
+          "bytes": 40255042,
+          "records": 255754,
+          "modified": "2026-09-01T03:57:00",
+          "sha256": "6ee639ded5a0bdbe1e9a10f9f1f8e1729b122b5e7b67ce2a32fd0be9e6587289"
         }
       ],
-      "bytes_total": 5522568,
+      "bytes_total": 40255042,
       "status": "partial",
       "produced_by": "generate.py::block_offgrid",
       "command": "python generate.py --only 04_offgrid_error",
-      "generated": "2026-08-27T06:20:00",
-      "seconds": 2292.5,
-      "records": 34864,
+      "generated": "2026-09-01T03:57:00",
+      "seconds": 11149.9,
+      "records": 255754,
       "scope": "full",
       "describes": "deployed float64 kernel (rtodt_fast.pe_series_f64) vs 200-digit mpmath reference at random off-grid xi. OPEN-ENDED: it samples until the run's deadline, so on a full run its status is always 'partial' and the record count is whatever the clock allowed -- that is the designed behaviour, not a failed run"
     },
@@ -112,25 +112,32 @@
       "files": [
         {
           "name": "eq22_vs_reference.csv",
-          "bytes": 16271,
+          "bytes": 16140,
           "records": 132,
-          "modified": "2026-08-27T08:13:13",
-          "sha256": "9aebecb42e226a4f8390c1ce5bb9759eb24ad0763a3de6034d96996a3d2e2b2c"
+          "modified": "2026-09-01T00:10:02",
+          "sha256": "7d15baa6af8d22b59103618a95b9aa47b09921543ba15ca0ee6fb6c06d1fc85c"
+        },
+        {
+          "name": "eq22_vs_reference_sigma0p2_0p3.csv",
+          "bytes": 7324,
+          "records": 54,
+          "modified": "2026-09-01T01:15:10",
+          "sha256": "f6b7e233869f3488b16f804fbf299575b075e8e754bf57de9177ee2ad34c0733"
         },
         {
           "name": "summary.json",
-          "bytes": 4359,
+          "bytes": 4249,
           "records": null,
-          "modified": "2026-08-27T06:26:20",
-          "sha256": "c207ed87e56a7b1421f764d24520b27eac6e70b61ae60ca5a6658e95bdd8fa54"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "75c4af92d63edd78444c60dc4391df1aaa52abbb20f7d1f076788fe7081b0fb7"
         }
       ],
-      "bytes_total": 20630,
+      "bytes_total": 27713,
       "status": "complete",
       "produced_by": "generate.py::block_eq22",
       "command": "python generate.py --only 05_eq22_validation",
-      "generated": "2026-08-27T08:13:13",
-      "seconds": 870.8,
+      "generated": "2026-09-01T00:10:02",
+      "seconds": 686.7,
       "records": 132,
       "scope": "full",
       "describes": "eq. (22) convolved series vs two independent MN-fold convolution references, with the admissibility band recorded per row"
@@ -139,18 +146,18 @@
       "files": [
         {
           "name": "system_aber_curves.csv",
-          "bytes": 222755,
+          "bytes": 221012,
           "records": 1734,
-          "modified": "2026-08-27T05:41:47",
-          "sha256": "a153e9ad852146397e41c7621186de889497b79e29762e15b6b1311090f6d928"
+          "modified": "2026-09-01T00:51:10",
+          "sha256": "af498b6cdd493400981cc1ca788bc3f1cb8a6670e31c6531ab0fdbdccbdc4d30"
         }
       ],
-      "bytes_total": 222755,
+      "bytes_total": 221012,
       "status": "complete",
       "produced_by": "generate.py::block_system_aber",
       "command": "python generate.py --only 06_system_aber",
-      "generated": "2026-08-27T05:41:47",
-      "seconds": 4576.6,
+      "generated": "2026-09-01T00:51:10",
+      "seconds": 2468.3,
       "records": 1734,
       "scope": "full",
       "describes": "post-EGC system ABER curves on the corrected system_metric cell-mass machinery, two independent branch-density constructions per point"
@@ -159,24 +166,24 @@
       "files": [
         {
           "name": "reference_campaign.csv",
-          "bytes": 16256,
+          "bytes": 16225,
           "records": 30,
-          "modified": "2026-08-27T08:30:27",
-          "sha256": "c86ee18c4744fe1c69e052e61cc178cf5c49c36cbf2a79e33435a1fcef2a4cc3"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "e2d5fb6bf1fdfdb3fdaf29a511cbe8a979d0fe97e6f7f2fd625b249f68587316"
         },
         {
           "name": "reference_campaign.json",
-          "bytes": 77101,
+          "bytes": 74830,
           "records": 30,
-          "modified": "2026-08-27T08:30:27",
-          "sha256": "5ebb76c42ef874a196debdd4c33f6f21575a52eb3ca20a0e2cd4849d598a28a8"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "54b8f0cec20cc2b4888e92e31127f44b1e4dd7cb788b21a3bd0f7d4ca21ea2b7"
         }
       ],
-      "bytes_total": 93357,
+      "bytes_total": 91055,
       "status": "complete",
       "produced_by": "code/run_campaign.py",
       "command": "python code/run_campaign.py --realizations 300 --objective faithful --out ../data/07_reference_campaign",
-      "generated": "2026-08-27T08:30:27",
+      "generated": "2026-08-31T23:55:20",
       "seconds": 825.1,
       "records": 30,
       "scope": "full",
@@ -198,17 +205,17 @@
       "files": [
         {
           "name": "landscape_probe.json",
-          "bytes": 15904,
+          "bytes": 15388,
           "records": 5,
-          "modified": "2026-08-26T23:19:54",
-          "sha256": "84122b86cce835b5b3572031d6dc0cc710836887250f2e02b952fcdfaafed9a9"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "0c6b93395d0eda1d8f97add7a5adf77d088138dc8e1c7ab17a6568b258f0e282"
         }
       ],
-      "bytes_total": 15904,
+      "bytes_total": 15388,
       "status": "complete",
       "produced_by": "code/landscape_probe.py",
       "command": "python code/landscape_probe.py --starts 120 --out ../data/08_landscape_probe",
-      "generated": "2026-08-26T23:19:54",
+      "generated": "2026-08-31T23:55:20",
       "seconds": null,
       "records": 5,
       "scope": "full",
@@ -224,24 +231,24 @@
       "files": [
         {
           "name": "reference_campaign.csv",
-          "bytes": 4410,
+          "bytes": 4379,
           "records": 30,
-          "modified": "2026-08-26T22:16:45",
-          "sha256": "830f0a3b407b6816597fe05aaeb9f13155c850f0ce150021f346604c6ada794e"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "824406c068d3296a80ceb67700741bb09147f6bb8e011e70a1aa948e2d216eb3"
         },
         {
           "name": "reference_campaign.json",
-          "bytes": 16588,
+          "bytes": 16118,
           "records": 30,
-          "modified": "2026-08-26T22:16:45",
-          "sha256": "e5b0670069b80ea984bb410046cbb25bf4082a420060b9370ea8585684b9c84e"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "82df45072bee06ca3c866f46d5e933cd72a0f58292d44ab80cf202bcbfffa481"
         }
       ],
-      "bytes_total": 20998,
+      "bytes_total": 20497,
       "status": "complete",
       "produced_by": "code/run_campaign.py",
       "command": "python code/run_campaign.py --realizations 60 --objective faithful --out ../data/09_ablation_faithful",
-      "generated": "2026-08-26T22:16:45",
+      "generated": "2026-08-31T23:55:20",
       "seconds": 95.4,
       "records": 30,
       "scope": "full",
@@ -263,24 +270,24 @@
       "files": [
         {
           "name": "reference_campaign.csv",
-          "bytes": 4349,
+          "bytes": 4318,
           "records": 30,
-          "modified": "2026-08-26T22:15:00",
-          "sha256": "a5b759cb3e63cfe5fe5562dace381e42ee467d67ed3e21b20a028f260c063896"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "b3307adae0e1097c375bda5cbec61d8ffe1ce91782b65026f5161582e4f36831"
         },
         {
           "name": "reference_campaign.json",
-          "bytes": 16529,
+          "bytes": 16059,
           "records": 30,
-          "modified": "2026-08-26T22:15:00",
-          "sha256": "4a182bba00925c3671834441a8769126f6ae75a7ddd9ea324c070a4e7d2680f4"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "f7d4c1db3a6abcfbd8ead321a9411baf6623d9d783bf88feccfed2e4bc783510"
         }
       ],
-      "bytes_total": 20878,
+      "bytes_total": 20377,
       "status": "complete",
       "produced_by": "code/run_campaign.py",
       "command": "python code/run_campaign.py --realizations 60 --objective legacy --out ../data/09_ablation_legacy",
-      "generated": "2026-08-26T22:15:00",
+      "generated": "2026-08-31T23:55:20",
       "seconds": 23.1,
       "records": 30,
       "scope": "full",
@@ -304,83 +311,62 @@
           "name": "cycle_latency.json",
           "bytes": 83289,
           "records": null,
-          "modified": "2026-08-27T06:07:26",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "41d4e106b51c17f7ea819120793c06416cf3987af427aa451878ee9692f6fc3e"
         },
         {
           "name": "cycle_latency.npz",
           "bytes": 2111824,
           "records": 79,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "5a47227dc79937a3fa6ef572115e59d01cda48a8ed18e7bec286ad9ed4ba2e3a"
         },
         {
-          "name": "cycle_latency_tables.tex",
-          "bytes": 3804,
-          "records": null,
-          "modified": "2026-08-29T10:02:08",
-          "sha256": "807acf91cf272f6e9e51383f62e60e9d67e4c92c096f1bf12d11205e2a8c0ed5"
-        },
-        {
           "name": "kernel_timing.json",
-          "bytes": 122601,
+          "bytes": 119024,
           "records": null,
-          "modified": "2026-08-27T06:30:12",
-          "sha256": "f061379c54438db164cdb1656c0364b9f2644a4465312d94b97055344a35b5ec"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "69517ecc2ebeb2b2686bd65035d160581a405aa9463a22729072149142b8de95"
         },
         {
           "name": "kernel_timing_raw.npz",
           "bytes": 581741,
           "records": 85,
-          "modified": "2026-08-29T10:00:49",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "95d13d26fc6d6a6e67888ae437b99a66b95e528192fae5c06d19633b6db4b44c"
         },
         {
-          "name": "kernel_timing_table.tex",
-          "bytes": 2963,
-          "records": null,
-          "modified": "2026-08-29T10:02:08",
-          "sha256": "be959cb3d1e9772bfaa822481311d52386d81baa9a6084a539d4374176c9b59c"
-        },
-        {
           "name": "platform.json",
-          "bytes": 31030,
+          "bytes": 29937,
           "records": null,
-          "modified": "2026-08-27T05:18:15",
-          "sha256": "5bb3bd4b6a7c72610fb8b1e29ed6d6ef2b07b1781de2e38ce06553e37fcdafde"
-        },
-        {
-          "name": "platform_stanza.tex",
-          "bytes": 6573,
-          "records": null,
-          "modified": "2026-08-29T10:02:08",
-          "sha256": "7890b2a9ddd7b84f34319f52644f1d0be2011b7120b6a0d4d4ebd8c50e636d36"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "3d2e4740ec5e75c65f6c6b074703fe657c24dda9c9a12040824ffe0fa13ff8d2"
         },
         {
           "name": "portable_Jetson-TX2-pinned.json",
-          "bytes": 14904,
+          "bytes": 14349,
           "records": null,
-          "modified": "2026-08-29T10:02:08",
-          "sha256": "c536be755f183d0ca87811f50b7e8ba2ff724d511dc88856219dcd805d054976"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "d7045026505006f4a0b0b7fca2a3b2758693bdb97399fc6adc8407fdf3f64639"
         },
         {
           "name": "portable_Jetson-TX2.json",
-          "bytes": 15118,
+          "bytes": 14573,
           "records": null,
-          "modified": "2026-08-29T10:02:08",
-          "sha256": "decfc61eb1472a2c459c3b19ff3e29d524c21e6dbaea25993ee67ca89cb57888"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "9dfdf6331c7f70bdf165ed981df0945b581c91f1d41483052087b9c953b11242"
         },
         {
           "name": "portable_PC-i5-14600KF.json",
-          "bytes": 14130,
+          "bytes": 13575,
           "records": null,
-          "modified": "2026-08-29T10:02:08",
-          "sha256": "432dffa26f65e06873187f5534a4f22f79c2a63f69af794b6a79a66dabdb80f6"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "c1cca39c1bbdcfcd65b1a6600bb5502637de4405d29ed87a9cce63a1679730fa"
         }
       ],
-      "bytes_total": 2987977,
+      "bytes_total": 2968312,
       "status": "unknown",
-      "generated": "2026-08-29T10:02:08",
+      "generated": "2026-08-31T23:55:20",
       "records": 85,
       "scope": "unknown",
       "describes": null,
@@ -396,20 +382,15 @@
           "kernel_timing.json"
         ],
         "code/bench_cycle.py": [
-          "cycle_latency.npz",
-          "cycle_latency_tables.tex"
+          "cycle_latency.npz"
         ],
         "code/bench_kernel.py": [
-          "kernel_timing_raw.npz",
-          "kernel_timing_table.tex"
+          "kernel_timing_raw.npz"
         ],
         "code/bench_portable.py": [
           "portable_Jetson-TX2-pinned.json",
           "portable_Jetson-TX2.json",
           "portable_PC-i5-14600KF.json"
-        ],
-        "code/platform_spec.py": [
-          "platform_stanza.tex"
         ],
         "platform_spec.py": [
           "platform.json"
@@ -425,85 +406,85 @@
       "files": [
         {
           "name": "ablation_measured_tau20000.json",
-          "bytes": 1674,
+          "bytes": 1598,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "20235d37ab50334f2d0776a6b3ae89841280c48ed0c47f007abfa8e86e1c578f"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "f7da9cd55ad27f40b68aadaedb9711e2a5d0e0f53c16fd0a5dc726d89e51ffe0"
         },
         {
           "name": "ablation_measured_tau600.json",
-          "bytes": 1667,
+          "bytes": 1591,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "756817e43e62439bf1566e0103cf9aa9eb08df20db60a7c35cef7805c9432e67"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "b63026a1cc9bb382d04e1a81a4b732b5d7644b7485650853835a7742e922c0a0"
         },
         {
           "name": "ablation_success_measured.npz",
           "bytes": 1791,
           "records": 8,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "933dd4ee5ce55bf0c93c790a9c0d343c304f596773c1ba6ac2dace2813efdbdf"
         },
         {
           "name": "baseline_indicators.npz",
           "bytes": 2054,
           "records": 8,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "343c55826215e241c0c48ec606b132d0cea3d85a4a507e7405e7952f06615569"
         },
         {
           "name": "baselines_measured.json",
-          "bytes": 2068,
+          "bytes": 1960,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "eed12d35b16bc5130225723526c57308931002508d61a2dee602bfe7c279751a"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "7dba82810294515f52591db9e555c4f2d59ae29db969819c4dbf0d720702f67f"
         },
         {
           "name": "baselines_measured_tau20000.json",
-          "bytes": 2098,
+          "bytes": 1989,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "727ceab38ee8a7895b4e2b60e5881cae48f070aaca13a87486cb038c863bf671"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "fe7258b9b8b8d76fc7d7647ece38e1167856972e3f9ede4820c16189404361c6"
         },
         {
           "name": "baselines_measured_tau600.json",
-          "bytes": 2117,
+          "bytes": 2008,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "7b9cbfe0ec311b299d226704c3d09ad905929ccdcb0eef1caf16008af67ee357"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "68d824fd59d3547895fe5f01a4d06f6a3ededd1df14ddb689dce0bf86de5e896"
         },
         {
           "name": "cycle_latency_measured.json",
-          "bytes": 2206,
+          "bytes": 2108,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "1ed55b5c74a2efb0f39c754bc3ce2aed3991cd5d99236a20cf3bac18f749c262"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "4ceea65601f3e31ff3d27ce39461043bf5d81409a4ba7c26b26b2ee2c630d2f3"
         },
         {
           "name": "cycle_latency_measured.npz",
           "bytes": 31661,
           "records": 9,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "cc29d7c3822a82332a801d0b67335d393c1b423e8ea63d6ff736c5a8d43ac1cd"
         },
         {
           "name": "tail_mitigation_measured.json",
-          "bytes": 1124,
+          "bytes": 1088,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "0d151e3c49faad365a22cdf068aa99f754db1cd123c9a15491f5a88adfd3460f"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "925c67a48b17bf2391b6ac780ae83ff97cc63e614de5dba4aee6c76494472e74"
         },
         {
           "name": "tail_mitigation_measured.npz",
           "bytes": 43198,
           "records": 5,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "ac6c32c03bb5a348a51140e114e2156b7a82b5e50e125b8675e6f7b783468929"
         }
       ],
-      "bytes_total": 91658,
+      "bytes_total": 91046,
       "status": "unknown",
-      "generated": "2026-08-29T10:00:48",
+      "generated": "2026-08-31T23:55:20",
       "records": 9,
       "scope": "unknown",
       "describes": null,
@@ -533,106 +514,106 @@
       "files": [
         {
           "name": "ablation_continuous.json",
-          "bytes": 2516,
+          "bytes": 2423,
           "records": null,
-          "modified": "2026-08-29T09:59:10",
-          "sha256": "72230643da96b638de02535010d065a54ee24e52ea7fe48a7f2ec434ab9c56ad"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "6a01f76a781c214d009dbd6f2570f6c82617377d69d0eaa11e76e6bfd92d1af6"
         },
         {
           "name": "ablation_continuous.npz",
           "bytes": 3467,
           "records": 8,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "74d36f6b4c46feed72198ce92576415a3a06dd65bdc5086c37245f990a1bf233"
         },
         {
           "name": "ablation_continuous_tau20000.json",
-          "bytes": 2849,
+          "bytes": 2750,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "a47d18b16b0851a3a7d6e40f4fea5c2148996d2f336cbf6e88a6c135bde42a1a"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "76170c74a590e60ef6d8a3621a9b7b17e8b782947fe7735f9f4e4c0847f8bac8"
         },
         {
           "name": "ablation_continuous_tau20000.npz",
           "bytes": 79741,
           "records": 8,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "9a11c61552d2270c42bc5b58702587148eb8452b2b428d170f19f1974ae8ec44"
         },
         {
           "name": "ablation_continuous_tau20000_rank20.json",
-          "bytes": 2895,
+          "bytes": 2795,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "d84ddd82c55b7f40a77fd28b94b05ac82b2954d4fe065de029854936e3b4aa20"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "c76d0c258cd0b657d0512d7f1ba69903c7631861df78c068e68a1ae5ce5245fb"
         },
         {
           "name": "ablation_continuous_tau20000_rank20.npz",
           "bytes": 79842,
           "records": 8,
-          "modified": "2026-08-29T10:00:48",
+          "modified": "2026-08-31T23:55:20",
           "sha256": "5e22c4a97f55b834285efec0f9279c1e2285ba2fdbf2fd9223f9829eca153ce3"
         },
         {
           "name": "levy_envelope.json",
-          "bytes": 3046,
+          "bytes": 2883,
           "records": null,
-          "modified": "2026-08-29T10:09:56",
-          "sha256": "1bb182ea9ec552354dea2169c2767b8cd52dfd026ba428e5ac6b1cb912d1d9cc"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "b0cf176dc45215637cfec815a1de956aa8bb8f426d0823d7a7ce628399e64d62"
         },
         {
           "name": "levy_mechanism_probe_iters200.json",
-          "bytes": 1233,
+          "bytes": 1195,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "4740983b41c02cf648ed20cad346763bbf5d18d71da1c93aeafd6e557ac8e419"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "b1f28a7eabffd621f0b1422bcfa5bd5864402748bec07bfd0d0c5dc64f967c87"
         },
         {
           "name": "levy_mechanism_probe_iters25.json",
-          "bytes": 1201,
+          "bytes": 1163,
           "records": null,
-          "modified": "2026-08-29T10:00:07",
-          "sha256": "b8377f14ed42abfedc250d1fbc1ae4c821b5c10e594396c404206f8f26147ae6"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "7e544353965d8ef693b15c1def7ff0c43faac909b6853c9e6f280cab3d5df851"
         },
         {
           "name": "levy_truncation_s0p002.json",
-          "bytes": 908,
+          "bytes": 881,
           "records": null,
-          "modified": "2026-08-29T10:06:53",
-          "sha256": "378a6cb5600c0fb8ff66f96ffdf9a49e688291e086fb3485079708ca545382ef"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "2de5cb674cceb8684d29e5a05d6811e760eb4b1c2d43fdcf8375c94f5b874997"
         },
         {
           "name": "levy_truncation_s0p005.json",
-          "bytes": 904,
+          "bytes": 877,
           "records": null,
-          "modified": "2026-08-29T10:06:56",
-          "sha256": "c7fb0511750ef14dae7f4b969ce7023d59b4c5d66ce7e21bdd89d3837f6304a1"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "b0276ec179a05c7f4d1336cc802c2fe665fc3e1137d70caad51930fd0b9c1380"
         },
         {
           "name": "levy_truncation_s0p02.json",
-          "bytes": 900,
+          "bytes": 873,
           "records": null,
-          "modified": "2026-08-29T10:06:58",
-          "sha256": "1fc830ba8ab40c2212ec46c551bd9757e28b489d6d74d79012a9530452a7d257"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "8e454bd81a9711ee1055e4ed871b32fdd9eb9e87c0b9e54541ad12174e2a46f4"
         },
         {
           "name": "levy_truncation_s0p08.json",
-          "bytes": 900,
+          "bytes": 873,
           "records": null,
-          "modified": "2026-08-29T10:07:00",
-          "sha256": "c14c0b21bb2b208868cd26b7331aa50d12e1b83f82f7aa0bc8251dd8a5f7d1e3"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "863e0c90103b2580b9b22ada1e475d8be4d3ab1681a6a677c8d9cf6852ad6a63"
         },
         {
           "name": "levy_truncation_s0p3.json",
-          "bytes": 892,
+          "bytes": 865,
           "records": null,
-          "modified": "2026-08-29T10:07:03",
-          "sha256": "fcc5fb59968f83bcc964375ac7d1c60b0879c8cf54c22ac97266f421cc875215"
+          "modified": "2026-08-31T23:55:20",
+          "sha256": "d47a23b3067ce112b196521a9fbcad485bfb1eef38ce7e7e3273aaae9526a7a3"
         }
       ],
-      "bytes_total": 181294,
+      "bytes_total": 180628,
       "status": "unknown",
-      "generated": "2026-08-29T10:09:56",
+      "generated": "2026-08-31T23:55:20",
       "records": 8,
       "scope": "unknown",
       "describes": null,
