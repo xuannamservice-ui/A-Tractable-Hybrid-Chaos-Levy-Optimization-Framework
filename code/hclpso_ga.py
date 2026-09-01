@@ -91,6 +91,14 @@ class SolverConfig:
     # unchanged, so the slew tube is preserved by construction and only the
     # box can clip -- the tail survives (see code/levy_feasible_jump.py).
     jump_mode: str = "per_dim"       # "per_dim" | "feas_shift"
+    # Warm start.  The deployed controller re-uses the previous cycle's
+    # solution as the swarm anchor (the docstring notes the alternative,
+    # per-stage seeding, violates eq. (14) almost surely).  In the solver the
+    # same physics applies to any receding-horizon problem: if set, the swarm
+    # is initialised as a cloud around `init_centre` with spread
+    # `init_spread` (box fraction) instead of uniformly over the box.
+    init_centre: Optional[np.ndarray] = None
+    init_spread: float = 0.02
     use_chaos: bool = True
     use_levy: bool = True
     use_ga: bool = True
@@ -160,6 +168,13 @@ class HCLPSOGA:
         draw = (logistic_chaos(n * d, self.rng.uniform(0.1, 0.9)).reshape(n, d)
                 if self.cfg.use_chaos else self.rng.random((n, d)))
         span = self.hi - self.lo
+
+        if self.cfg.init_centre is not None:
+            # warm start: cloud around the anchor, spread as a box fraction
+            c = np.asarray(self.cfg.init_centre, dtype=float)
+            x = (c[None, :]
+                 + (draw - 0.5) * 2.0 * self.cfg.init_spread * span)
+            return self._feasible(x)
 
         if d == 1 or self.cfg.smooth_span is None:
             return self._feasible(self.lo + draw * span)

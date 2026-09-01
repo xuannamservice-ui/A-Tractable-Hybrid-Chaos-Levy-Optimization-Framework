@@ -1,0 +1,29 @@
+{
+ "generated_by": "code/levy_benchmark.py",
+ "command": "python code/levy_benchmark.py --trials 80 --iters 60 --jump-scale 0.05",
+ "structure": "60-D trajectory, 3 blocks, box+slew tube, forward-sweep repair, infeasible wall like the z>8 guard",
+ "wall": [
+  0.8,
+  1.6
+ ],
+ "wells": {
+  "near": 0.3,
+  "far": 2.2,
+  "depth": 2.0
+ },
+ "trials": 80,
+ "iters": 60,
+ "jump_scale": 0.05,
+ "median_f": {
+  "per_dim_gauss": 0.0010250273871788397,
+  "per_dim_levy": -1.998865193254392,
+  "feas_shift_gauss": 0.0011807639681501376,
+  "feas_shift_levy": -1.9982445105244406
+ },
+ "escape_rate": {
+  "per_dim_gauss": 0.0,
+  "per_dim_levy": 0.8125,
+  "feas_shift_gauss": 0.0,
+  "feas_shift_levy": 0.8375
+ }
+}
