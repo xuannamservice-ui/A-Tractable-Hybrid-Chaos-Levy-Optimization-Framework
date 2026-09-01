@@ -856,16 +856,26 @@ def main():
         "per_cpu": core_arm,
         "P_core_min_us": {"values": p_mins, "min": min(p_mins), "max": max(p_mins),
                           "spread_pct": 100.0 * (max(p_mins) - min(p_mins)) / min(p_mins)},
-        "E_core_min_us": {"values": e_mins, "min": min(e_mins), "max": max(e_mins)},
-        "E_over_P_ratio_on_group_minima": min(e_mins) / min(p_mins),
-        "estimator_note": ("the ratio is quoted on the per-core MINIMA because "
-                           "interference can only ever inflate a measured cost, never "
-                           "deflate it, so the minimum is the only estimator on this "
-                           "machine that is not a function of ambient load"),
     }
-    print("    P-core minima %.2f-%.2f us | E-core minima %.2f-%.2f us | E/P = %.3f"
-          % (min(p_mins), max(p_mins), min(e_mins), max(e_mins),
-             rec["core_class_arm"]["E_over_P_ratio_on_group_minima"]))
+    if e_mins:
+        rec["core_class_arm"]["E_core_min_us"] = {"values": e_mins, "min": min(e_mins),
+                                                  "max": max(e_mins)}
+        rec["core_class_arm"]["E_over_P_ratio_on_group_minima"] = min(e_mins) / min(p_mins)
+        print("    P-core minima %.2f-%.2f us | E-core minima %.2f-%.2f us | E/P = %.3f"
+              % (min(p_mins), max(p_mins), min(e_mins), max(e_mins),
+                 rec["core_class_arm"]["E_over_P_ratio_on_group_minima"]))
+    else:
+        rec["core_class_arm"]["E_core_min_us"] = None
+        rec["core_class_arm"]["E_over_P_ratio_on_group_minima"] = None
+        rec["core_class_arm"]["no_E_cores_note"] = (
+            "This host exposes no logical processors above 11 (the E-core half of the "
+            "i5-14600KF topology): it reports %d uniform vCPUs, so no E-cores exist to "
+            "measure.  The E/P ratio and the 'unpinned distribution is a mixture of two "
+            "processors' argument are therefore NOT APPLICABLE on this host; the P-core "
+            "column above is the per-vCPU cost on a homogeneous set." % os.cpu_count())
+        print("    P-core minima %.2f-%.2f us | NO E-cores on this host "
+              "(uniform vCPUs) - E/P ratio not applicable"
+              % (min(p_mins), max(p_mins)))
 
     # ---------------------------------------------------------------- 3. SMT ARM
     if not args.skip_smt_arm and IS_WINDOWS and psutil is not None:
