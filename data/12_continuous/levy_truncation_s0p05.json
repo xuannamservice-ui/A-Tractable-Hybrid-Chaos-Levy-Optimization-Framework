@@ -1,0 +1,28 @@
+{
+ "generated_by": "code/levy_truncation.py",
+ "command": "python code/levy_truncation.py --jump-scale 0.05",
+ "jump_scale": 0.05,
+ "levy_lambda": 1.5,
+ "n_proposals_per_arm": 7200,
+ "arms": {
+  "levy": {
+   "proposed_p50": 0.5026564603745087,
+   "proposed_p99": 6.1887745970562795,
+   "realised_p50": 0.18552281754796274,
+   "realised_p99": 1.8783925343897598,
+   "survival_median": 0.4429475574171461,
+   "tail_survival_median": 0.10879125269478641
+  },
+  "gauss": {
+   "proposed_p50": 0.26557219039000235,
+   "proposed_p99": 0.748569326216943,
+   "realised_p50": 0.17432819020818535,
+   "realised_p99": 0.5341926565596958,
+   "survival_median": 0.7182773409810699,
+   "tail_survival_median": 0.49569796603910155
+  }
+ },
+ "proposed_tail_ratio": 8.267470199897971,
+ "realised_tail_ratio": 3.5163203973768034,
+ "tail_advantage_removed_pct": 65.3755663502806
+}

@@ -12,9 +12,9 @@
       "rows": 132,
       "rows_scored": 130,
       "rows_unscoreable": 2,
-      "median_abs_rel_diff_percent": 86.09805,
-      "p90_abs_rel_diff_percent": 1.131888101445311e+35,
-      "max_abs_rel_diff_percent": 2.8268563138184396e+165,
+      "median_abs_rel_diff_percent": 86.04345,
+      "p90_abs_rel_diff_percent": 1.131888101445312e+35,
+      "max_abs_rel_diff_percent": 2.8268563138184392e+165,
       "min_abs_rel_diff_percent": 0.0
     },
     {
@@ -23,8 +23,8 @@
       "rows_scored": 88,
       "rows_unscoreable": 0,
       "median_abs_rel_diff_percent": 61757.6843,
-      "p90_abs_rel_diff_percent": 8.545501187089284e+50,
-      "max_abs_rel_diff_percent": 2.8268563138184396e+165,
+      "p90_abs_rel_diff_percent": 8.545501187089286e+50,
+      "max_abs_rel_diff_percent": 2.8268563138184392e+165,
       "min_abs_rel_diff_percent": 0.0559
     },
     {
@@ -34,7 +34,7 @@
       "rows_unscoreable": 2,
       "median_abs_rel_diff_percent": 0.0048000000000000004,
       "p90_abs_rel_diff_percent": 0.053,
-      "max_abs_rel_diff_percent": 99.9976,
+      "max_abs_rel_diff_percent": 99.9706,
       "min_abs_rel_diff_percent": 0.0
     },
     {
@@ -44,17 +44,17 @@
       "rows_unscoreable": 0,
       "median_abs_rel_diff_percent": 0.0043,
       "p90_abs_rel_diff_percent": 0.0304,
-      "max_abs_rel_diff_percent": 0.0825,
+      "max_abs_rel_diff_percent": 0.16,
       "min_abs_rel_diff_percent": 0.0
     },
     {
       "label": "out-of-band but reference resolved",
-      "rows": 87,
-      "rows_scored": 87,
+      "rows": 86,
+      "rows_scored": 86,
       "rows_unscoreable": 0,
-      "median_abs_rel_diff_percent": 111659.3423,
-      "p90_abs_rel_diff_percent": 8.545501187089284e+50,
-      "max_abs_rel_diff_percent": 2.8268563138184396e+165,
+      "median_abs_rel_diff_percent": 116411.72485,
+      "p90_abs_rel_diff_percent": 8.545501187089286e+50,
+      "max_abs_rel_diff_percent": 2.8268563138184392e+165,
       "min_abs_rel_diff_percent": 0.0559
     }
   ],
@@ -97,7 +97,7 @@
       "z_max": 8.7407,
       "in_band": 15,
       "comparison_valid": 14,
-      "median_abs_rel_diff_percent_on_valid": 0.0049
+      "median_abs_rel_diff_percent_on_valid": 0.0045000000000000005
     },
     "40": {
       "rows": 22,
@@ -105,7 +105,7 @@
       "z_max": 5.515,
       "in_band": 22,
       "comparison_valid": 18,
-      "median_abs_rel_diff_percent_on_valid": 0.0033
+      "median_abs_rel_diff_percent_on_valid": 0.0034999999999999996
     }
   }
 }

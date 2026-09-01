@@ -1,39 +1,38 @@
 {
  "generated_by": "code/levy_mechanism_probe.py",
- "block_describes": "the Levy investigation: the ablation re-scored on achieved post-EGC ABER instead of a binary threshold, the operator probed under its own stagnation trigger, the step-scale envelope swept, and the slew-projection truncation measured -- Section VII-D6",
+ "command": "python code/levy_mechanism_probe.py",
  "iters": 200,
- "n_trials": 600,
+ "n_trials": 300,
  "comparisons": {
   "stagnation-gated": {
-   "n_paired": 600,
-   "median_log10_levy_minus_gaussian": 0.0,
-   "levy_better": 290,
-   "levy_worse": 298,
-   "tie": 12,
+   "n_paired": 300,
+   "median_log10_levy_minus_gaussian": 9.354504906688987e-05,
+   "levy_better": 138,
+   "levy_worse": 158,
+   "tie": 4,
    "wilcoxon": {
-    "n": 588,
-    "W": 85095.0,
-    "p": 0.7180579302934817,
+    "n": 296,
+    "W": 20856.0,
+    "p": 0.4464870901613135,
     "method": "scipy normal approx"
    },
-   "mean_jumps_per_solve": 1453.6516666666666,
-   "mean_gate_open_iters": 193.80333333333334
+   "mean_jumps_per_solve": 1453.1166666666666,
+   "mean_gate_open_iters": 193.67333333333335
   },
   "ungated (as deployed)": {
-   "n_paired": 600,
-   "median_log10_levy_minus_gaussian": -6.484021061403666e-06,
-   "levy_better": 302,
-   "levy_worse": 292,
-   "tie": 6,
+   "n_paired": 300,
+   "median_log10_levy_minus_gaussian": -3.924317819148371e-06,
+   "levy_better": 150,
+   "levy_worse": 148,
+   "tie": 2,
    "wilcoxon": {
-    "n": 594,
-    "W": 88340.0,
-    "p": 0.9966631258132295,
+    "n": 298,
+    "W": 21560.0,
+    "p": 0.630800342896071,
     "method": "scipy normal approx"
    },
-   "mean_jumps_per_solve": 1500.5433333333333,
+   "mean_jumps_per_solve": 1502.9266666666667,
    "mean_gate_open_iters": 200.0
   }
- },
- "command": "python code/levy_mechanism_probe.py --trials 600 --iters 200"
+ }
 }

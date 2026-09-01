@@ -1,92 +1,43 @@
 {
-  "generated_by": "code/build_manifest.py",
-  "built": "2026-09-01T03:57:00",
-  "package_root": "A-Tractable-Hybrid-Chaos-Levy-Optimization-Framework",
-  "block_count": 13,
-  "blocks_with_provenance": 13,
-  "blocks_with_provenance_gaps": [],
-  "provenance_note": "Every directory under data/ has an entry. `seconds` is wall-clock for the run that produced the files: for generate.py blocks it is measured by the driver and recorded in logs/provenance_<block>.json as the block finishes; for the campaign blocks it is the producing script's own embedded figure; for a block that is neither, it is whatever that block's own artefacts declare, and `provenance_source` says so. `status` is complete, partial (the run hit its deadline mid-block and the file holds what was finished), or unknown (nothing observed the run, so completeness cannot be asserted). Block 04 is open-ended by design and is therefore 'partial' on every full run; see its `describes` field. A block carrying `provenance_gap` is only partly accounted for and --check fails on it.",
+  "generated_by": "generate.py",
+  "deadline": "2026-09-01 18:56",
+  "started": "2026-09-01T14:56:49",
   "blocks": {
     "01_admissibility": {
-      "files": [
-        {
-          "name": "admissibility_grid.csv",
-          "bytes": 575104,
-          "records": 5904,
-          "modified": "2026-08-31T23:58:30",
-          "sha256": "ab3da015ce51edaa86ad7e0c2a7e19680d10bfd0674f568b95407eb21d5074f1"
-        }
-      ],
-      "bytes_total": 575104,
       "status": "complete",
       "produced_by": "generate.py::block_admissibility",
-      "command": "python generate.py --only 01_admissibility",
-      "generated": "2026-08-31T23:58:30",
-      "seconds": 34.4,
       "records": 5904,
-      "scope": "full",
-      "describes": "truncation and round-off behaviour over the full (regime, sigma_s, xi, SNR, K) grid -- Table 7"
+      "seconds": 34.4,
+      "finished": "2026-09-01T14:57:24",
+      "files": [
+        "admissibility_grid.csv"
+      ],
+      "scope": "full"
     },
     "02_z_map": {
-      "files": [
-        {
-          "name": "z_map.csv",
-          "bytes": 89229,
-          "records": 1968,
-          "modified": "2026-08-31T23:58:32",
-          "sha256": "b94c367df6a42ea75ab82c9398fc5fef9783fb7d9c2eb2aabe25ae9b446f7932"
-        },
-        {
-          "name": "z_map.npz",
-          "bytes": 15650,
-          "records": 8,
-          "modified": "2026-08-31T23:58:32",
-          "sha256": "ae24e68873758baef4d0b39ac550d7fe05bf79a6cc03f285d14d844ea9323aaa"
-        }
-      ],
-      "bytes_total": 104879,
       "status": "complete",
       "produced_by": "generate.py::block_zmap",
-      "command": "python generate.py --only 02_z_map",
-      "generated": "2026-08-31T23:58:32",
-      "seconds": 1.8,
       "records": 1968,
-      "scope": "full",
-      "describes": "conditioning parameter z, A_0, ladder order and admissible flag on the same grid"
+      "seconds": 1.9,
+      "finished": "2026-09-01T14:57:25",
+      "files": [
+        "z_map.csv",
+        "z_map.npz"
+      ],
+      "scope": "full"
     },
     "03_coefficient_tensors": {
-      "files": [
-        {
-          "name": "lookup_tensor_moderate.npz",
-          "bytes": 16214,
-          "records": 9,
-          "modified": "2026-08-31T23:58:34",
-          "sha256": "b0ec8766afad44bfd19f85a02c53fa2577b71dab315f9ce9417e52d1efcb9241"
-        },
-        {
-          "name": "lookup_tensor_strong.npz",
-          "bytes": 16210,
-          "records": 9,
-          "modified": "2026-08-31T23:58:35",
-          "sha256": "07960bd81a750b86dcbfa227f19f3c4a60596d463ad678c8cf2220ebb733f2a6"
-        },
-        {
-          "name": "lookup_tensor_weak.npz",
-          "bytes": 16223,
-          "records": 9,
-          "modified": "2026-08-31T23:58:33",
-          "sha256": "15303ed5629a50075bb2d55a2ae6514fe159375e821b108233eac27a219c5b68"
-        }
-      ],
-      "bytes_total": 48647,
       "status": "complete",
       "produced_by": "generate.py::block_tensors",
-      "command": "python generate.py --only 03_coefficient_tensors",
-      "generated": "2026-08-31T23:58:35",
-      "seconds": 3.4,
       "records": 5166,
-      "scope": "full",
-      "describes": "a_k(alpha,beta), a_k(beta,alpha), D and A_0 on the pole-free node grid up to K_max = 20"
+      "seconds": 3.3,
+      "finished": "2026-09-01T14:57:29",
+      "files": [
+        "lookup_tensor_moderate.npz",
+        "lookup_tensor_strong.npz",
+        "lookup_tensor_weak.npz"
+      ],
+      "scope": "full"
     },
     "04_offgrid_error": {
       "files": [
@@ -109,58 +60,28 @@
       "describes": "deployed float64 kernel (rtodt_fast.pe_series_f64) vs 200-digit mpmath reference at random off-grid xi. OPEN-ENDED: it samples until the run's deadline, so on a full run its status is always 'partial' and the record count is whatever the clock allowed -- that is the designed behaviour, not a failed run"
     },
     "05_eq22_validation": {
-      "files": [
-        {
-          "name": "eq22_vs_reference.csv",
-          "bytes": 16140,
-          "records": 132,
-          "modified": "2026-09-01T00:10:02",
-          "sha256": "7d15baa6af8d22b59103618a95b9aa47b09921543ba15ca0ee6fb6c06d1fc85c"
-        },
-        {
-          "name": "eq22_vs_reference_sigma0p2_0p3.csv",
-          "bytes": 7324,
-          "records": 54,
-          "modified": "2026-09-01T01:15:10",
-          "sha256": "f6b7e233869f3488b16f804fbf299575b075e8e754bf57de9177ee2ad34c0733"
-        },
-        {
-          "name": "summary.json",
-          "bytes": 4249,
-          "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "75c4af92d63edd78444c60dc4391df1aaa52abbb20f7d1f076788fe7081b0fb7"
-        }
-      ],
-      "bytes_total": 27713,
       "status": "complete",
       "produced_by": "generate.py::block_eq22",
-      "command": "python generate.py --only 05_eq22_validation",
-      "generated": "2026-09-01T00:10:02",
-      "seconds": 686.7,
       "records": 132,
-      "scope": "full",
-      "describes": "eq. (22) convolved series vs two independent MN-fold convolution references, with the admissibility band recorded per row"
+      "seconds": 687.5,
+      "finished": "2026-09-01T15:08:56",
+      "files": [
+        "eq22_vs_reference.csv",
+        "eq22_vs_reference_sigma0p2_0p3.csv",
+        "summary.json"
+      ],
+      "scope": "full"
     },
     "06_system_aber": {
-      "files": [
-        {
-          "name": "system_aber_curves.csv",
-          "bytes": 221012,
-          "records": 1734,
-          "modified": "2026-09-01T00:51:10",
-          "sha256": "af498b6cdd493400981cc1ca788bc3f1cb8a6670e31c6531ab0fdbdccbdc4d30"
-        }
-      ],
-      "bytes_total": 221012,
       "status": "complete",
       "produced_by": "generate.py::block_system_aber",
-      "command": "python generate.py --only 06_system_aber",
-      "generated": "2026-09-01T00:51:10",
-      "seconds": 2468.3,
       "records": 1734,
-      "scope": "full",
-      "describes": "post-EGC system ABER curves on the corrected system_metric cell-mass machinery, two independent branch-density constructions per point"
+      "seconds": 2459.5,
+      "finished": "2026-09-01T12:53:06",
+      "files": [
+        "system_aber_curves.csv"
+      ],
+      "scope": "full"
     },
     "07_reference_campaign": {
       "files": [
@@ -648,5 +569,7 @@
       "files_without_declared_producer": [],
       "generated_utc_stamps": null
     }
-  }
+  },
+  "previous_started": "2026-09-01T12:00:02",
+  "finished": "2026-09-01T15:08:56"
 }
