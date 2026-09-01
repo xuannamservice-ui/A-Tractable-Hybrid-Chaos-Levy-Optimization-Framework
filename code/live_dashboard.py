@@ -210,9 +210,12 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8899)
+    ap.add_argument("--host", default="0.0.0.0",
+                    help="bind address; 0.0.0.0 = reachable over Tailscale/LAN, "
+                         "127.0.0.1 = localhost only")
     a = ap.parse_args()
-    srv = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
-    print("Live dashboard:  http://localhost:%d   (Ctrl-C để dừng)" % a.port, flush=True)
+    srv = ThreadingHTTPServer((a.host, a.port), Handler)
+    print("Live dashboard:  http://localhost:%d  (Ctrl-C để dừng)" % a.port, flush=True)
     srv.serve_forever()
 
 
