@@ -369,11 +369,22 @@ def run_step_equivalence():
     for reg, (A, B) in REGIMES.items():
         for sigma_s in (0.05, 0.10, 0.30):
             for rs in (None, 1):
+                # tau_o=None for BOTH controllers: the point of the check is
+                # that the fast objective returns the same numbers as the
+                # readable one, and with the default tau_o = 600 us anytime
+                # checkpoint the iteration count depends on the machine's
+                # speed -- the fast objective completes more iterations in
+                # the same wall-clock budget, which changes best_f, trace and
+                # guard tallies without any arithmetic differing.  Comparing
+                # full-budget runs (25 iterations, deterministic given the
+                # seed) is the comparison that can only disagree if the
+                # objective changed.
                 ref = BeamSteeringMPC(A, B, sigma_s, 10.0 ** 3.8,
-                                      horizon=HORIZON, seed=5, rank_stages=rs)
+                                      horizon=HORIZON, seed=5, rank_stages=rs,
+                                      tau_o=None)
                 fst = FastBeamSteeringMPC(A, B, sigma_s, 10.0 ** 3.8,
                                           horizon=HORIZON, seed=5,
-                                          rank_stages=rs)
+                                          rank_stages=rs, tau_o=None)
                 rng = np.random.default_rng(99)
                 th = np.zeros(2)
                 for _ in range(6):
