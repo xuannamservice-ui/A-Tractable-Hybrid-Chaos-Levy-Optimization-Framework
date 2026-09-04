@@ -13,9 +13,20 @@ cd "$REPO"
 LOG="$REPO/logs/push.log"
 TS="$(date '+%Y-%m-%d %H:%M:%S')"
 
-# --- 1. Từ chối nếu cycle đang chạy ---
+# --- 1. Từ chối nếu cycle đang chạy HOẶC chết giữa chừng ---
 if pgrep -f 'generate.py --deadline' >/dev/null 2>&1; then
   echo "[$TS] push skipped: cycle đang chạy (generate.py) — không đụng working tree" >> "$LOG"
+  exit 0
+fi
+# Cycle không chạy nhưng phải chắc chắn cycle GẦN NHẤT đã kết thúc ĐÚNG CÁCH
+# (có CYCLE END sau CYCLE LAUNCH cuối). Nếu generate chết giữa chừng (không có
+# END) → dữ liệu đang dở → KHÔNG push (tránh commit file partial như f5ae570).
+LAST_LAUNCH=$(grep 'CYCLE LAUNCH' "$REPO/logs/cycle.log" | tail -1)
+LAST_END=$(grep 'CYCLE END' "$REPO/logs/cycle.log" | tail -1)
+LAUNCH_TS=$(echo "$LAST_LAUNCH" | sed 's/\[\(.*\)\].*/\1/')
+END_TS=$(echo "$LAST_END" | sed 's/\[\(.*\)\].*/\1/')
+if [ -z "$LAST_END" ] || [ "$END_TS" \< "$LAUNCH_TS" ]; then
+  echo "[$TS] push skipped: cycle cuối (launch $LAUNCH_TS) CHƯA kết thúc đúng cách (không có CYCLE END) — dữ liệu dở, chờ cycle mới hoàn tất" >> "$LOG"
   exit 0
 fi
 
