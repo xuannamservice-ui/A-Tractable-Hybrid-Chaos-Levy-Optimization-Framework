@@ -93,6 +93,20 @@ def snapshot():
     except OSError:
         pass
 
+    # test report (run_all_tests.sh)
+    tests = []
+    try:
+        with open(os.path.join(LOGS, "test_report.log"), "rb") as f:
+            f.seek(0, os.SEEK_END)
+            size = f.tell()
+            f.seek(max(0, size - 4096))
+            lines = f.read().decode("utf-8", "replace").splitlines()
+        for ln in lines:
+            if ln.startswith("[PASS]") or ln.startswith("[FAIL]") or ln.startswith("[SKIP]") or "===" in ln:
+                tests.append(ln.strip())
+    except OSError:
+        pass
+
     # cycle process?
     proc = ""
     try:
@@ -123,6 +137,7 @@ def snapshot():
         "cycle": {"running": bool(proc), "pid": proc, "locked": locked,
                   "log": _last_lines(os.path.join(LOGS, "cycle.log"), 8)},
         "extra_batch": {"log": extra[-10:]},
+        "tests": {"log": tests[-12:]},
         "blocks": _block_status(),
         "counts": {"offgrid": og, "system_aber": sa, "eq22": eq, "eq22_ext": eqx,
                    "paper_offgrid": 34864},
@@ -168,6 +183,7 @@ HTML = """<!DOCTYPE html>
  <table id="blocks"><tr><th>block</th><th>files</th><th>mtime mới nhất</th><th>age</th></tr></table></div>
 <div class="card"><div class="dim">CYCLE LOG (8 dòng gần nhất)</div><pre id="log" style="font-size:12px;white-space:pre-wrap;margin:4px 0"></pre></div>
 <div class="card"><div class="dim">EXTRA DATA BATCH — các script tăng độ dày (10 dòng gần nhất)</div><pre id="extra" style="font-size:12px;white-space:pre-wrap;margin:4px 0"></pre></div>
+<div class="card"><div class="dim">TEST REPORT — run_all_tests.sh (PASS/FAIL từng bộ)</div><pre id="tests" style="font-size:12px;white-space:pre-wrap;margin:4px 0"></pre></div>
 <script>
 const $=id=>document.getElementById(id);
 function spark(cv,pts){const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);
@@ -197,6 +213,7 @@ async function tick(){try{
   tb.appendChild(tr)});
  $('log').textContent=d.cycle.log.join('\\n');
  $('extra').textContent=(d.extra_batch?.log||[]).join('\\n')||'chưa có — batch sẽ chạy';
+ $('tests').textContent=(d.tests?.log||[]).join('\\n')||'chưa có — test đang chạy...';
 }catch(e){$('log').textContent='Lỗi fetch: '+e}
 setTimeout(tick,2000)}
 tick();
