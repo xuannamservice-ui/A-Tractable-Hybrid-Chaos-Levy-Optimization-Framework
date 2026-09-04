@@ -1,14 +1,14 @@
 {
   "generated_by": "generate.py",
-  "deadline": "2026-09-01 18:56",
-  "started": "2026-09-01T14:56:49",
+  "deadline": "2026-09-04 19:04",
+  "started": "2026-09-04T15:04:22",
   "blocks": {
     "01_admissibility": {
       "status": "complete",
       "produced_by": "generate.py::block_admissibility",
       "records": 5904,
-      "seconds": 34.4,
-      "finished": "2026-09-01T14:57:24",
+      "seconds": 34.3,
+      "finished": "2026-09-04T15:04:57",
       "files": [
         "admissibility_grid.csv"
       ],
@@ -19,7 +19,7 @@
       "produced_by": "generate.py::block_zmap",
       "records": 1968,
       "seconds": 1.9,
-      "finished": "2026-09-01T14:57:25",
+      "finished": "2026-09-04T15:04:58",
       "files": [
         "z_map.csv",
         "z_map.npz"
@@ -30,8 +30,8 @@
       "status": "complete",
       "produced_by": "generate.py::block_tensors",
       "records": 5166,
-      "seconds": 3.3,
-      "finished": "2026-09-01T14:57:29",
+      "seconds": 3.4,
+      "finished": "2026-09-04T15:05:02",
       "files": [
         "lookup_tensor_moderate.npz",
         "lookup_tensor_strong.npz",
@@ -43,19 +43,19 @@
       "files": [
         {
           "name": "offgrid_error.csv",
-          "bytes": 40255042,
-          "records": 255754,
-          "modified": "2026-09-01T03:57:00",
-          "sha256": "6ee639ded5a0bdbe1e9a10f9f1f8e1729b122b5e7b67ce2a32fd0be9e6587289"
+          "bytes": 39709507,
+          "records": 252289,
+          "modified": "2026-09-04T15:03:00",
+          "sha256": "5a755da123f7964380bc56faea53d1fcb44379603cdef8fb40954bc2d2f46ed1"
         }
       ],
-      "bytes_total": 40255042,
+      "bytes_total": 39709507,
       "status": "partial",
       "produced_by": "generate.py::block_offgrid",
       "command": "python generate.py --only 04_offgrid_error",
-      "generated": "2026-09-01T03:57:00",
-      "seconds": 11149.9,
-      "records": 255754,
+      "generated": "2026-09-04T15:03:00",
+      "seconds": 11129.5,
+      "records": 252289,
       "scope": "full",
       "describes": "deployed float64 kernel (rtodt_fast.pe_series_f64) vs 200-digit mpmath reference at random off-grid xi. OPEN-ENDED: it samples until the run's deadline, so on a full run its status is always 'partial' and the record count is whatever the clock allowed -- that is the designed behaviour, not a failed run"
     },
@@ -63,8 +63,8 @@
       "status": "complete",
       "produced_by": "generate.py::block_eq22",
       "records": 132,
-      "seconds": 687.5,
-      "finished": "2026-09-01T15:08:56",
+      "seconds": 686.4,
+      "finished": "2026-09-04T15:16:28",
       "files": [
         "eq22_vs_reference.csv",
         "eq22_vs_reference_sigma0p2_0p3.csv",
@@ -76,8 +76,8 @@
       "status": "complete",
       "produced_by": "generate.py::block_system_aber",
       "records": 1734,
-      "seconds": 2459.5,
-      "finished": "2026-09-01T12:53:06",
+      "seconds": 2489.4,
+      "finished": "2026-09-04T15:57:58",
       "files": [
         "system_aber_curves.csv"
       ],
@@ -87,25 +87,25 @@
       "files": [
         {
           "name": "reference_campaign.csv",
-          "bytes": 16225,
+          "bytes": 16513,
           "records": 30,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "e2d5fb6bf1fdfdb3fdaf29a511cbe8a979d0fe97e6f7f2fd625b249f68587316"
+          "modified": "2026-09-03T20:40:37",
+          "sha256": "60436a97a385bedfd8dffc1fdfb44697787603bf8b44fbdb604b86e3261256ae"
         },
         {
           "name": "reference_campaign.json",
-          "bytes": 74830,
+          "bytes": 75125,
           "records": 30,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "54b8f0cec20cc2b4888e92e31127f44b1e4dd7cb788b21a3bd0f7d4ca21ea2b7"
+          "modified": "2026-09-03T20:40:37",
+          "sha256": "de95baa3084550b78bbaba37c4427f4cfccd9508fa0d8e544694254105d0e105"
         }
       ],
-      "bytes_total": 91055,
+      "bytes_total": 91638,
       "status": "complete",
       "produced_by": "code/run_campaign.py",
       "command": "python code/run_campaign.py --realizations 300 --objective faithful --out ../data/07_reference_campaign",
-      "generated": "2026-08-31T23:55:20",
-      "seconds": 825.1,
+      "generated": "2026-09-03T20:40:37",
+      "seconds": 138.4,
       "records": 30,
       "scope": "full",
       "describes": "A/B reference-implementation campaign: ablation arms x guard forms, per-branch surrogate AND post-EGC system success rate, plus a brute-force feasibility ceiling.",
@@ -230,31 +230,38 @@
       "files": [
         {
           "name": "cycle_latency.json",
-          "bytes": 83289,
+          "bytes": 98558,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "41d4e106b51c17f7ea819120793c06416cf3987af427aa451878ee9692f6fc3e"
+          "modified": "2026-09-03T20:18:21",
+          "sha256": "09ca7e14fc9d5c9eb94bbb799d04f0df2d1861a8b765b1a40c3f7e8f1e026b6c"
         },
         {
           "name": "cycle_latency.npz",
-          "bytes": 2111824,
+          "bytes": 2450984,
           "records": 79,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "5a47227dc79937a3fa6ef572115e59d01cda48a8ed18e7bec286ad9ed4ba2e3a"
+          "modified": "2026-09-03T20:18:21",
+          "sha256": "99fa96f529679aface80d89f76250d820286d849648209d7ff8f3363978dd260"
         },
         {
           "name": "kernel_timing.json",
-          "bytes": 119024,
+          "bytes": 113902,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "69517ecc2ebeb2b2686bd65035d160581a405aa9463a22729072149142b8de95"
+          "modified": "2026-09-03T20:12:18",
+          "sha256": "bfa161b5173f72eb3d1ecdf1495e93b5b11abf3b761efad02b89534126964277"
         },
         {
           "name": "kernel_timing_raw.npz",
-          "bytes": 581741,
-          "records": 85,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "95d13d26fc6d6a6e67888ae437b99a66b95e528192fae5c06d19633b6db4b44c"
+          "bytes": 1043958,
+          "records": 77,
+          "modified": "2026-09-03T20:12:18",
+          "sha256": "73fb0572c8c595e7dac5ef4d1600eef6732132444c68c45934da2eb4c74654a7"
+        },
+        {
+          "name": "kernel_timing_table.tex",
+          "bytes": 2864,
+          "records": null,
+          "modified": "2026-09-03T20:12:18",
+          "sha256": "f2e3904741e16c504096fe33e591daef86753657005c24c2a8c75fd0f7da000c"
         },
         {
           "name": "platform.json",
@@ -285,14 +292,14 @@
           "sha256": "c1cca39c1bbdcfcd65b1a6600bb5502637de4405d29ed87a9cce63a1679730fa"
         }
       ],
-      "bytes_total": 2968312,
+      "bytes_total": 3782700,
       "status": "unknown",
-      "generated": "2026-08-31T23:55:20",
-      "records": 85,
+      "generated": "2026-09-03T20:18:21",
+      "records": 79,
       "scope": "unknown",
       "describes": null,
       "produced_by": "code/bench_cycle.py, code/bench_kernel.py, code/bench_portable.py, code/platform_spec.py",
-      "seconds": 231.1,
+      "seconds": 129.7,
       "timing_source": "summed 'elapsed_s' of the block's own JSON artefacts",
       "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
       "declared_by_file": {
@@ -305,9 +312,6 @@
         "code/bench_cycle.py": [
           "cycle_latency.npz"
         ],
-        "code/bench_kernel.py": [
-          "kernel_timing_raw.npz"
-        ],
         "code/bench_portable.py": [
           "portable_Jetson-TX2-pinned.json",
           "portable_Jetson-TX2.json",
@@ -317,11 +321,15 @@
           "platform.json"
         ]
       },
-      "files_without_declared_producer": [],
+      "files_without_declared_producer": [
+        "kernel_timing_raw.npz",
+        "kernel_timing_table.tex"
+      ],
       "generated_utc_stamps": [
         "2026-08-26T22:18:15.373296+00:00",
-        "2026-08-26T23:27:06.116799+00:00"
-      ]
+        "2026-09-03T13:10:53.676374+00:00"
+      ],
+      "provenance_gap": "Partial: 2 of 9 file(s) in this block declare no producer (kernel_timing_raw.npz, kernel_timing_table.tex). The rest are attributed from their own 'generated_by'/'generator' field."
     },
     "11_measured": {
       "files": [
@@ -334,24 +342,24 @@
         },
         {
           "name": "ablation_measured_tau600.json",
-          "bytes": 1591,
+          "bytes": 1517,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "b63026a1cc9bb382d04e1a81a4b732b5d7644b7485650853835a7742e922c0a0"
+          "modified": "2026-09-03T20:20:06",
+          "sha256": "0f14ef56d4cceced141ea94d5d0bf3cb8391f1b0128d55cabb444f87c266d7a6"
         },
         {
           "name": "ablation_success_measured.npz",
-          "bytes": 1791,
-          "records": 8,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "933dd4ee5ce55bf0c93c790a9c0d343c304f596773c1ba6ac2dace2813efdbdf"
+          "bytes": 2140,
+          "records": 6,
+          "modified": "2026-09-03T20:20:06",
+          "sha256": "5311cf6cf5166b3a3611bdb32b7b5c65522b401bb69cf83ee2600a9ff7926de7"
         },
         {
           "name": "baseline_indicators.npz",
-          "bytes": 2054,
-          "records": 8,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "343c55826215e241c0c48ec606b132d0cea3d85a4a507e7405e7952f06615569"
+          "bytes": 1981,
+          "records": 6,
+          "modified": "2026-09-03T20:19:38",
+          "sha256": "bafd3b2a7e7d68ea6114f51c07db58512bd7386f51c72e2db6cd226170148de0"
         },
         {
           "name": "baselines_measured.json",
@@ -369,10 +377,10 @@
         },
         {
           "name": "baselines_measured_tau600.json",
-          "bytes": 2008,
+          "bytes": 2076,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "68d824fd59d3547895fe5f01a4d06f6a3ededd1df14ddb689dce0bf86de5e896"
+          "modified": "2026-09-03T20:19:38",
+          "sha256": "8af523865f8dbf9da1ecead16b697b543ee635575a025d049ee165242c3477f9"
         },
         {
           "name": "cycle_latency_measured.json",
@@ -403,9 +411,9 @@
           "sha256": "ac6c32c03bb5a348a51140e114e2156b7a82b5e50e125b8675e6f7b783468929"
         }
       ],
-      "bytes_total": 91046,
+      "bytes_total": 91316,
       "status": "unknown",
-      "generated": "2026-08-31T23:55:20",
+      "generated": "2026-09-03T20:20:06",
       "records": 9,
       "scope": "unknown",
       "describes": null,
@@ -416,20 +424,22 @@
       "declared_by_file": {
         "code/measure_all.py": [
           "ablation_measured_tau20000.json",
-          "ablation_measured_tau600.json",
-          "ablation_success_measured.npz",
-          "baseline_indicators.npz",
           "baselines_measured.json",
           "baselines_measured_tau20000.json",
-          "baselines_measured_tau600.json",
           "cycle_latency_measured.json",
           "cycle_latency_measured.npz",
           "tail_mitigation_measured.json",
           "tail_mitigation_measured.npz"
         ]
       },
-      "files_without_declared_producer": [],
-      "generated_utc_stamps": null
+      "files_without_declared_producer": [
+        "ablation_measured_tau600.json",
+        "ablation_success_measured.npz",
+        "baseline_indicators.npz",
+        "baselines_measured_tau600.json"
+      ],
+      "generated_utc_stamps": null,
+      "provenance_gap": "Partial: 4 of 11 file(s) in this block declare no producer (ablation_measured_tau600.json, ablation_success_measured.npz, baseline_indicators.npz, baselines_measured_tau600.json). The rest are attributed from their own 'generated_by'/'generator' field."
     },
     "12_continuous": {
       "files": [
@@ -477,17 +487,17 @@
         },
         {
           "name": "levy_envelope.json",
-          "bytes": 2883,
+          "bytes": 22251,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "b0cf176dc45215637cfec815a1de956aa8bb8f426d0823d7a7ce628399e64d62"
+          "modified": "2026-09-03T20:38:18",
+          "sha256": "d911ad72bc4fa37ccad20eb21822d1ef183f95ed1e624c9c87122e36e7bf6c5d"
         },
         {
           "name": "levy_mechanism_probe_iters200.json",
-          "bytes": 1195,
+          "bytes": 912,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "b1f28a7eabffd621f0b1422bcfa5bd5864402748bec07bfd0d0c5dc64f967c87"
+          "modified": "2026-09-01T15:20:52",
+          "sha256": "8f8984ab9a9dcc1ef6aef0530330d96dc4529e35e91fb2be450be4120cdbae7f"
         },
         {
           "name": "levy_mechanism_probe_iters25.json",
@@ -505,10 +515,10 @@
         },
         {
           "name": "levy_truncation_s0p005.json",
-          "bytes": 877,
+          "bytes": 860,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "b0276ec179a05c7f4d1336cc802c2fe665fc3e1137d70caad51930fd0b9c1380"
+          "modified": "2026-09-01T15:20:53",
+          "sha256": "abe782bfe1a25f2cc7087a7ce6e57e64f1d185989d1d2b08a4af8bffcf1b2d9c"
         },
         {
           "name": "levy_truncation_s0p02.json",
@@ -518,6 +528,13 @@
           "sha256": "8e454bd81a9711ee1055e4ed871b32fdd9eb9e87c0b9e54541ad12174e2a46f4"
         },
         {
+          "name": "levy_truncation_s0p05.json",
+          "bytes": 859,
+          "records": null,
+          "modified": "2026-09-01T15:20:54",
+          "sha256": "34e7f76ad7db2eb26859688f6adf32413bd30a089d995e20d26f40fd29fb6109"
+        },
+        {
           "name": "levy_truncation_s0p08.json",
           "bytes": 873,
           "records": null,
@@ -525,16 +542,23 @@
           "sha256": "863e0c90103b2580b9b22ada1e475d8be4d3ab1681a6a677c8d9cf6852ad6a63"
         },
         {
-          "name": "levy_truncation_s0p3.json",
-          "bytes": 865,
+          "name": "levy_truncation_s0p15.json",
+          "bytes": 857,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
-          "sha256": "d47a23b3067ce112b196521a9fbcad485bfb1eef38ce7e7e3273aaae9526a7a3"
+          "modified": "2026-09-01T15:20:55",
+          "sha256": "fd2b3bbdd505840d26e90d9a2fd03b15825da94af78c8e74cbbe37bb34f1abbd"
+        },
+        {
+          "name": "levy_truncation_s0p3.json",
+          "bytes": 854,
+          "records": null,
+          "modified": "2026-09-01T15:20:57",
+          "sha256": "93ef8898ba3f379c770009e45fd6fad5a32d6de58d6430b32b4adc3fbb33feaf"
         }
       ],
-      "bytes_total": 180628,
+      "bytes_total": 201401,
       "status": "unknown",
-      "generated": "2026-08-31T23:55:20",
+      "generated": "2026-09-03T20:38:18",
       "records": 8,
       "scope": "unknown",
       "describes": null,
@@ -562,14 +586,44 @@
           "levy_truncation_s0p002.json",
           "levy_truncation_s0p005.json",
           "levy_truncation_s0p02.json",
+          "levy_truncation_s0p05.json",
           "levy_truncation_s0p08.json",
+          "levy_truncation_s0p15.json",
           "levy_truncation_s0p3.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "13_levy_benchmark": {
+      "files": [
+        {
+          "name": "levy_benchmark.json",
+          "bytes": 724,
+          "records": null,
+          "modified": "2026-09-01T11:04:36",
+          "sha256": "91edf4375ebecbb5289995c4e9571e707ef2910e8a26f07710213ea2cd0705ff"
+        }
+      ],
+      "bytes_total": 724,
+      "status": "unknown",
+      "generated": "2026-09-01T11:04:36",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/levy_benchmark.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/levy_benchmark.py": [
+          "levy_benchmark.json"
         ]
       },
       "files_without_declared_producer": [],
       "generated_utc_stamps": null
     }
   },
-  "previous_started": "2026-09-01T12:00:02",
-  "finished": "2026-09-01T15:08:56"
+  "previous_started": null,
+  "finished": "2026-09-04T15:57:58"
 }

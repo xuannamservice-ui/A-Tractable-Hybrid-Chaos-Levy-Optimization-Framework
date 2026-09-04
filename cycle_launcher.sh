@@ -38,6 +38,8 @@ setsid nohup bash -c '
   GRC=$?
   "$PY" code/build_manifest.py >> "$REPO/logs/cycle.log" 2>&1
   echo "[$(date "+%Y-%m-%d %H:%M:%S")] ==================== CYCLE END (generate rc=$GRC) ====================" >> "$REPO/logs/cycle.log"
+  # Push dữ liệu lên GitHub ngay sau khi cycle kết thúc (dữ liệu hoàn chỉnh).
+  "$REPO/push_data.sh" >> "$REPO/logs/push.log" 2>&1
 ' _ "$DEADLINE" "$PY" "$REPO" >/dev/null 2>&1 < /dev/null &
 
 MSG="[$(date '+%Y-%m-%d %H:%M:%S')] cycle launched in background (pid $!) — deadline $DEADLINE"
