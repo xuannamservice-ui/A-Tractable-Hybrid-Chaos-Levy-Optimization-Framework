@@ -1,9 +1,9 @@
 {
   "generated_by": "code/build_manifest.py",
-  "built": "2026-09-18T02:02:29",
+  "built": "2026-09-18T02:44:18",
   "package_root": "repo",
-  "block_count": 21,
-  "blocks_with_provenance": 15,
+  "block_count": 22,
+  "blocks_with_provenance": 16,
   "blocks_with_provenance_gaps": [
     "01_admissibility",
     "02_z_map",
@@ -1290,6 +1290,42 @@
       "declared_by_file": {
         "code/predictor_ablation.py": [
           "predictor_ablation.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "20_branch_model": {
+      "files": [
+        {
+          "name": "branch_model_wz0.123.json",
+          "bytes": 3036,
+          "records": null,
+          "modified": "2026-09-18T02:36:51",
+          "sha256": "0744d3a2695a6eb4eb9097008637d1f91fbfdcfd5ca6cbc7c22d661421aafca1"
+        },
+        {
+          "name": "branch_model_wz0.192.json",
+          "bytes": 3018,
+          "records": null,
+          "modified": "2026-09-18T02:28:08",
+          "sha256": "23c403b6a63088a812c4d179742e74085f5ffc8d06b9aca1da09b419e4f6cd14"
+        }
+      ],
+      "bytes_total": 6054,
+      "status": "unknown",
+      "generated": "2026-09-18T02:36:51",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/branch_model_probe.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/branch_model_probe.py": [
+          "branch_model_wz0.123.json",
+          "branch_model_wz0.192.json"
         ]
       },
       "files_without_declared_producer": [],
