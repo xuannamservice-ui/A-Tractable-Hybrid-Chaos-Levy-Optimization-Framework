@@ -18,6 +18,13 @@ logs_*.err
 *.log
 logs_stdout.txt
 
+# Artefacts the probe scripts write into their own directory rather than data/
+code/feasibility_at_gbar.json
+code/compiled_poc_cycle_latency.json
+code/compiled_poc_per_cycle.csv
+code/poc_cl_w*.json
+code/poc_pc_w*.csv
+
 # Manuscript-tooling artefacts from the condense / label-remap passes
 condense_*.json
 pass3_labels.json
@@ -30,6 +37,7 @@ label_ref_map.json
 access.pdf
 a[0-9].png
 author*.png
+S[0-9]_fig*.jpg
 
 # regenerated figure (make_fig2.py writes beside the script)
 code/S3_fig3_corrected.png

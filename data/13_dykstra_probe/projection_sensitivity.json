@@ -1,0 +1,25 @@
+{
+  "n_points": 200,
+  "delta": 0.0001,
+  "variant": "E. D + two-axis steering: the manuscript's 60-D trajectory",
+  "causal_clip": {
+    "median_gain": 0.0,
+    "mean_gain": 0.4840140714777602,
+    "p90_gain": 0.9999999999998899,
+    "p99_gain": 4.472135954999591,
+    "max_gain": 4.472135954999627,
+    "frac_gain_below_0.01": 0.62775,
+    "frac_gain_above_0.5": 0.3710833333333333,
+    "frac_gain_above_1": 0.050333333333333334
+  },
+  "dykstra": {
+    "median_gain": 0.051505989554167346,
+    "mean_gain": 0.36601094037843357,
+    "p90_gain": 0.9999999999998899,
+    "p99_gain": 1.0000000000000286,
+    "max_gain": 1.0000000000000286,
+    "frac_gain_below_0.01": 0.09525,
+    "frac_gain_above_0.5": 0.3348333333333333,
+    "frac_gain_above_1": 0.013833333333333333
+  }
+}

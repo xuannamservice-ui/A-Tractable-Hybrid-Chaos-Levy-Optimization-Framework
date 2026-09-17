@@ -12,6 +12,7 @@ the convergence settings -- is identical to the shipped measurement.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 
@@ -105,6 +106,14 @@ def reduced_multistart(mpc, theta0, h_pred, n_starts, rng, max_polls, n_rand):
 
 
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--n-starts", type=int, default=15)
+    ap.add_argument("--max-polls", type=int, default=2500,
+                    help="poll budget per descent; the manuscript reports 2500 and 15000")
+    ap.add_argument("--n-rand", type=int, default=24)
+    ap.add_argument("--dyk-sweeps", type=int, default=300)
+    args = ap.parse_args()
+
     out_dir = os.path.join(os.path.dirname(__file__), "..", "data", "13_dykstra_probe")
     os.makedirs(out_dir, exist_ok=True)
     gbar = 10 ** (lp.GBAR_DB / 10)
@@ -118,7 +127,8 @@ def main():
     #   unrepaired:  distinct_minima=2,  frac_reaching_global=0.975, worst_excess=0.602
     #   repaired  :  distinct_minima=40, frac_reaching_global=0.025, worst_excess=3.325 (=4.33x)
     # Re-measuring the causal case is therefore skipped; only Dykstra is run.
-    N_STARTS, MAX_POLLS, N_RAND, DYK_SWEEPS = 15, 2500, 24, 300
+    N_STARTS, MAX_POLLS, N_RAND, DYK_SWEEPS = (
+        args.n_starts, args.max_polls, args.n_rand, args.dyk_sweeps)
     print(f"Settings: n_starts={N_STARTS} max_polls={MAX_POLLS} n_rand={N_RAND} "
           f"dyk_sweeps={DYK_SWEEPS}  (paper/shipped ref used max_polls=6000, n_rand=48)")
 
@@ -141,9 +151,11 @@ def main():
     lp.summarise_minima(xs, fs, span, "", o)
     print(json.dumps(o, indent=2))
 
-    with open(os.path.join(out_dir, "dykstra_repaired_only.json"), "w", encoding="utf-8") as f:
+    name = ("dykstra_repaired_only.json" if MAX_POLLS == 2500
+            else f"dykstra_repaired_polls{MAX_POLLS}.json")
+    with open(os.path.join(out_dir, name), "w", encoding="utf-8") as f:
         json.dump(o, f, indent=2)
-    print("\nwrote", out_dir)
+    print("\nwrote", os.path.join(out_dir, name))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+{
+  "n_starts": 15,
+  "max_polls": 15000,
+  "n_rand": 24,
+  "dyk_sweeps": 300,
+  "starts_infeasible": 0,
+  "descents_converged": 15,
+  "distinct_minima": 15,
+  "distinct_minima_1e-3": 15,
+  "global_min": 0.4820683352294287,
+  "minima_values_top5": [
+    0.4820683352294287,
+    0.4843468187371343,
+    0.4843657350123379,
+    0.4844261649854239,
+    0.48449096699772815
+  ],
+  "minima_counts_top5": [
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "frac_reaching_global": 0.06666666666666667,
+  "frac_within_1pct": 1.0,
+  "worst_excess_over_global": 0.007554405162136345
+}

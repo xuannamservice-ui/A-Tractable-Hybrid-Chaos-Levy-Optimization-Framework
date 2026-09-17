@@ -1,0 +1,72 @@
+{
+  "a": 0.05,
+  "sigma_s": 0.1,
+  "gbar_db": 38.0,
+  "cases": [
+    {
+      "name": "guard floor",
+      "w_z": 0.054869,
+      "w_z_over_a": 1.09738,
+      "rel_err_hp_at_zero": 0.013908637705581373,
+      "max_rel_err_hp": 3452460781.5084376,
+      "max_rel_err_hp_significant": 9.50008786148444,
+      "aber_ratio": {
+        "weak": 0.764221242818138,
+        "moderate": 0.7892094215270885,
+        "strong": 0.8152500538030952
+      }
+    },
+    {
+      "name": "boundary static",
+      "w_z": 0.123,
+      "w_z_over_a": 2.46,
+      "rel_err_hp_at_zero": 0.006437460114944289,
+      "max_rel_err_hp": 0.5035630163985823,
+      "max_rel_err_hp_significant": 0.23555404017133924,
+      "aber_ratio": {
+        "weak": 0.9737676301448234,
+        "moderate": 0.9806876734542244,
+        "strong": 0.9857711226954894
+      }
+    },
+    {
+      "name": "xi_safe fallback",
+      "w_z": 0.157,
+      "w_z_over_a": 3.1399999999999997,
+      "rel_err_hp_at_zero": 0.004258771056640534,
+      "max_rel_err_hp": 0.09491788378921855,
+      "max_rel_err_hp_significant": 0.09491788378921855,
+      "aber_ratio": {
+        "weak": 0.9884648607227438,
+        "moderate": 0.9928684677616152,
+        "strong": 0.9953394126767663
+      }
+    },
+    {
+      "name": "interior optimum",
+      "w_z": 0.192,
+      "w_z_over_a": 3.84,
+      "rel_err_hp_at_zero": 0.002960992045934876,
+      "max_rel_err_hp": 0.02618914670219244,
+      "max_rel_err_hp_significant": 0.02618914670219244,
+      "aber_ratio": {
+        "weak": 0.9951535754041317,
+        "moderate": 0.9976897217794437,
+        "strong": 0.9987135608199462
+      }
+    },
+    {
+      "name": "F-H nominal",
+      "w_z": 0.30000000000000004,
+      "w_z_over_a": 6.000000000000001,
+      "rel_err_hp_at_zero": 0.001270072337028683,
+      "max_rel_err_hp": 0.0016842082261386683,
+      "max_rel_err_hp_significant": 0.0016842082261386683,
+      "aber_ratio": {
+        "weak": 1.0005482967374977,
+        "moderate": 1.0004651645880254,
+        "strong": 1.0003590242723368
+      }
+    }
+  ]
+}

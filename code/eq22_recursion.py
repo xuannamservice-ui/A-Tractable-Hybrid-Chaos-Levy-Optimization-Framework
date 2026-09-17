@@ -133,7 +133,46 @@ def reference(snr_db_list):
     return out
 
 
+def lattice_cardinality():
+    """Enumerate the exponent lattice of Theorem 1 with exact rational
+    arithmetic (no a_k, no convolution), so the two counts the manuscript
+    quotes are checkable in a second rather than a minute:
+
+      * the index-set size sum_m (m+1)(mK+1), which depends on MN and K alone;
+      * |Lambda_{MN,K}|, the number of NUMERICALLY DISTINCT lambda it yields,
+        which additionally depends on (alpha, beta, xi^2) through coincidences
+        and is therefore NOT universal.
+    """
+    from fractions import Fraction as F
+
+    # The tabulated parameters are exact decimals (rtodt.REGIMES, XI); mpf holds
+    # them as 260-digit binary approximations, so take the decimals back before
+    # asking which exponents coincide -- eq22() merges on mp.nstr(lam, 25) for
+    # the same reason.
+    dec = lambda v: F(mp.nstr(v, 12))
+
+    x2 = dec(XI) ** 2
+    idx = sum((m + 1) * (m * K + 1) for m in range(MN + 1))
+    print("index set {(nD,nB,nA,S)} at MN=%d, K=%d: %d quadruples" % (MN, K, idx))
+    for name, (A, B) in REGIMES.items():
+        a, b = dec(A), dec(B)
+        vals = set()
+        for nD in range(MN + 1):
+            for nB in range(MN + 1 - nD):
+                nA = MN - nD - nB
+                lam0 = nD * x2 + nB * b + nA * a
+                vals.update(lam0 + S for S in range((nB + nA) * K + 1))
+        print("  %-9s alpha=%s beta=%s xi=%s -> |Lambda| = %d"
+              % (name, mp.nstr(A, 12), mp.nstr(B, 12), mp.nstr(XI, 12), len(vals)))
+
+
 if __name__ == "__main__":
+    import sys
+
+    if "--count" in sys.argv:
+        lattice_cardinality()
+        raise SystemExit(0)
+
     SNRS = [20, 28, 32, 40]
     # Values recorded from a previous run of reference() below, kept only so a
     # reader can spot a regression at a glance. They are NOT used to compute

@@ -97,5 +97,58 @@ def run():
         print("           the ladder's z<=z_max test keeps them out as a side effect.")
 
 
+def corrupt_width(K=10, sig=0.05, gdb=38, K_ref=40):
+    """Stage 2: reaching the admitted region is not the same as doing damage.
+    A pole is only a hazard over the band of xi where the truncated series is
+    BOTH wrong by more than eps_req AND still inside the safety range test, so
+    that nothing rejects it.  Measure that band.
+
+    Everything here is 260-digit mpmath, so arithmetic noise is excluded and
+    what is measured is the truncation's own singularity: `Pe_series` at the
+    deployed order K against the same series at order K_ref, which carries the
+    cancelling partner for the pole under test and is therefore regular across
+    it.  The deployed float64 kernel is evaluated alongside, to record what the
+    guard would actually have seen.
+    """
+    import mpmath as mp
+    from rtodt import Pe_series, wz_for_xi, A0_of
+    from rtodt_fast import pe_series_f64
+
+    EPS_REQ = 1e-6
+    offsets = [10.0 ** e for e in np.arange(-12.0, -0.4, 0.25)]
+    g = 10.0 ** (gdb / 10.0)
+    print(f"\nStage 2: hazard band around the first uncancelled pole "
+          f"(K={K}, sigma_s={sig}, gbar={gdb} dB, reference order {K_ref})")
+    print(f"{'regime':>9} {'pole xi^2':>10} | {'widest |d| wrong':>17} "
+          f"| {'widest |d| wrong AND undetected':>32}")
+    worst_undetected = 0.0
+    for name, (alpha, beta) in REGIMES.items():
+        pole = float(beta) + (K + 1)             # first beta-pole past the order
+        wrong = undetected = 0.0
+        for sgn in (-1.0, +1.0):
+            for d in offsets:
+                xi = float(np.sqrt(max(pole + sgn * d, 1e-12)))
+                wz = wz_for_xi(mp.mpf(str(xi)), mp.mpf(str(sig)))
+                if wz is None:
+                    continue
+                A0 = float(A0_of(wz))
+                am, bm, xm, A0m, gm = (mp.mpf(str(v)) for v in (alpha, beta, xi, A0, g))
+                got = Pe_series(am, bm, xm, A0m, gm, K)
+                ref = Pe_series(am, bm, xm, A0m, gm, K_ref)
+                if not mp.isfinite(got) or abs(got - ref) > EPS_REQ:
+                    wrong = max(wrong, d)
+                    f64 = float(np.atleast_1d(pe_series_f64(
+                        alpha, beta, np.atleast_1d(xi), np.atleast_1d(A0), g, K))[0])
+                    in_range = np.isfinite(f64) and 0.0 <= f64 <= 0.5
+                    if in_range:                  # wrong, finite, and plausible
+                        undetected = max(undetected, d)
+        worst_undetected = max(worst_undetected, undetected)
+        print(f"{name:>9} {pole:>10.3f} | {wrong:>17.2e} | {undetected:>32.2e}")
+    print(f"\nwidest band that is wrong AND passes the range test: "
+          f"{worst_undetected:.2e} in xi^2 units, against a decision box "
+          f"spanning O(10) in xi^2")
+
+
 if __name__ == "__main__":
     run()
+    corrupt_width()

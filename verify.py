@@ -165,9 +165,14 @@ def t1_manuscript_matches_data():
     proportion to the cost of this check.
     """
     import csv, math, re
-    tex = os.path.abspath(os.path.join(HERE, "..", "access.tex"))
+    # The manuscript is not part of the release, so it may sit beside the repo
+    # or one level out in a `paper/` folder; try both before giving up.
+    tex = next((p for p in (os.path.abspath(os.path.join(HERE, "..", "access.tex")),
+                            os.path.abspath(os.path.join(HERE, "..", "paper", "access.tex")),
+                            os.path.abspath(os.path.join(HERE, "access.tex")))
+                if os.path.exists(p)), None)
     csvp = os.path.join(DATA, "04_offgrid_error", "offgrid_error.csv")
-    if not (os.path.exists(tex) and os.path.exists(csvp)):
+    if tex is None or not os.path.exists(csvp):
         record("manuscript cites the dataset it ships", False, "tex or csv missing")
         return
 

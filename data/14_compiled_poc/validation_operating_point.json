@@ -1,6 +1,6 @@
 {
  "what": "strong regime, sigma_s=0.10 m only, single-shot protocol of validation_success.py, search on the compiled kernel at tau_O, scored by system_metric.aber_of at the stated gbar_db",
- "cell_crossing_db": 38.43,
+ "cell_crossing_db": 38.42,
  "tau_o_us": 600.0,
  "n_trials": 100,
  "results": {
