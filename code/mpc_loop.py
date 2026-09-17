@@ -118,13 +118,25 @@ class GuardReport:
     n_z: int
     n_range: int
     n_threshold: int
+    n_pole: int = 0
 
 
-def envelope_guard(z, pe, z_max=Z_MAX, three_part=True):
+def envelope_guard(z, pe, z_max=Z_MAX, three_part=True, pole_d=None,
+                   pole_clearance=0.0):
     """Section VI-C, restricted to the two tests that are per-branch quantities.
 
     Test (i)  z <= z_max          admissibility of the surrogate
     Test (ii) 0 <= Pe <= 1/2      the evaluation must be a probability
+
+    Optional test (i-b), off by default: reject when xi^2 sits within
+    `pole_clearance` of a coefficient pole, `pole_d` being the distance from
+    `rtodt_fast.pole_distance`.  Near such a pole the float64 evaluation is
+    wrong by an amount that scales as 1/distance and can still land inside
+    [0, 1/2], so test (ii) does not catch it (`cancelled_pole_probe.py`).  It
+    is applied here, to the published command, rather than inside the fitness
+    evaluation: screening every candidate costs a third of the kernel at the
+    deployed swarm size, while screening the published command costs one
+    comparison per cycle (`pole_guard_probe.py`).
 
     Test (iii), Pe < eps_safe, is a POST-EGC system-level threshold: eps_safe =
     1e-3 while the per-branch surrogate the swarm ranks by is of order 1e-1 at
@@ -137,12 +149,18 @@ def envelope_guard(z, pe, z_max=Z_MAX, three_part=True):
     """
     finite = np.isfinite(pe)
     t_range = (pe >= 0.0) & (pe <= 0.5)
+    if pole_clearance > 0.0 and pole_d is not None:
+        t_pole = np.asarray(pole_d, dtype=float) >= pole_clearance
+        n_pole = int(np.sum(~t_pole))
+    else:
+        t_pole, n_pole = True, 0
     if not three_part:
-        ok = finite & t_range
-        return GuardReport(ok, 0, int(np.sum(finite & ~t_range)), 0)
+        ok = finite & t_range & t_pole
+        return GuardReport(ok, 0, int(np.sum(finite & ~t_range)), 0, n_pole)
     t_z = z <= z_max
-    ok = finite & t_z & t_range
-    return GuardReport(ok, int(np.sum(~t_z)), int(np.sum(finite & ~t_range)), 0)
+    ok = finite & t_z & t_range & t_pole
+    return GuardReport(ok, int(np.sum(~t_z)), int(np.sum(finite & ~t_range)), 0,
+                       n_pole)
 
 
 # ------------------------------------------------------------- geometry aid

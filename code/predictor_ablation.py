@@ -146,10 +146,31 @@ def run(tau_act_us: float, n_pairs: int = N_PAIRS, seed: int = SEED):
 
 
 if __name__ == "__main__":
+    import json
+    import os
+
     np.seterr(all="ignore")
     print(f"{'tau_act':>9} | {'Arm A_old (released 1+mu) vs B':>42} | {'Arm A_new (real Eq.25 GH) vs B':>42}")
     print(f"{'(us)':>9} | {'mean diff':>14} {'95% CI':>18} {'p':>8} | {'mean diff':>14} {'95% CI':>18} {'p':>8}")
+    rows = []
     for tau_act in (200, 500, 1000):
         (m_old, ci_old, p_old), (m_gh, ci_gh, p_gh) = run(tau_act)
         print(f"{tau_act:9d} | {m_old:14.6e} [{m_old-ci_old:.3e},{m_old+ci_old:.3e}] {p_old:8.2e} | "
               f"{m_gh:14.6e} [{m_gh-ci_gh:.3e},{m_gh+ci_gh:.3e}] {p_gh:8.2e}")
+        rows.append({"tau_act_us": tau_act,
+                     "released_1plusmu": {"mean_diff": m_old, "ci95_halfwidth": ci_old,
+                                          "p_wilcoxon": p_old},
+                     "gauss_hermite_eq25": {"mean_diff": m_gh, "ci95_halfwidth": ci_gh,
+                                            "p_wilcoxon": p_gh}})
+
+    out_dir = os.path.join(os.path.dirname(__file__), "..", "data", "19_predictor_ablation")
+    os.makedirs(out_dir, exist_ok=True)
+    path = os.path.join(out_dir, "predictor_ablation.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"generated_by": "code/predictor_ablation.py",
+                   "what": "self-built predictive-vs-reactive protocol; no released "
+                           "campaign script exists for the original table, so these "
+                           "supersede rather than reproduce it",
+                   "n_paired": N_PAIRS,
+                   "rows": rows}, f, indent=2)
+    print("\nwrote", path)

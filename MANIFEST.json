@@ -1,9 +1,9 @@
 {
   "generated_by": "code/build_manifest.py",
-  "built": "2026-09-18T00:05:42",
+  "built": "2026-09-18T02:02:29",
   "package_root": "repo",
-  "block_count": 19,
-  "blocks_with_provenance": 13,
+  "block_count": 21,
+  "blocks_with_provenance": 15,
   "blocks_with_provenance_gaps": [
     "01_admissibility",
     "02_z_map",
@@ -1197,15 +1197,15 @@
       "files": [
         {
           "name": "gamma_min.json",
-          "bytes": 993,
+          "bytes": 1651,
           "records": null,
-          "modified": "2026-09-18T00:01:47",
-          "sha256": "0ed1a9e2b1dda85aed4332ff6a9c77d87d298336a954108feea29547997a0ff6"
+          "modified": "2026-09-18T01:53:30",
+          "sha256": "6530d203fd77d71f124b6ce33240e1b899d42ea5c6eeee9cbb70ff4f0d2d78dc"
         }
       ],
-      "bytes_total": 993,
+      "bytes_total": 1651,
       "status": "unknown",
-      "generated": "2026-09-18T00:01:47",
+      "generated": "2026-09-18T01:53:30",
       "records": 0,
       "scope": "unknown",
       "describes": null,
@@ -1216,6 +1216,80 @@
       "declared_by_file": {
         "code/gamma_min_probe.py": [
           "gamma_min.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "18_cancelled_pole": {
+      "files": [
+        {
+          "name": "cancelled_pole_strong_k3.json",
+          "bytes": 15070,
+          "records": null,
+          "modified": "2026-09-18T01:06:08",
+          "sha256": "a3895929604a162aca6649d1fe7e22f6eae4e4a4eb296e25e65016c5736d0d46"
+        },
+        {
+          "name": "cancelled_pole_weak_k4.json",
+          "bytes": 14717,
+          "records": null,
+          "modified": "2026-09-18T01:05:42",
+          "sha256": "6499cd82fdbfd9855940cead435d5c89331193989b8f8de4f63cae59d9d41427"
+        },
+        {
+          "name": "pole_guard.json",
+          "bytes": 832,
+          "records": null,
+          "modified": "2026-09-18T01:18:51",
+          "sha256": "e83339615c0be1389d85bb89b85a232421a8b84f7e226c0d45d5891c474fdcb0"
+        }
+      ],
+      "bytes_total": 30619,
+      "status": "unknown",
+      "generated": "2026-09-18T01:18:51",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/cancelled_pole_probe.py, code/pole_guard_probe.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/cancelled_pole_probe.py": [
+          "cancelled_pole_strong_k3.json",
+          "cancelled_pole_weak_k4.json"
+        ],
+        "code/pole_guard_probe.py": [
+          "pole_guard.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "19_predictor_ablation": {
+      "files": [
+        {
+          "name": "predictor_ablation.json",
+          "bytes": 1449,
+          "records": null,
+          "modified": "2026-09-18T01:39:27",
+          "sha256": "8c62f2299ada89f4dbfcf5780390751f723167d66820310846913213706e3675"
+        }
+      ],
+      "bytes_total": 1449,
+      "status": "unknown",
+      "generated": "2026-09-18T01:39:27",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/predictor_ablation.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/predictor_ablation.py": [
+          "predictor_ablation.json"
         ]
       },
       "files_without_declared_producer": [],

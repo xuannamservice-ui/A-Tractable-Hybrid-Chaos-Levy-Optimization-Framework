@@ -16,6 +16,26 @@
     "strong_0.20": 50.4766845703125,
     "strong_0.30": 57.520904541015625
   },
+  "gain_by_regime": {
+    "weak": {
+      "gamma_req_static_db": 34.02618408203125,
+      "gamma_req_opt_db": 31.571807861328125,
+      "delta_db": 2.454376220703125,
+      "opt_endpoint": "gamma_min at sigma_s=0.10"
+    },
+    "moderate": {
+      "gamma_req_static_db": 37.621917724609375,
+      "gamma_req_opt_db": 34.92340087890625,
+      "delta_db": 2.698516845703125,
+      "opt_endpoint": "gamma_min at sigma_s=0.10"
+    },
+    "strong": {
+      "gamma_req_static_db": 41.38092041015625,
+      "gamma_req_opt_db": 38.423004150390625,
+      "delta_db": 2.957916259765625,
+      "opt_endpoint": "gamma_min at sigma_s=0.10"
+    }
+  },
   "required_snr": {
     "w_static": 0.123,
     "gamma_req_static_db": 41.38092041015625,

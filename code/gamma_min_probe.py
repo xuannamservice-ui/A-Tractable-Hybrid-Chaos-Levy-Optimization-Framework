@@ -23,6 +23,8 @@ import os
 
 import numpy as np
 
+from scipy.optimize import minimize_scalar
+
 from feasibility_at_gbar import best_at
 from system_metric import REGIMES, SIGMAS, BeamConfig, aber_of, ABER_TARGET
 
@@ -71,6 +73,23 @@ def main():
             g = gamma_min(regime, s, tol=args.tol)
             o["gamma_min"]["%s_%.2f" % (regime, s)] = g
             print(f"{regime:>9} {s:>8.2f} {('---' if g is None else '%.4f' % g):>15}")
+
+    # The same comparison in every regime, holding the static beam fixed so the
+    # baseline is one piece of hardware rather than a per-regime refit: the
+    # divergence gain is then a property of the turbulence, not of the baseline.
+    # The optimised endpoint is gamma_min at the same jitter, already computed
+    # above -- that IS min over w_z of gamma_req, so re-deriving it by minimising
+    # ABER at some fixed gbar would only introduce an arbitrary reference SNR.
+    print(f"\n{'regime':>9} {'static greq':>12} {'opt greq':>10} {'delta dB':>10}")
+    o["gain_by_regime"] = {}
+    for regime in REGIMES:
+        g_s = gamma_req(W_STATIC, regime=regime, tol=args.tol)
+        g_o = o["gamma_min"].get("%s_%.2f" % (regime, 0.10))
+        d = None if (g_s is None or g_o is None) else g_s - g_o
+        o["gain_by_regime"][regime] = {"gamma_req_static_db": g_s,
+                                       "gamma_req_opt_db": g_o, "delta_db": d,
+                                       "opt_endpoint": "gamma_min at sigma_s=0.10"}
+        print(f"{regime:>9} {g_s:>12.4f} {g_o:>10.4f} {d:>10.4f}")
 
     gs = gamma_req(W_STATIC, tol=args.tol)
     go = gamma_req(W_OPT, tol=args.tol)

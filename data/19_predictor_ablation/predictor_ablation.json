@@ -1,0 +1,46 @@
+{
+  "generated_by": "code/predictor_ablation.py",
+  "what": "self-built predictive-vs-reactive protocol; no released campaign script exists for the original table, so these supersede rather than reproduce it",
+  "n_paired": 1000,
+  "rows": [
+    {
+      "tau_act_us": 200,
+      "released_1plusmu": {
+        "mean_diff": 0.0029592921986855607,
+        "ci95_halfwidth": 0.0015832263685792202,
+        "p_wilcoxon": 1.7772825125038523e-99
+      },
+      "gauss_hermite_eq25": {
+        "mean_diff": 0.001100868367305162,
+        "ci95_halfwidth": 0.0008909143410746526,
+        "p_wilcoxon": 4.49026457950875e-109
+      }
+    },
+    {
+      "tau_act_us": 500,
+      "released_1plusmu": {
+        "mean_diff": 0.003386279781389404,
+        "ci95_halfwidth": 0.0016891981702273982,
+        "p_wilcoxon": 2.647916624358881e-96
+      },
+      "gauss_hermite_eq25": {
+        "mean_diff": 0.0021878178894530107,
+        "ci95_halfwidth": 0.001262864068185115,
+        "p_wilcoxon": 1.447480399829945e-98
+      }
+    },
+    {
+      "tau_act_us": 1000,
+      "released_1plusmu": {
+        "mean_diff": 0.003234225404794095,
+        "ci95_halfwidth": 0.001653025006012637,
+        "p_wilcoxon": 1.265392544218966e-94
+      },
+      "gauss_hermite_eq25": {
+        "mean_diff": 0.0027572313139688233,
+        "ci95_halfwidth": 0.0014113512853184103,
+        "p_wilcoxon": 5.307017474946045e-86
+      }
+    }
+  ]
+}

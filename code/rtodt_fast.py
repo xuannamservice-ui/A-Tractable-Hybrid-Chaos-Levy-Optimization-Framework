@@ -52,11 +52,48 @@ def z_of(A: float, B: float, A0, gbar: float):
     return np.sqrt(2.0) * A * B / (np.asarray(A0, dtype=float) * np.sqrt(gbar))
 
 
-def pe_series_f64(A: float, B: float, xi, A0, gbar: float, K):
+def pole_distance(A: float, B: float, xi, K):
+    """Distance from xi^2 to the nearest coefficient pole of eq. (25).
+
+    Both families put a pole at xi^2 = B + k and xi^2 = A + k, and the residue
+    D carries Gamma(A - xi^2) Gamma(B - xi^2) with poles at the same places.
+    For k <= K the pole is cancelled analytically, but the cancellation is
+    catastrophic in float64: measured against 260-digit arithmetic the error
+    scales as 1/distance (`cancelled_pole_probe.py`), so it has no floor, and
+    close enough in it passes the range test while being wrong. For k > K the
+    pole is not cancelled at all (`d_pole_probe.py`).
+
+    Returns min over 0 <= k <= K of min(|xi^2 - B - k|, |xi^2 - A - k|), which
+    is what `pole_clearance` screens on.
+
+    The poles of one family are the integers offset by the shape parameter, so
+    the nearest one is found by rounding rather than by scanning all K+1 of
+    them: for t = xi^2 - B the nearest admissible index is clip(round(t), 0, K),
+    making this O(1) per candidate instead of O(K) and keeping the screen off
+    the kernel's critical path.
+    """
+    x2 = np.atleast_1d(np.asarray(xi, dtype=float)) ** 2
+    K = int(np.max(np.atleast_1d(K)))
+    if K < 0:
+        return np.full(x2.shape, np.inf)
+    out = np.inf
+    for base in (A, B):
+        t = x2 - base
+        out = np.minimum(out, np.abs(t - np.clip(np.round(t), 0.0, K)))
+    return out
+
+
+def pe_series_f64(A: float, B: float, xi, A0, gbar: float, K,
+                  pole_clearance: float = 0.0):
     """Per-branch ABER, eq. (19), evaluated in closed form.
 
     `K` may be a scalar or a per-candidate array (the fidelity ladder); entries
     with K < 0 are inadmissible and return NaN.
+
+    `pole_clearance` > 0 additionally returns NaN for any candidate closer than
+    that to a coefficient pole (see `pole_distance`), so the existing range test
+    rejects it instead of scoring a value whose error is unbounded. Default 0.0
+    leaves the released behaviour bit-identical.
     """
     xi = np.atleast_1d(np.asarray(xi, dtype=float))
     A0 = np.atleast_1d(np.asarray(A0, dtype=float))
@@ -93,6 +130,12 @@ def pe_series_f64(A: float, B: float, xi, A0, gbar: float, K):
             D = (x2 * (A * B) ** x2 * sp_gamma(A - x2) * sp_gamma(B - x2)
                  / (a0 ** x2 * sp_gamma(A) * sp_gamma(B)))
             out[m] = total + D * c_moment(x2, gbar)
+
+        if pole_clearance > 0.0:
+            near = pole_distance(A, B, x, order) < pole_clearance
+            if near.any():
+                idx = np.flatnonzero(m)[near]
+                out[idx] = np.nan
     return out
 
 
