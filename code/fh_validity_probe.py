@@ -119,7 +119,8 @@ def main():
     regimes = {"weak": (4.2, 3.0), "moderate": (2.1, 1.5), "strong": (1.2, 1.1)}
     gbar = 10 ** (38.0 / 10.0)
 
-    o = {"a": args.a, "sigma_s": sigma_s, "gbar_db": 38.0, "cases": []}
+    o = {"generated_by": "code/fh_validity_probe.py",
+         "a": args.a, "sigma_s": sigma_s, "gbar_db": 38.0, "cases": []}
     print(f"{'case':18s} {'w_z':>8s} {'w_z/a':>6s} {'hp err @0':>10s} "
           f"{'hp err(sig)':>11s} " + " ".join(f"{'ratio ' + k:>14s}" for k in regimes))
     for name, w_z in cases:

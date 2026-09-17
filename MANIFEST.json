@@ -1,16 +1,17 @@
 {
   "generated_by": "code/build_manifest.py",
-  "built": "2026-09-08T16:14:49",
-  "package_root": "",
-  "block_count": 14,
-  "blocks_with_provenance": 9,
+  "built": "2026-09-18T00:05:42",
+  "package_root": "repo",
+  "block_count": 19,
+  "blocks_with_provenance": 13,
   "blocks_with_provenance_gaps": [
     "01_admissibility",
     "02_z_map",
     "03_coefficient_tensors",
     "04_offgrid_error",
     "05_eq22_validation",
-    "06_system_aber"
+    "06_system_aber",
+    "14_compiled_poc"
   ],
   "provenance_note": "Every directory under data/ has an entry. `seconds` is wall-clock for the run that produced the files: for generate.py blocks it is measured by the driver and recorded in logs/provenance_<block>.json as the block finishes; for the campaign blocks it is the producing script's own embedded figure; for a block that is neither, it is whatever that block's own artefacts declare, and `provenance_source` says so. `status` is complete, partial (the run hit its deadline mid-block and the file holds what was finished), or unknown (nothing observed the run, so completeness cannot be asserted). Block 04 is open-ended by design and is therefore 'partial' on every full run; see its `describes` field. A block carrying `provenance_gap` is only partly accounted for and --check fails on it.",
   "blocks": {
@@ -673,6 +674,52 @@
       "files_without_declared_producer": [],
       "generated_utc_stamps": null
     },
+    "13_dykstra_probe": {
+      "files": [
+        {
+          "name": "dykstra_repaired_only.json",
+          "bytes": 643,
+          "records": null,
+          "modified": "2026-09-18T00:00:08",
+          "sha256": "98c9bacf913083535168b0e6d5ce00ff176a9678da36256df2807192d2c862d5"
+        },
+        {
+          "name": "dykstra_repaired_polls15000.json",
+          "bytes": 644,
+          "records": null,
+          "modified": "2026-09-18T00:00:48",
+          "sha256": "f4f626217a568ac45acc217558121abe34baf15e28e2119eefa10b496396b1e9"
+        },
+        {
+          "name": "projection_sensitivity.json",
+          "bytes": 856,
+          "records": null,
+          "modified": "2026-09-17T23:59:28",
+          "sha256": "aab9c0abff50ef0c7167b85db28e9440cb259422d115ca9639e25f1842c0472c"
+        }
+      ],
+      "bytes_total": 2143,
+      "status": "unknown",
+      "generated": "2026-09-18T00:00:48",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/dykstra_repair_probe.py, code/projection_sensitivity_probe.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/dykstra_repair_probe.py": [
+          "dykstra_repaired_only.json",
+          "dykstra_repaired_polls15000.json"
+        ],
+        "code/projection_sensitivity_probe.py": [
+          "projection_sensitivity.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
     "13_levy_benchmark": {
       "files": [
         {
@@ -696,6 +743,479 @@
       "declared_by_file": {
         "code/levy_benchmark.py": [
           "levy_benchmark.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "14_compiled_poc": {
+      "files": [
+        {
+          "name": "closed_loop_steering.json",
+          "bytes": 1283,
+          "records": null,
+          "modified": "2026-09-09T10:04:23",
+          "sha256": "ab1c60af2f5c93e1e99b983f854c22334d724ac2f2221a734debd6e89a26b76e"
+        },
+        {
+          "name": "compiled_poc_cycle_latency.json",
+          "bytes": 2061,
+          "records": null,
+          "modified": "2026-09-08T20:36:12",
+          "sha256": "450af84ccf8afefa031be0bec5c66dd51c15ce97b164958afd60c568528a457b"
+        },
+        {
+          "name": "feas_shift_levy_test.npz",
+          "bytes": 63839,
+          "records": 5,
+          "modified": "2026-09-08T19:15:48",
+          "sha256": "14102a91e89dfdc461dce9fafb454edb6a95f027093914a0e089e884e5607740"
+        },
+        {
+          "name": "levy_episodic_probe.json",
+          "bytes": 2856,
+          "records": null,
+          "modified": "2026-09-08T22:54:50",
+          "sha256": "d8e7f4bc045145ef230803122178b691d821ee8c83f6abdd7b262a07996616a6"
+        },
+        {
+          "name": "levy_episodic_probe.npz",
+          "bytes": 10226,
+          "records": 8,
+          "modified": "2026-09-08T22:54:50",
+          "sha256": "867fa5d3d95590ce2a8fce5455f1097f44c8b66516a2e800d39c1c262eb97e67"
+        },
+        {
+          "name": "levy_mixture_probe.json",
+          "bytes": 18849,
+          "records": null,
+          "modified": "2026-09-08T22:09:42",
+          "sha256": "4e7d8317b82131e5ee1c6466e35dbbf8dc6632ac09482708eb0a1d023d7cbe4c"
+        },
+        {
+          "name": "levy_protocol_search.json",
+          "bytes": 8988,
+          "records": null,
+          "modified": "2026-09-08T20:49:34",
+          "sha256": "1f7bfce5d8a6135ec771211a0b05365cd66c8b73746f8a1f8decacea6b004866"
+        },
+        {
+          "name": "levy_reseed_test.npz",
+          "bytes": 7131,
+          "records": 3,
+          "modified": "2026-09-08T20:34:46",
+          "sha256": "6224fdd336dacf13d6c12ad112c375e1bc3ee4471a3eb81f4e1c81ad1fc04df2"
+        },
+        {
+          "name": "levy_wall_probe.json",
+          "bytes": 11094,
+          "records": null,
+          "modified": "2026-09-08T20:53:23",
+          "sha256": "72f19217835968cadfcf1aeff2548eb8f9986193c21ec36894b600a6e131478d"
+        },
+        {
+          "name": "levy_warmstart_probe.json",
+          "bytes": 9992,
+          "records": null,
+          "modified": "2026-09-08T21:21:28",
+          "sha256": "25bfc046822f0f1f4e17c38dd94f42788b2d0ce53d6078a5c774d041ec89dffd"
+        },
+        {
+          "name": "opoint_full_38.0dB.csv",
+          "bytes": 6919,
+          "records": 100,
+          "modified": "2026-09-08T20:35:53",
+          "sha256": "ecc5e935659d6c0c1e3f6432133678914743712e54a02845028529ba0aa84f64"
+        },
+        {
+          "name": "opoint_full_38.5dB.csv",
+          "bytes": 6903,
+          "records": 100,
+          "modified": "2026-09-08T20:36:20",
+          "sha256": "be80310d0cef3b9e52df9eb4f158785d4a783b20d147854ad39d1196952cd76d"
+        },
+        {
+          "name": "opoint_full_39.0dB.csv",
+          "bytes": 6908,
+          "records": 100,
+          "modified": "2026-09-08T20:36:47",
+          "sha256": "0cdddf080aeeea6778be002e7b9289d13b551c9bf56dcb439fa0d14c820c7847"
+        },
+        {
+          "name": "opoint_full_40.0dB.csv",
+          "bytes": 6914,
+          "records": 100,
+          "modified": "2026-09-08T20:37:13",
+          "sha256": "d2c1a1e08b8e2dd8f045e167bb966e86f24fd9561d6ccd1867b6973db4f87588"
+        },
+        {
+          "name": "opoint_no_chaos_38.0dB.csv",
+          "bytes": 6908,
+          "records": 100,
+          "modified": "2026-09-08T20:35:59",
+          "sha256": "322930b4e106c83c00dd44a116537bcbfc565a557c06b044714743767c9fd9d5"
+        },
+        {
+          "name": "opoint_no_chaos_38.5dB.csv",
+          "bytes": 6911,
+          "records": 100,
+          "modified": "2026-09-08T20:36:25",
+          "sha256": "236a0fafe91ba480c771222c7cb51ad00f7c941b955d78b2b5d8f2bcdb5494c8"
+        },
+        {
+          "name": "opoint_no_chaos_39.0dB.csv",
+          "bytes": 6903,
+          "records": 100,
+          "modified": "2026-09-08T20:36:52",
+          "sha256": "c5438796ce12b0fabf278ec4968bfbffe9b158dd301d52cdf6a6ea435355fbdd"
+        },
+        {
+          "name": "opoint_no_chaos_40.0dB.csv",
+          "bytes": 6908,
+          "records": 100,
+          "modified": "2026-09-08T20:37:19",
+          "sha256": "79924f4a41cbdca06747df3227ddfbd087424be3de86feedb50a713ccade1d04"
+        },
+        {
+          "name": "opoint_no_levy_38.0dB.csv",
+          "bytes": 6906,
+          "records": 100,
+          "modified": "2026-09-08T20:36:04",
+          "sha256": "087c34950c9fc288c35c96f6f10a45cbe8b454861c3914243d663eb69a6e02b5"
+        },
+        {
+          "name": "opoint_no_levy_38.5dB.csv",
+          "bytes": 6909,
+          "records": 100,
+          "modified": "2026-09-08T20:36:31",
+          "sha256": "137056e8245d9dcdb114d7a8d9ede16dedc2c32684127ba2307b0ac6ae76651c"
+        },
+        {
+          "name": "opoint_no_levy_39.0dB.csv",
+          "bytes": 6907,
+          "records": 100,
+          "modified": "2026-09-08T20:36:58",
+          "sha256": "c0c068be2c111f0d3041235373f59b278ad7bd7098e42350ec259e61691599bb"
+        },
+        {
+          "name": "opoint_no_levy_40.0dB.csv",
+          "bytes": 6894,
+          "records": 100,
+          "modified": "2026-09-08T20:37:24",
+          "sha256": "5bd7228cfa49b1d0cbee78e2f930d7fb4234c9a396433138d03a94a22bd1184a"
+        },
+        {
+          "name": "opoint_pso_38.0dB.csv",
+          "bytes": 6905,
+          "records": 100,
+          "modified": "2026-09-08T20:36:15",
+          "sha256": "c95b1bd4bfe7bc288a47c2fca53c25d70e8b68617fbd18409d0f2a39fd873dd7"
+        },
+        {
+          "name": "opoint_pso_38.5dB.csv",
+          "bytes": 6899,
+          "records": 100,
+          "modified": "2026-09-08T20:36:42",
+          "sha256": "d4c3a2e8a082010dba033c7d40df4a08a96af7b9d5a9130535e1375c73d4bfed"
+        },
+        {
+          "name": "opoint_pso_39.0dB.csv",
+          "bytes": 6909,
+          "records": 100,
+          "modified": "2026-09-08T20:37:08",
+          "sha256": "502b214591f64549a8fcf33a779743257cc0e03d222a4df9af73398206b1a789"
+        },
+        {
+          "name": "opoint_pso_40.0dB.csv",
+          "bytes": 6907,
+          "records": 100,
+          "modified": "2026-09-08T20:37:34",
+          "sha256": "597fcf28e5a89f4422f85947534dac136da9dde34f3362679b0342bb0f295af9"
+        },
+        {
+          "name": "opoint_random_38.0dB.csv",
+          "bytes": 6907,
+          "records": 100,
+          "modified": "2026-09-08T20:36:09",
+          "sha256": "b97a870bbafcee7aaef59b655c8591aa6fe06544cebb65b64ada885f6dd89c85"
+        },
+        {
+          "name": "opoint_random_38.5dB.csv",
+          "bytes": 6913,
+          "records": 100,
+          "modified": "2026-09-08T20:36:36",
+          "sha256": "cfabbddb8e80d64d5c2fba3504d6b9554123b86aef183a298eb02b6497adf777"
+        },
+        {
+          "name": "opoint_random_39.0dB.csv",
+          "bytes": 6914,
+          "records": 100,
+          "modified": "2026-09-08T20:37:03",
+          "sha256": "f93c1f760659786808dfa99237d6b7b4d4910ccd5a661ce3266447f93f866872"
+        },
+        {
+          "name": "opoint_random_40.0dB.csv",
+          "bytes": 6910,
+          "records": 100,
+          "modified": "2026-09-08T20:37:29",
+          "sha256": "59bfb54b208064296d2c7a3374a3f794f93f9504f103c89afd73ee05acbe69a3"
+        },
+        {
+          "name": "opoint_trials.txt",
+          "bytes": 3300,
+          "records": null,
+          "modified": "2026-09-08T20:35:53",
+          "sha256": "38865e208692c30d6f42fc8e73c93422014fee4fb529fd90f0539278b33406cc"
+        },
+        {
+          "name": "trajectory_variance_check.json",
+          "bytes": 1818,
+          "records": null,
+          "modified": "2026-09-08T22:19:21",
+          "sha256": "ea33a7fe9a8e90cce5f4898f681bb78c0392cba279937f042bdbc65befc01b02"
+        },
+        {
+          "name": "validation_full_tau20000.csv",
+          "bytes": 13900,
+          "records": 200,
+          "modified": "2026-09-08T20:29:58",
+          "sha256": "96d92ee89a34ee87109b14a8f4c42438108538b430bbb05929857e64a33c6c04"
+        },
+        {
+          "name": "validation_full_tau600.csv",
+          "bytes": 13904,
+          "records": 200,
+          "modified": "2026-09-08T20:28:48",
+          "sha256": "7541984ec668f75551942971c9b681ab849a4a0cb29751f6aa7e7e6ed9e7e8c0"
+        },
+        {
+          "name": "validation_no_chaos_tau20000.csv",
+          "bytes": 13924,
+          "records": 200,
+          "modified": "2026-09-08T20:30:09",
+          "sha256": "4166aeb6ce22b0dbf488127bcde4413a4cb65cd11e904fb8b6a37e58960fdd1e"
+        },
+        {
+          "name": "validation_no_chaos_tau600.csv",
+          "bytes": 13920,
+          "records": 200,
+          "modified": "2026-09-08T20:28:59",
+          "sha256": "542eeb371639a1ebe004a798cb4724f7bef2ea29033be65b8ad3531822d3270f"
+        },
+        {
+          "name": "validation_no_ga_tau20000.csv",
+          "bytes": 13912,
+          "records": 200,
+          "modified": "2026-09-08T20:30:30",
+          "sha256": "d5b98c1ea745824a1e72ee8a5e1583214d84348390eb035056abaf15b5047440"
+        },
+        {
+          "name": "validation_no_ga_tau600.csv",
+          "bytes": 13905,
+          "records": 200,
+          "modified": "2026-09-08T20:29:20",
+          "sha256": "c4c7806fda4d353f181d8d72f1169e8dd852c7527293bac2deabed87544de745"
+        },
+        {
+          "name": "validation_no_ladder_tau20000.csv",
+          "bytes": 13902,
+          "records": 200,
+          "modified": "2026-09-08T20:30:41",
+          "sha256": "741e7135c60368da422406112ea086463d583951e081a39031275a37a51d9e33"
+        },
+        {
+          "name": "validation_no_ladder_tau600.csv",
+          "bytes": 13912,
+          "records": 200,
+          "modified": "2026-09-08T20:29:30",
+          "sha256": "b44cbf6eda4ae4f00565463ec2c3e747e69ab2c3b5ccd5d4a481e0da81beb32f"
+        },
+        {
+          "name": "validation_no_levy_tau20000.csv",
+          "bytes": 13911,
+          "records": 200,
+          "modified": "2026-09-08T20:30:20",
+          "sha256": "abc062a8ee84e3e1750299aaa536a66f5bffd538a55f370189c7d6c385be9ea1"
+        },
+        {
+          "name": "validation_no_levy_tau600.csv",
+          "bytes": 13910,
+          "records": 200,
+          "modified": "2026-09-08T20:29:09",
+          "sha256": "50d754ac9f76308634e3dd7c952d3ed84e80835d56b6c2f5c4407d486f782001"
+        },
+        {
+          "name": "validation_operating_point.json",
+          "bytes": 3933,
+          "records": null,
+          "modified": "2026-09-17T23:54:18",
+          "sha256": "17202a7176840aef4a37a8648170a9580018e6327af99812a4b1f7b73c634ac4"
+        },
+        {
+          "name": "validation_per_sigma.json",
+          "bytes": 10442,
+          "records": null,
+          "modified": "2026-09-08T20:32:28",
+          "sha256": "5ccb6bf91ee3939ddacbc18983bae7e0a514b186a66c4de7dda7a47b9bc39856"
+        },
+        {
+          "name": "validation_pso_tau20000.csv",
+          "bytes": 13911,
+          "records": 200,
+          "modified": "2026-09-08T20:30:51",
+          "sha256": "fcb2dbc05c24c354a23c9d29595d8635a23e530a00b0879a6b64e291381b529f"
+        },
+        {
+          "name": "validation_pso_tau600.csv",
+          "bytes": 13911,
+          "records": 200,
+          "modified": "2026-09-08T20:29:47",
+          "sha256": "c7b614a05b6e6755abf387c67d51c0c7c739ad9fd6b427187f9ab6335bf829fc"
+        },
+        {
+          "name": "validation_random_tau20000.csv",
+          "bytes": 13905,
+          "records": 200,
+          "modified": "2026-09-08T20:30:41",
+          "sha256": "998c6d2480c4f3af49ef161f4774171f36896e7fed0ad60c901d615ecc7eea55"
+        },
+        {
+          "name": "validation_random_tau600.csv",
+          "bytes": 13905,
+          "records": 200,
+          "modified": "2026-09-08T20:29:35",
+          "sha256": "998c6d2480c4f3af49ef161f4774171f36896e7fed0ad60c901d615ecc7eea55"
+        },
+        {
+          "name": "validation_success_tau20000.json",
+          "bytes": 3744,
+          "records": null,
+          "modified": "2026-09-08T20:31:02",
+          "sha256": "b3f4a2cc990fc86511e88d57dd116886b2ff127943a60c95adbd0af1b93ffede"
+        },
+        {
+          "name": "validation_success_tau20000.npz",
+          "bytes": 16155,
+          "records": 22,
+          "modified": "2026-09-08T20:31:02",
+          "sha256": "f0caae85fd737d13b9b35fb86070bf138152311a4c7969b4e75904a3897516d6"
+        },
+        {
+          "name": "validation_success_tau600.json",
+          "bytes": 3758,
+          "records": null,
+          "modified": "2026-09-08T20:29:57",
+          "sha256": "29fbfcebc66337cbf646701bdf2c6cdd8e8157baeeef67ef7da79486dfb9b08e"
+        },
+        {
+          "name": "validation_success_tau600.npz",
+          "bytes": 16807,
+          "records": 22,
+          "modified": "2026-09-08T20:29:57",
+          "sha256": "0697501f593781d425589a1d4e04ccec282c19aff11c2bb46457c13aaf7e786d"
+        },
+        {
+          "name": "validation_trials.txt",
+          "bytes": 6656,
+          "records": null,
+          "modified": "2026-09-08T20:29:58",
+          "sha256": "663b953ef654b539e54a6cfd57c3a7f29e1fb3aed934a52f3a4afda7f39f3bb4"
+        },
+        {
+          "name": "warmstart_reach.json",
+          "bytes": 3276,
+          "records": null,
+          "modified": "2026-09-08T21:04:38",
+          "sha256": "6cfef7690945b6d506d54fcc55112d7a509d1f38651800a5984d38c84991164e"
+        }
+      ],
+      "bytes_total": 539094,
+      "status": "unknown",
+      "produced_by": null,
+      "generated": "2026-09-17T23:54:18",
+      "seconds": null,
+      "records": 200,
+      "provenance_gap": "No sidecar in logs/, no entry in build_manifest.EXTERNAL, and no artefact in the block names its own producer. The files exist but nothing records what produced them."
+    },
+    "15_fh_validity": {
+      "files": [
+        {
+          "name": "fh_validity.json",
+          "bytes": 2162,
+          "records": null,
+          "modified": "2026-09-17T23:58:47",
+          "sha256": "aed4a8380ad6ee854a9577740bb145c7927f6210e9566c1d8e09edcc6d92a4fb"
+        }
+      ],
+      "bytes_total": 2162,
+      "status": "unknown",
+      "generated": "2026-09-17T23:58:47",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/fh_validity_probe.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/fh_validity_probe.py": [
+          "fh_validity.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "16_surrogate_ranking": {
+      "files": [
+        {
+          "name": "surrogate_ranking.json",
+          "bytes": 1874,
+          "records": null,
+          "modified": "2026-09-17T23:59:17",
+          "sha256": "a31dda1a49dca70731489a9c723cfdbf72f0b1b7d495705f338f7ca67fd1d7d2"
+        }
+      ],
+      "bytes_total": 1874,
+      "status": "unknown",
+      "generated": "2026-09-17T23:59:17",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/surrogate_ranking_probe.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/surrogate_ranking_probe.py": [
+          "surrogate_ranking.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "17_gamma_min": {
+      "files": [
+        {
+          "name": "gamma_min.json",
+          "bytes": 993,
+          "records": null,
+          "modified": "2026-09-18T00:01:47",
+          "sha256": "0ed1a9e2b1dda85aed4332ff6a9c77d87d298336a954108feea29547997a0ff6"
+        }
+      ],
+      "bytes_total": 993,
+      "status": "unknown",
+      "generated": "2026-09-18T00:01:47",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/gamma_min_probe.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/gamma_min_probe.py": [
+          "gamma_min.json"
         ]
       },
       "files_without_declared_producer": [],

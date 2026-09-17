@@ -58,7 +58,8 @@ def main():
     assert label.startswith("E."), label
     gbar = 10 ** (lp.GBAR_DB / 10)
 
-    o = {"n_points": args.n_points, "delta": args.delta, "variant": label}
+    o = {"generated_by": "code/projection_sensitivity_probe.py",
+         "n_points": args.n_points, "delta": args.delta, "variant": label}
     for name, cls in (("causal_clip", BeamSteeringMPC), ("dykstra", DykstraMPC)):
         mpc = cls(lp.ALPHA, lp.BETA, lp.SIGMA_S, gbar, horizon=lp.HORIZON, seed=7, **kw)
         lp.prime_predictor(mpc, lp.ALPHA, lp.BETA)

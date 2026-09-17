@@ -63,7 +63,8 @@ def main():
     out_dir = os.path.join(os.path.dirname(__file__), "..", "data", "17_gamma_min")
     os.makedirs(out_dir, exist_ok=True)
 
-    o = {"tol_db": args.tol, "target": ABER_TARGET, "gamma_min": {}}
+    o = {"generated_by": "code/gamma_min_probe.py",
+         "tol_db": args.tol, "target": ABER_TARGET, "gamma_min": {}}
     print(f"{'regime':>9} {'sigma_s':>8} {'gamma_min (dB)':>15}")
     for regime in REGIMES:
         for s in SIGMAS:

@@ -1,4 +1,5 @@
 {
+  "generated_by": "code/dykstra_repair_probe.py",
   "n_starts": 15,
   "max_polls": 15000,
   "n_rand": 24,

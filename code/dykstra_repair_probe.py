@@ -145,7 +145,8 @@ def main():
                                         MAX_POLLS, N_RAND)
     lo, hi = np.asarray(mpc_dyk.lower(), float), np.asarray(mpc_dyk.upper(), float)
     span = hi - lo
-    o = {"n_starts": N_STARTS, "max_polls": MAX_POLLS, "n_rand": N_RAND,
+    o = {"generated_by": "code/dykstra_repair_probe.py",
+         "n_starts": N_STARTS, "max_polls": MAX_POLLS, "n_rand": N_RAND,
          "dyk_sweeps": DYK_SWEEPS, "starts_infeasible": int(fails),
          "descents_converged": int(len(fs))}
     lp.summarise_minima(xs, fs, span, "", o)

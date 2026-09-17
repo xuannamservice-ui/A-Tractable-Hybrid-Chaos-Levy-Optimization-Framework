@@ -114,7 +114,8 @@ def main():
     print("\n(B) rank agreement, per-branch surrogate vs post-EGC system metric")
     ranks = rank_agreement()
 
-    o = {"alpha": ALPHA, "beta": BETA, "sigma_s_dominance": SIGMA_S,
+    o = {"generated_by": "code/surrogate_ranking_probe.py",
+         "alpha": ALPHA, "beta": BETA, "sigma_s_dominance": SIGMA_S,
          "dominance": rows, "rank_agreement": ranks}
     path = os.path.join(out_dir, "surrogate_ranking.json")
     with open(path, "w", encoding="utf-8") as f:

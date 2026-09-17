@@ -167,8 +167,8 @@ def t1_manuscript_matches_data():
     import csv, math, re
     # The manuscript is not part of the release, so it may sit beside the repo
     # or one level out in a `paper/` folder; try both before giving up.
-    tex = next((p for p in (os.path.abspath(os.path.join(HERE, "..", "access.tex")),
-                            os.path.abspath(os.path.join(HERE, "..", "paper", "access.tex")),
+    tex = next((p for p in (os.path.abspath(os.path.join(HERE, "..", "paper", "access.tex")),
+                            os.path.abspath(os.path.join(HERE, "..", "access.tex")),
                             os.path.abspath(os.path.join(HERE, "access.tex")))
                 if os.path.exists(p)), None)
     csvp = os.path.join(DATA, "04_offgrid_error", "offgrid_error.csv")
