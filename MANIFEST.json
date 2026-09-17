@@ -1,9 +1,9 @@
 {
   "generated_by": "code/build_manifest.py",
-  "built": "2026-09-18T02:44:18",
+  "built": "2026-09-18T02:55:01",
   "package_root": "repo",
-  "block_count": 22,
-  "blocks_with_provenance": 16,
+  "block_count": 23,
+  "blocks_with_provenance": 17,
   "blocks_with_provenance_gaps": [
     "01_admissibility",
     "02_z_map",
@@ -1326,6 +1326,34 @@
         "code/branch_model_probe.py": [
           "branch_model_wz0.123.json",
           "branch_model_wz0.192.json"
+        ]
+      },
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
+    },
+    "21_baseline_upgrade": {
+      "files": [
+        {
+          "name": "baseline_upgrade.json",
+          "bytes": 2627,
+          "records": null,
+          "modified": "2026-09-18T02:50:44",
+          "sha256": "88e630cdce379c447b4b7b0d96ad983fd0776da148d2318ad076bd41e6638723"
+        }
+      ],
+      "bytes_total": 2627,
+      "status": "unknown",
+      "generated": "2026-09-18T02:50:44",
+      "records": 0,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/baseline_upgrade_probe.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/baseline_upgrade_probe.py": [
+          "baseline_upgrade.json"
         ]
       },
       "files_without_declared_producer": [],
