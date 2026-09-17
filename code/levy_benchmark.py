@@ -202,8 +202,9 @@ def main():
                      float(np.median(d)) if m.sum() else float("nan"),
                      w["p"], "*" if w["p"] == w["p"] and w["p"] < 0.05 else ""))
 
-    os.makedirs(a.out, exist_ok=True)
-    path = os.path.join(a.out, "levy_benchmark.json")
+    out_dir = os.path.abspath(a.out)
+    os.makedirs(out_dir, exist_ok=True)
+    path = os.path.join(out_dir, "levy_benchmark.json")
     with open(path, "w") as fh:
         json.dump({
             "generated_by": "code/levy_benchmark.py",

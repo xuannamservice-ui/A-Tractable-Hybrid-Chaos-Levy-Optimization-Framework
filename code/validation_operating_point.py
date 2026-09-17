@@ -1,0 +1,82 @@
+"""Step 3: the strong / sigma_s = 0.10 m cell at a FEASIBLE reference SNR.
+
+The campaign's fixed gbar_op = 38 dB sits 0.43 dB below that cell's own crossing
+(38.43 dB, Table success_feasibility), so its success rate there is 0% for every
+algorithm by construction. This re-runs the same single-shot protocol for that one
+cell at reference SNRs on the feasible side of the crossing, scoring with the same
+certified evaluator (system_metric.aber_of at the stated gbar_db), so the reader
+can see what the search delivers once the link budget stops deciding the answer.
+Only the strong regime's nominal-jitter cell is swept; nothing else changes.
+
+Usage: python validation_operating_point.py --exe <validation_success_kernel.exe> [--trials 100]
+"""
+import argparse, json, os, subprocess, sys, time
+import numpy as np
+HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
+from measure_all import clopper_pearson, mcnemar_exact, TARGET
+from channel import SwayProcess
+from system_metric import BeamConfig, aber_of, BeamGeometryDomainError
+
+SIGMA = 0.10
+GBARS_DB = [38.0, 38.5, 39.0, 40.0]
+ARMS = ["full", "no_chaos", "no_levy", "random", "pso"]
+
+
+def score(w, gbar_db, r_d):
+    if w is None or not np.isfinite(w):
+        return False, float("nan")
+    try:
+        v = float(aber_of(BeamConfig(regime="strong", w_z=float(w), sigma_s=SIGMA, r_d=float(r_d)), gbar_db))
+    except (BeamGeometryDomainError, Exception):
+        v = float("nan")
+    return bool(np.isfinite(v) and 0.0 <= v <= 0.5 and v <= TARGET), v
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--trials", type=int, default=100)
+    ap.add_argument("--tau-us", type=float, default=600.0)
+    ap.add_argument("--exe", required=True)
+    ap.add_argument("--out", default=os.path.join(HERE, "..", "data", "14_compiled_poc"))
+    a = ap.parse_args()
+    trials = []
+    for k in range(a.trials):
+        seed = 700000 + int(SIGMA * 1000) * 1000 + k
+        sway = SwayProcess(SIGMA, seed=seed)
+        for _ in range(5): sway.step()
+        trials.append((SIGMA, float(sway.radial()), seed))
+    tfile = os.path.join(a.out, "opoint_trials.txt")
+    with open(tfile, "w") as f:
+        for s, rd, seed in trials: f.write("%.6g %.17g %d\n" % (s, rd, seed))
+
+    res = {}
+    print("  %-8s %-16s %8s %-14s %6s %5s %9s" % ("gbar dB", "arm", "k/n", "CP95 (%)", "b", "c", "McNemar p"))
+    for gdb in GBARS_DB:
+        ind = {}
+        for arm in ARMS:
+            ofile = os.path.join(a.out, "opoint_%s_%.1fdB.csv" % (arm, gdb))
+            subprocess.run([a.exe, tfile, arm, ofile, str(a.tau_us), str(gdb)], check=True)
+            rows = np.genfromtxt(ofile, delimiter=",", names=True)
+            ind[arm] = np.array([score(None if not np.isfinite(w) else float(w), gdb, rd)[0]
+                                 for (s, rd, seed), w in zip(trials, rows["w_best"])], bool)
+        res[str(gdb)] = {}
+        for arm in ARMS:
+            kk, nn = int(ind[arm].sum()), ind[arm].size; lo_, hi_ = clopper_pearson(kk, nn)
+            e = dict(k=kk, n=nn, rate=kk / nn, ci95=[lo_, hi_])
+            if arm != "full":
+                b = int(np.sum(ind["full"] & ~ind[arm])); c = int(np.sum(~ind["full"] & ind[arm]))
+                e.update(b=b, c=c, p_mcnemar=mcnemar_exact(b, c))
+                print("  %-8.1f %-16s %3d/%-4d [%5.1f,%5.1f] %5d %5d %9.4f" % (gdb, arm, kk, nn, 100 * lo_, 100 * hi_, b, c, e["p_mcnemar"]))
+            else:
+                print("  %-8.1f %-16s %3d/%-4d [%5.1f,%5.1f]" % (gdb, arm, kk, nn, 100 * lo_, 100 * hi_))
+            res[str(gdb)][arm] = e
+    out = dict(what="strong regime, sigma_s=0.10 m only, single-shot protocol of validation_success.py, "
+                    "search on the compiled kernel at tau_O, scored by system_metric.aber_of at the stated gbar_db",
+               cell_crossing_db=38.43, tau_o_us=a.tau_us, n_trials=a.trials, results=res)
+    with open(os.path.join(a.out, "validation_operating_point.json"), "w") as f:
+        json.dump(out, f, indent=1)
+    print("  wrote validation_operating_point.json")
+
+
+if __name__ == "__main__":
+    main()

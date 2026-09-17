@@ -1,0 +1,80 @@
+{
+ "what": "between-seed spread of a sequential closed loop's median ABER at a FIXED allocation, against the between-allocation differences the mixture sweep reports; decides whether one trajectory per arm can resolve the allocation at all",
+ "sigma_s": 0.05,
+ "init_spread": 0.00125,
+ "cycles": 400,
+ "t_iter": 25,
+ "between_seed_range_decades": 5.436322683827999,
+ "between_allocation_shift_decades": 0.5678175476949168,
+ "results": {
+  "levy_f0.00": {
+   "law": "levy",
+   "fraction": 0.0,
+   "seeds": [
+    4242,
+    5242,
+    6242,
+    7242,
+    8242,
+    9242
+   ],
+   "medians": [
+    1.0674163978047731e-08,
+    7.876029593435976e-07,
+    2.8164892499528853e-09,
+    2.04224779100474e-08,
+    7.126637048262671e-08,
+    9.785296865309714e-09
+   ],
+   "log10_mean": -7.578680601762296,
+   "log10_sd": 0.8553611635754046,
+   "log10_range": 2.446599241341155
+  },
+  "levy_f0.10": {
+   "law": "levy",
+   "fraction": 0.1,
+   "seeds": [
+    4242,
+    5242,
+    6242,
+    7242,
+    8242,
+    9242
+   ],
+   "medians": [
+    1.0682101819614241e-08,
+    1.4462777337459053e-05,
+    3.0488867804174734e-09,
+    1.1419918169507942e-08,
+    5.2957687949214135e-11,
+    7.704332312645116e-09
+   ],
+   "log10_mean": -7.943103879038939,
+   "log10_sd": 1.7567784326464946,
+   "log10_range": 5.436322683827999
+  },
+  "levy_f0.25": {
+   "law": "levy",
+   "fraction": 0.25,
+   "seeds": [
+    4242,
+    5242,
+    6242,
+    7242,
+    8242,
+    9242
+   ],
+   "medians": [
+    4.8089824969324e-06,
+    1.8058075508231814e-05,
+    9.42159928841027e-10,
+    3.944287580905157e-09,
+    5.289373093288182e-07,
+    5.041962502713961e-09
+   ],
+   "log10_mean": -7.0108630540673795,
+   "log10_sd": 1.8001776409305768,
+   "log10_range": 4.282546835409739
+  }
+ }
+}

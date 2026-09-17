@@ -1,0 +1,22 @@
+# Normalise line endings in the repository to LF.
+# Without this, a Windows working copy with core.autocrlf=true reports every
+# text file as modified after any checkout/copy, which buries real changes.
+* text=auto eol=lf
+
+# Keep shell scripts LF even on Windows checkouts (they run on the Jetson).
+*.sh text eol=lf
+
+# Binary: never touch, never diff as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.npz binary
+*.exe binary
+*.pdb binary
+*.pfb binary
+*.tfm binary
+
+# Data products: keep as text (diffable) but pinned to LF.
+*.csv text eol=lf
+*.json text eol=lf

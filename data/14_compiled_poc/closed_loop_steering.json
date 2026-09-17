@@ -1,0 +1,38 @@
+{
+ "what": "first physical closure of eq.(5)'s pointing recursion in this project: the command bench_cycle.CycleRunner actually publishes (post-guard, post-fallback, post-slew-clamp) fed back into SwayProcess.step(u_ptr=...), against an open-loop control arm where the identical controller runs but its command never reaches the plant -- which is what every prior measurement in this project has actually been doing",
+ "sigma_s": 0.1,
+ "gbar_op_db": 38.0,
+ "cycles": 20,
+ "burn_in": 20,
+ "seeds": 2,
+ "sigma_theta_uncontrolled": 5e-05,
+ "summary": {
+  "open": {
+   "mean_theta_norm": 3.0325729765660782e-05,
+   "sd_theta_norm": 1.4664505603468791e-05,
+   "median_aber": 1.2787824384269133e-05,
+   "admissible_rate": 1.0,
+   "n_cycles": 40
+  },
+  "closed": {
+   "mean_theta_norm": 5.582233755402472e-05,
+   "sd_theta_norm": 3.7719369036685504e-05,
+   "median_aber": 4.216550884013286e-05,
+   "admissible_rate": 1.0,
+   "n_cycles": 40
+  }
+ },
+ "mean_theta_norm_reduction": -0.8407582599128387,
+ "median_aber_ratio_closed_over_open": 3.297316851801821,
+ "paired_episode_wilcoxon_p": NaN,
+ "episode_medians": {
+  "open": [
+   2.4244025063374973e-05,
+   3.7626447877205e-05
+  ],
+  "closed": [
+   3.272263563736853e-05,
+   6.80068855055405e-05
+  ]
+ }
+}

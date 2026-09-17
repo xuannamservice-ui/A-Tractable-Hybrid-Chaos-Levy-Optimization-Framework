@@ -1,0 +1,16 @@
+{
+  "what": "compiled (C, zig cc -O3) port of the H-CLPSO-GA solver and the RT-ODT single-branch kernel at rank_stages=1, timed as one closed-loop cycle on the CORRECTED driver (inter-cycle slew constraint enforced in repair, guard-audited at 100% admissible over 8000 cycles); this is the figure Table tab:tail_mitigation_fixed reports and it supersedes tab:tail_mitigation, which timed the uncorrected driver. Not bit-identical to the NumPy search stream (xorshift128+/Marsaglia-polar, not PCG64/ziggurat); every algorithmic step and constraint is otherwise the one the paper specifies",
+  "platform": "12th Gen Intel Core i3-12100 (4 cores / 8 threads, no E-cores), Windows 11, compiled with zig cc 0.16.0 (LLVM/clang backend) -O3",
+  "note": "measured on a separate machine from Platform A, so figures here are not comparable value-for-value with Table tab:tail_mitigation's Platform A figures -- only the MECHANISM (dispatch overhead removed by compilation) is the claim",
+  "n_cycles": 6000,
+  "tau_o_us": 600.0,
+  "rank_stages": 1,
+  "operating_point": {"alpha": 1.20, "beta": 1.10, "gbar_db": 38.0, "sigma_s_m": 0.10, "horizon": 20, "n_particles": 30},
+  "per_iteration_us": {"median": 43.602, "p10": 41.393, "p90": 47.063},
+  "reference_python_per_iteration_us": {"released_stubbed_objective": 244.7, "solver_fast_stubbed_objective": 92.1, "note": "both are solver-overhead-only, objective stubbed to a constant; this file's per_iteration_us includes a REAL RT-ODT single-branch evaluation with 3 runtime Gamma calls, so the comparison understates the gap"},
+  "end_to_end_latency_us": {"median": 622.1, "p95": 648.0, "p99": 657.3, "p999": 678.6, "max": 729.9},
+  "within_800us_deadline": {"fraction": 1.0000, "n_within": 6000, "n_cycles": 6000},
+  "optimisation_stage_us": {"median": 621.9, "p95": 647.7, "max": 729.8},
+  "iterations_per_cycle": {"median": 15.0, "mean": 14.899, "max": 20},
+  "reference_python_tab_tail_mitigation": {"median_us": 809, "p95_us": 986, "max_us": 1989, "within_800us_pct": 27.6, "median_iterations": 1}
+}

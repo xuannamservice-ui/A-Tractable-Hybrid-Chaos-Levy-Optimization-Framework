@@ -249,11 +249,12 @@ def main():
                      w["p"], e["arm_better"], e["arm_worse"], e["tie"]))
         out["arms"][arm] = e
 
-    os.makedirs(a.out, exist_ok=True)
-    np.savez_compressed(os.path.join(a.out, "ablation_continuous_tau%.0f_rank%d.npz" % (tau*1e6, _ma.RANK_STAGES)),
+    out_dir = os.path.abspath(a.out)
+    os.makedirs(out_dir, exist_ok=True)
+    np.savez_compressed(os.path.join(out_dir, "ablation_continuous_tau%.0f_rank%d.npz" % (tau*1e6, _ma.RANK_STAGES)),
                         sigma_s=cells,
                         **{arm: np.array(aber[arm], float) for arm in ARMS})
-    with open(os.path.join(a.out, "ablation_continuous_tau%.0f_rank%d.json" % (tau*1e6, _ma.RANK_STAGES)), "w") as fh:
+    with open(os.path.join(out_dir, "ablation_continuous_tau%.0f_rank%d.json" % (tau*1e6, _ma.RANK_STAGES)), "w") as fh:
         json.dump(_stamp(out, "ablation_continuous.py"), fh, indent=1)
 
     print()

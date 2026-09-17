@@ -516,6 +516,7 @@ class CycleRunner:
 
         # ---------------- 3. Optimization (anytime, stopped at tau_O)
         mpc.theta0 = mpc._as_theta(state, mpc.L)
+        mpc.u_prev = self.u_prev.copy()
         solver = HCLPSOGA(mpc.lower(), mpc.upper(), mpc.cfg,
                           seed=int(mpc.rng.integers(1 << 31)),
                           blocks=mpc.blocks(), repair=mpc.repair)
@@ -607,6 +608,7 @@ def check_equivalence():
     # (1 on a slow host vs 25), which no correct take-apart can match.
     ref = BeamSteeringMPC(ALPHA, BETA, SIGMA_S, GBAR, horizon=HORIZON, seed=4242,
                           tau_o=None)
+    ref.u_prev = np.zeros(2)   # match CycleRunner's own zero-initialised u_prev
     r_ref = ref.step(theta.copy(), h_meas=h)
     run = CycleRunner(4242, anytime=False)
     _, _, diag = run.cycle(theta.copy(), h)
@@ -1065,6 +1067,7 @@ def guard_audit(n_cycles=2000, seed_block=0, anytime=True):
         h_pred = mpc.kf.predict(T)
         state = np.array(th[i], dtype=float)
         mpc.theta0 = mpc._as_theta(state, mpc.L)
+        mpc.u_prev = run.u_prev.copy()
         solver = HCLPSOGA(mpc.lower(), mpc.upper(), mpc.cfg,
                           seed=int(mpc.rng.integers(1 << 31)),
                           blocks=mpc.blocks(), repair=mpc.repair)
@@ -1109,11 +1112,10 @@ def guard_audit(n_cycles=2000, seed_block=0, anytime=True):
                        for k, v in counts.items() if k != "n"}
     counts["note"] = (
         "UNTIMED diagnostic. u_dot_max*T_u = %.2e rad per cycle while the "
-        "decision box for the pointing command is +/- %.2e rad, and the "
-        "released solver applies the slew constraint only BETWEEN horizon "
-        "stages within one cycle, never between the command published this "
-        "cycle and the one published last cycle. Whether that is what binds "
-        "is the question this audit answers." % (U_SLEW, U_MAX))
+        "decision box for the pointing command is +/- %.2e rad. repair() now "
+        "also pulls stage 0 of each steering block to within one slew step "
+        "of mpc.u_prev, the command actually published last cycle, closing "
+        "the inter-cycle gap this audit was written to expose." % (U_SLEW, U_MAX))
     return counts
 
 

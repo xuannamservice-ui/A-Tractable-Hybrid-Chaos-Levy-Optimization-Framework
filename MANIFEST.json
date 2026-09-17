@@ -1,87 +1,175 @@
 {
-  "generated_by": "generate.py",
-  "deadline": "2026-09-04 19:04",
-  "started": "2026-09-04T15:04:22",
+  "generated_by": "code/build_manifest.py",
+  "built": "2026-09-08T16:14:49",
+  "package_root": "",
+  "block_count": 14,
+  "blocks_with_provenance": 9,
+  "blocks_with_provenance_gaps": [
+    "01_admissibility",
+    "02_z_map",
+    "03_coefficient_tensors",
+    "04_offgrid_error",
+    "05_eq22_validation",
+    "06_system_aber"
+  ],
+  "provenance_note": "Every directory under data/ has an entry. `seconds` is wall-clock for the run that produced the files: for generate.py blocks it is measured by the driver and recorded in logs/provenance_<block>.json as the block finishes; for the campaign blocks it is the producing script's own embedded figure; for a block that is neither, it is whatever that block's own artefacts declare, and `provenance_source` says so. `status` is complete, partial (the run hit its deadline mid-block and the file holds what was finished), or unknown (nothing observed the run, so completeness cannot be asserted). Block 04 is open-ended by design and is therefore 'partial' on every full run; see its `describes` field. A block carrying `provenance_gap` is only partly accounted for and --check fails on it.",
   "blocks": {
     "01_admissibility": {
-      "status": "complete",
-      "produced_by": "generate.py::block_admissibility",
-      "records": 5904,
-      "seconds": 34.3,
-      "finished": "2026-09-04T15:04:57",
       "files": [
-        "admissibility_grid.csv"
+        {
+          "name": "admissibility_grid.csv",
+          "bytes": 575104,
+          "records": 5904,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "ab3da015ce51edaa86ad7e0c2a7e19680d10bfd0674f568b95407eb21d5074f1"
+        }
       ],
-      "scope": "full"
+      "bytes_total": 575104,
+      "status": "unknown",
+      "produced_by": null,
+      "generated": "2026-09-04T17:11:24",
+      "seconds": null,
+      "records": 5904,
+      "provenance_gap": "No sidecar in logs/, no entry in build_manifest.EXTERNAL, and no artefact in the block names its own producer. The files exist but nothing records what produced them."
     },
     "02_z_map": {
-      "status": "complete",
-      "produced_by": "generate.py::block_zmap",
-      "records": 1968,
-      "seconds": 1.9,
-      "finished": "2026-09-04T15:04:58",
       "files": [
-        "z_map.csv",
-        "z_map.npz"
+        {
+          "name": "z_map.csv",
+          "bytes": 89229,
+          "records": 1968,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "b94c367df6a42ea75ab82c9398fc5fef9783fb7d9c2eb2aabe25ae9b446f7932"
+        },
+        {
+          "name": "z_map.npz",
+          "bytes": 15650,
+          "records": 8,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "ae24e68873758baef4d0b39ac550d7fe05bf79a6cc03f285d14d844ea9323aaa"
+        }
       ],
-      "scope": "full"
+      "bytes_total": 104879,
+      "status": "unknown",
+      "produced_by": null,
+      "generated": "2026-09-04T17:11:24",
+      "seconds": null,
+      "records": 1968,
+      "provenance_gap": "No sidecar in logs/, no entry in build_manifest.EXTERNAL, and no artefact in the block names its own producer. The files exist but nothing records what produced them."
     },
     "03_coefficient_tensors": {
-      "status": "complete",
-      "produced_by": "generate.py::block_tensors",
-      "records": 5166,
-      "seconds": 3.4,
-      "finished": "2026-09-04T15:05:02",
       "files": [
-        "lookup_tensor_moderate.npz",
-        "lookup_tensor_strong.npz",
-        "lookup_tensor_weak.npz"
+        {
+          "name": "lookup_tensor_moderate.npz",
+          "bytes": 16214,
+          "records": 9,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "b0ec8766afad44bfd19f85a02c53fa2577b71dab315f9ce9417e52d1efcb9241"
+        },
+        {
+          "name": "lookup_tensor_strong.npz",
+          "bytes": 16210,
+          "records": 9,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "07960bd81a750b86dcbfa227f19f3c4a60596d463ad678c8cf2220ebb733f2a6"
+        },
+        {
+          "name": "lookup_tensor_weak.npz",
+          "bytes": 16223,
+          "records": 9,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "15303ed5629a50075bb2d55a2ae6514fe159375e821b108233eac27a219c5b68"
+        }
       ],
-      "scope": "full"
+      "bytes_total": 48647,
+      "status": "unknown",
+      "produced_by": null,
+      "generated": "2026-09-04T17:11:24",
+      "seconds": null,
+      "records": 9,
+      "provenance_gap": "No sidecar in logs/, no entry in build_manifest.EXTERNAL, and no artefact in the block names its own producer. The files exist but nothing records what produced them."
     },
     "04_offgrid_error": {
       "files": [
         {
           "name": "offgrid_error.csv",
-          "bytes": 39709507,
-          "records": 252289,
-          "modified": "2026-09-04T15:03:00",
-          "sha256": "5a755da123f7964380bc56faea53d1fcb44379603cdef8fb40954bc2d2f46ed1"
+          "bytes": 12159086,
+          "records": 77250,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "ac967b7fad98f5b2bd12aa89795e4180a78f3c83e283bfd0ce0b50a0b02f8992"
         }
       ],
-      "bytes_total": 39709507,
-      "status": "partial",
-      "produced_by": "generate.py::block_offgrid",
-      "command": "python generate.py --only 04_offgrid_error",
-      "generated": "2026-09-04T15:03:00",
-      "seconds": 11129.5,
-      "records": 252289,
-      "scope": "full",
-      "describes": "deployed float64 kernel (rtodt_fast.pe_series_f64) vs 200-digit mpmath reference at random off-grid xi. OPEN-ENDED: it samples until the run's deadline, so on a full run its status is always 'partial' and the record count is whatever the clock allowed -- that is the designed behaviour, not a failed run"
+      "bytes_total": 12159086,
+      "status": "unknown",
+      "produced_by": null,
+      "generated": "2026-09-04T17:11:24",
+      "seconds": null,
+      "records": 77250,
+      "provenance_gap": "No sidecar in logs/, no entry in build_manifest.EXTERNAL, and no artefact in the block names its own producer. The files exist but nothing records what produced them."
     },
     "05_eq22_validation": {
-      "status": "complete",
-      "produced_by": "generate.py::block_eq22",
-      "records": 132,
-      "seconds": 686.4,
-      "finished": "2026-09-04T15:16:28",
       "files": [
-        "eq22_vs_reference.csv",
-        "eq22_vs_reference_sigma0p2_0p3.csv",
-        "summary.json"
+        {
+          "name": "eq22_vs_reference.csv",
+          "bytes": 16140,
+          "records": 132,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "7d15baa6af8d22b59103618a95b9aa47b09921543ba15ca0ee6fb6c06d1fc85c"
+        },
+        {
+          "name": "eq22_vs_reference_sigma0p2_0p3.csv",
+          "bytes": 7324,
+          "records": 54,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "f6b7e233869f3488b16f804fbf299575b075e8e754bf57de9177ee2ad34c0733"
+        },
+        {
+          "name": "summary.json",
+          "bytes": 4278,
+          "records": null,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "19f05307083419f7e75202607e19dda75a414a167ffaf9b3b085ee58575ac417"
+        }
       ],
-      "scope": "full"
+      "bytes_total": 27742,
+      "status": "unknown",
+      "generated": "2026-09-04T17:11:24",
+      "records": 132,
+      "scope": "unknown",
+      "describes": null,
+      "produced_by": "code/eq22_summary.py",
+      "seconds": null,
+      "timing_source": "not recorded by the producing script",
+      "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
+      "declared_by_file": {
+        "code/eq22_summary.py": [
+          "summary.json"
+        ]
+      },
+      "files_without_declared_producer": [
+        "eq22_vs_reference.csv",
+        "eq22_vs_reference_sigma0p2_0p3.csv"
+      ],
+      "generated_utc_stamps": null,
+      "provenance_gap": "Partial: 2 of 3 file(s) in this block declare no producer (eq22_vs_reference.csv, eq22_vs_reference_sigma0p2_0p3.csv). The rest are attributed from their own 'generated_by'/'generator' field."
     },
     "06_system_aber": {
-      "status": "complete",
-      "produced_by": "generate.py::block_system_aber",
-      "records": 1734,
-      "seconds": 2489.4,
-      "finished": "2026-09-04T15:57:58",
       "files": [
-        "system_aber_curves.csv"
+        {
+          "name": "system_aber_curves.csv",
+          "bytes": 221012,
+          "records": 1734,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "af498b6cdd493400981cc1ca788bc3f1cb8a6670e31c6531ab0fdbdccbdc4d30"
+        }
       ],
-      "scope": "full"
+      "bytes_total": 221012,
+      "status": "unknown",
+      "produced_by": null,
+      "generated": "2026-09-04T17:11:24",
+      "seconds": null,
+      "records": 1734,
+      "provenance_gap": "No sidecar in logs/, no entry in build_manifest.EXTERNAL, and no artefact in the block names its own producer. The files exist but nothing records what produced them."
     },
     "07_reference_campaign": {
       "files": [
@@ -89,14 +177,14 @@
           "name": "reference_campaign.csv",
           "bytes": 16513,
           "records": 30,
-          "modified": "2026-09-03T20:40:37",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "60436a97a385bedfd8dffc1fdfb44697787603bf8b44fbdb604b86e3261256ae"
         },
         {
           "name": "reference_campaign.json",
           "bytes": 75125,
           "records": 30,
-          "modified": "2026-09-03T20:40:37",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "de95baa3084550b78bbaba37c4427f4cfccd9508fa0d8e544694254105d0e105"
         }
       ],
@@ -104,7 +192,7 @@
       "status": "complete",
       "produced_by": "code/run_campaign.py",
       "command": "python code/run_campaign.py --realizations 300 --objective faithful --out ../data/07_reference_campaign",
-      "generated": "2026-09-03T20:40:37",
+      "generated": "2026-09-04T17:11:24",
       "seconds": 138.4,
       "records": 30,
       "scope": "full",
@@ -128,7 +216,7 @@
           "name": "landscape_probe.json",
           "bytes": 15388,
           "records": 5,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "0c6b93395d0eda1d8f97add7a5adf77d088138dc8e1c7ab17a6568b258f0e282"
         }
       ],
@@ -136,7 +224,7 @@
       "status": "complete",
       "produced_by": "code/landscape_probe.py",
       "command": "python code/landscape_probe.py --starts 120 --out ../data/08_landscape_probe",
-      "generated": "2026-08-31T23:55:20",
+      "generated": "2026-09-04T17:11:24",
       "seconds": null,
       "records": 5,
       "scope": "full",
@@ -154,14 +242,14 @@
           "name": "reference_campaign.csv",
           "bytes": 4379,
           "records": 30,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "824406c068d3296a80ceb67700741bb09147f6bb8e011e70a1aa948e2d216eb3"
         },
         {
           "name": "reference_campaign.json",
           "bytes": 16118,
           "records": 30,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "82df45072bee06ca3c866f46d5e933cd72a0f58292d44ab80cf202bcbfffa481"
         }
       ],
@@ -169,7 +257,7 @@
       "status": "complete",
       "produced_by": "code/run_campaign.py",
       "command": "python code/run_campaign.py --realizations 60 --objective faithful --out ../data/09_ablation_faithful",
-      "generated": "2026-08-31T23:55:20",
+      "generated": "2026-09-04T17:11:24",
       "seconds": 95.4,
       "records": 30,
       "scope": "full",
@@ -193,14 +281,14 @@
           "name": "reference_campaign.csv",
           "bytes": 4318,
           "records": 30,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "b3307adae0e1097c375bda5cbec61d8ffe1ce91782b65026f5161582e4f36831"
         },
         {
           "name": "reference_campaign.json",
           "bytes": 16059,
           "records": 30,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "f7d4c1db3a6abcfbd8ead321a9411baf6623d9d783bf88feccfed2e4bc783510"
         }
       ],
@@ -208,7 +296,7 @@
       "status": "complete",
       "produced_by": "code/run_campaign.py",
       "command": "python code/run_campaign.py --realizations 60 --objective legacy --out ../data/09_ablation_legacy",
-      "generated": "2026-08-31T23:55:20",
+      "generated": "2026-09-04T17:11:24",
       "seconds": 23.1,
       "records": 30,
       "scope": "full",
@@ -230,76 +318,69 @@
       "files": [
         {
           "name": "cycle_latency.json",
-          "bytes": 98558,
+          "bytes": 83289,
           "records": null,
-          "modified": "2026-09-03T20:18:21",
-          "sha256": "09ca7e14fc9d5c9eb94bbb799d04f0df2d1861a8b765b1a40c3f7e8f1e026b6c"
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "41d4e106b51c17f7ea819120793c06416cf3987af427aa451878ee9692f6fc3e"
         },
         {
           "name": "cycle_latency.npz",
-          "bytes": 2450984,
+          "bytes": 2111824,
           "records": 79,
-          "modified": "2026-09-03T20:18:21",
-          "sha256": "99fa96f529679aface80d89f76250d820286d849648209d7ff8f3363978dd260"
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "5a47227dc79937a3fa6ef572115e59d01cda48a8ed18e7bec286ad9ed4ba2e3a"
         },
         {
           "name": "kernel_timing.json",
-          "bytes": 113902,
+          "bytes": 119024,
           "records": null,
-          "modified": "2026-09-03T20:12:18",
-          "sha256": "bfa161b5173f72eb3d1ecdf1495e93b5b11abf3b761efad02b89534126964277"
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "69517ecc2ebeb2b2686bd65035d160581a405aa9463a22729072149142b8de95"
         },
         {
           "name": "kernel_timing_raw.npz",
-          "bytes": 1043958,
-          "records": 77,
-          "modified": "2026-09-03T20:12:18",
-          "sha256": "73fb0572c8c595e7dac5ef4d1600eef6732132444c68c45934da2eb4c74654a7"
-        },
-        {
-          "name": "kernel_timing_table.tex",
-          "bytes": 2864,
-          "records": null,
-          "modified": "2026-09-03T20:12:18",
-          "sha256": "f2e3904741e16c504096fe33e591daef86753657005c24c2a8c75fd0f7da000c"
+          "bytes": 581741,
+          "records": 85,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "95d13d26fc6d6a6e67888ae437b99a66b95e528192fae5c06d19633b6db4b44c"
         },
         {
           "name": "platform.json",
           "bytes": 29937,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "3d2e4740ec5e75c65f6c6b074703fe657c24dda9c9a12040824ffe0fa13ff8d2"
         },
         {
           "name": "portable_Jetson-TX2-pinned.json",
           "bytes": 14349,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "d7045026505006f4a0b0b7fca2a3b2758693bdb97399fc6adc8407fdf3f64639"
         },
         {
           "name": "portable_Jetson-TX2.json",
           "bytes": 14573,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "9dfdf6331c7f70bdf165ed981df0945b581c91f1d41483052087b9c953b11242"
         },
         {
           "name": "portable_PC-i5-14600KF.json",
           "bytes": 13575,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "c1cca39c1bbdcfcd65b1a6600bb5502637de4405d29ed87a9cce63a1679730fa"
         }
       ],
-      "bytes_total": 3782700,
+      "bytes_total": 2968312,
       "status": "unknown",
-      "generated": "2026-09-03T20:18:21",
-      "records": 79,
+      "generated": "2026-09-04T17:11:24",
+      "records": 85,
       "scope": "unknown",
       "describes": null,
       "produced_by": "code/bench_cycle.py, code/bench_kernel.py, code/bench_portable.py, code/platform_spec.py",
-      "seconds": 129.7,
+      "seconds": 231.1,
       "timing_source": "summed 'elapsed_s' of the block's own JSON artefacts",
       "provenance_source": "self-declared by the artefacts in this block ('generated_by'/'generator'), cross-checked against code/",
       "declared_by_file": {
@@ -312,6 +393,9 @@
         "code/bench_cycle.py": [
           "cycle_latency.npz"
         ],
+        "code/bench_kernel.py": [
+          "kernel_timing_raw.npz"
+        ],
         "code/bench_portable.py": [
           "portable_Jetson-TX2-pinned.json",
           "portable_Jetson-TX2.json",
@@ -321,15 +405,11 @@
           "platform.json"
         ]
       },
-      "files_without_declared_producer": [
-        "kernel_timing_raw.npz",
-        "kernel_timing_table.tex"
-      ],
+      "files_without_declared_producer": [],
       "generated_utc_stamps": [
         "2026-08-26T22:18:15.373296+00:00",
-        "2026-09-03T13:10:53.676374+00:00"
-      ],
-      "provenance_gap": "Partial: 2 of 9 file(s) in this block declare no producer (kernel_timing_raw.npz, kernel_timing_table.tex). The rest are attributed from their own 'generated_by'/'generator' field."
+        "2026-08-26T23:27:06.116799+00:00"
+      ]
     },
     "11_measured": {
       "files": [
@@ -337,83 +417,83 @@
           "name": "ablation_measured_tau20000.json",
           "bytes": 1598,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "f7da9cd55ad27f40b68aadaedb9711e2a5d0e0f53c16fd0a5dc726d89e51ffe0"
         },
         {
           "name": "ablation_measured_tau600.json",
-          "bytes": 1517,
+          "bytes": 1591,
           "records": null,
-          "modified": "2026-09-03T20:20:06",
-          "sha256": "0f14ef56d4cceced141ea94d5d0bf3cb8391f1b0128d55cabb444f87c266d7a6"
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "b63026a1cc9bb382d04e1a81a4b732b5d7644b7485650853835a7742e922c0a0"
         },
         {
           "name": "ablation_success_measured.npz",
-          "bytes": 2140,
-          "records": 6,
-          "modified": "2026-09-03T20:20:06",
-          "sha256": "5311cf6cf5166b3a3611bdb32b7b5c65522b401bb69cf83ee2600a9ff7926de7"
+          "bytes": 1791,
+          "records": 8,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "933dd4ee5ce55bf0c93c790a9c0d343c304f596773c1ba6ac2dace2813efdbdf"
         },
         {
           "name": "baseline_indicators.npz",
-          "bytes": 1981,
-          "records": 6,
-          "modified": "2026-09-03T20:19:38",
-          "sha256": "bafd3b2a7e7d68ea6114f51c07db58512bd7386f51c72e2db6cd226170148de0"
+          "bytes": 2054,
+          "records": 8,
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "343c55826215e241c0c48ec606b132d0cea3d85a4a507e7405e7952f06615569"
         },
         {
           "name": "baselines_measured.json",
           "bytes": 1960,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "7dba82810294515f52591db9e555c4f2d59ae29db969819c4dbf0d720702f67f"
         },
         {
           "name": "baselines_measured_tau20000.json",
           "bytes": 1989,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "fe7258b9b8b8d76fc7d7647ece38e1167856972e3f9ede4820c16189404361c6"
         },
         {
           "name": "baselines_measured_tau600.json",
-          "bytes": 2076,
+          "bytes": 2008,
           "records": null,
-          "modified": "2026-09-03T20:19:38",
-          "sha256": "8af523865f8dbf9da1ecead16b697b543ee635575a025d049ee165242c3477f9"
+          "modified": "2026-09-04T17:11:24",
+          "sha256": "68d824fd59d3547895fe5f01a4d06f6a3ededd1df14ddb689dce0bf86de5e896"
         },
         {
           "name": "cycle_latency_measured.json",
           "bytes": 2108,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "4ceea65601f3e31ff3d27ce39461043bf5d81409a4ba7c26b26b2ee2c630d2f3"
         },
         {
           "name": "cycle_latency_measured.npz",
           "bytes": 31661,
           "records": 9,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "cc29d7c3822a82332a801d0b67335d393c1b423e8ea63d6ff736c5a8d43ac1cd"
         },
         {
           "name": "tail_mitigation_measured.json",
           "bytes": 1088,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "925c67a48b17bf2391b6ac780ae83ff97cc63e614de5dba4aee6c76494472e74"
         },
         {
           "name": "tail_mitigation_measured.npz",
           "bytes": 43198,
           "records": 5,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "ac6c32c03bb5a348a51140e114e2156b7a82b5e50e125b8675e6f7b783468929"
         }
       ],
-      "bytes_total": 91316,
+      "bytes_total": 91046,
       "status": "unknown",
-      "generated": "2026-09-03T20:20:06",
+      "generated": "2026-09-04T17:11:24",
       "records": 9,
       "scope": "unknown",
       "describes": null,
@@ -424,22 +504,20 @@
       "declared_by_file": {
         "code/measure_all.py": [
           "ablation_measured_tau20000.json",
+          "ablation_measured_tau600.json",
+          "ablation_success_measured.npz",
+          "baseline_indicators.npz",
           "baselines_measured.json",
           "baselines_measured_tau20000.json",
+          "baselines_measured_tau600.json",
           "cycle_latency_measured.json",
           "cycle_latency_measured.npz",
           "tail_mitigation_measured.json",
           "tail_mitigation_measured.npz"
         ]
       },
-      "files_without_declared_producer": [
-        "ablation_measured_tau600.json",
-        "ablation_success_measured.npz",
-        "baseline_indicators.npz",
-        "baselines_measured_tau600.json"
-      ],
-      "generated_utc_stamps": null,
-      "provenance_gap": "Partial: 4 of 11 file(s) in this block declare no producer (ablation_measured_tau600.json, ablation_success_measured.npz, baseline_indicators.npz, baselines_measured_tau600.json). The rest are attributed from their own 'generated_by'/'generator' field."
+      "files_without_declared_producer": [],
+      "generated_utc_stamps": null
     },
     "12_continuous": {
       "files": [
@@ -447,118 +525,118 @@
           "name": "ablation_continuous.json",
           "bytes": 2423,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "6a01f76a781c214d009dbd6f2570f6c82617377d69d0eaa11e76e6bfd92d1af6"
         },
         {
           "name": "ablation_continuous.npz",
           "bytes": 3467,
           "records": 8,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "74d36f6b4c46feed72198ce92576415a3a06dd65bdc5086c37245f990a1bf233"
         },
         {
           "name": "ablation_continuous_tau20000.json",
           "bytes": 2750,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "76170c74a590e60ef6d8a3621a9b7b17e8b782947fe7735f9f4e4c0847f8bac8"
         },
         {
           "name": "ablation_continuous_tau20000.npz",
           "bytes": 79741,
           "records": 8,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "9a11c61552d2270c42bc5b58702587148eb8452b2b428d170f19f1974ae8ec44"
         },
         {
           "name": "ablation_continuous_tau20000_rank20.json",
           "bytes": 2795,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "c76d0c258cd0b657d0512d7f1ba69903c7631861df78c068e68a1ae5ce5245fb"
         },
         {
           "name": "ablation_continuous_tau20000_rank20.npz",
           "bytes": 79842,
           "records": 8,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "5e22c4a97f55b834285efec0f9279c1e2285ba2fdbf2fd9223f9829eca153ce3"
         },
         {
           "name": "levy_envelope.json",
           "bytes": 22251,
           "records": null,
-          "modified": "2026-09-03T20:38:18",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "d911ad72bc4fa37ccad20eb21822d1ef183f95ed1e624c9c87122e36e7bf6c5d"
         },
         {
           "name": "levy_mechanism_probe_iters200.json",
           "bytes": 912,
           "records": null,
-          "modified": "2026-09-01T15:20:52",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "8f8984ab9a9dcc1ef6aef0530330d96dc4529e35e91fb2be450be4120cdbae7f"
         },
         {
           "name": "levy_mechanism_probe_iters25.json",
           "bytes": 1163,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "7e544353965d8ef693b15c1def7ff0c43faac909b6853c9e6f280cab3d5df851"
         },
         {
           "name": "levy_truncation_s0p002.json",
           "bytes": 881,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "2de5cb674cceb8684d29e5a05d6811e760eb4b1c2d43fdcf8375c94f5b874997"
         },
         {
           "name": "levy_truncation_s0p005.json",
           "bytes": 860,
           "records": null,
-          "modified": "2026-09-01T15:20:53",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "abe782bfe1a25f2cc7087a7ce6e57e64f1d185989d1d2b08a4af8bffcf1b2d9c"
         },
         {
           "name": "levy_truncation_s0p02.json",
           "bytes": 873,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "8e454bd81a9711ee1055e4ed871b32fdd9eb9e87c0b9e54541ad12174e2a46f4"
         },
         {
           "name": "levy_truncation_s0p05.json",
           "bytes": 859,
           "records": null,
-          "modified": "2026-09-01T15:20:54",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "34e7f76ad7db2eb26859688f6adf32413bd30a089d995e20d26f40fd29fb6109"
         },
         {
           "name": "levy_truncation_s0p08.json",
           "bytes": 873,
           "records": null,
-          "modified": "2026-08-31T23:55:20",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "863e0c90103b2580b9b22ada1e475d8be4d3ab1681a6a677c8d9cf6852ad6a63"
         },
         {
           "name": "levy_truncation_s0p15.json",
           "bytes": 857,
           "records": null,
-          "modified": "2026-09-01T15:20:55",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "fd2b3bbdd505840d26e90d9a2fd03b15825da94af78c8e74cbbe37bb34f1abbd"
         },
         {
           "name": "levy_truncation_s0p3.json",
           "bytes": 854,
           "records": null,
-          "modified": "2026-09-01T15:20:57",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "93ef8898ba3f379c770009e45fd6fad5a32d6de58d6430b32b4adc3fbb33feaf"
         }
       ],
       "bytes_total": 201401,
       "status": "unknown",
-      "generated": "2026-09-03T20:38:18",
+      "generated": "2026-09-04T17:11:24",
       "records": 8,
       "scope": "unknown",
       "describes": null,
@@ -601,13 +679,13 @@
           "name": "levy_benchmark.json",
           "bytes": 724,
           "records": null,
-          "modified": "2026-09-01T11:04:36",
+          "modified": "2026-09-04T17:11:24",
           "sha256": "91edf4375ebecbb5289995c4e9571e707ef2910e8a26f07710213ea2cd0705ff"
         }
       ],
       "bytes_total": 724,
       "status": "unknown",
-      "generated": "2026-09-01T11:04:36",
+      "generated": "2026-09-04T17:11:24",
       "records": 0,
       "scope": "unknown",
       "describes": null,
@@ -623,7 +701,5 @@
       "files_without_declared_producer": [],
       "generated_utc_stamps": null
     }
-  },
-  "previous_started": null,
-  "finished": "2026-09-04T15:57:58"
+  }
 }

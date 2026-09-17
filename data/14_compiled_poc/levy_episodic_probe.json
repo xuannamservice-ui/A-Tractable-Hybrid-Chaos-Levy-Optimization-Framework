@@ -1,0 +1,83 @@
+{
+ "what": "allocation of the swarm between the deployed bounded chaotic warm-start cloud and an unbounded (Levy or Gaussian) one, measured over independent short episodes so that the unit of analysis is the episode rather than a cycle of one long correlated trajectory; supersedes levy_warmstart_probe and levy_mixture_probe, whose single-trajectory p-values are inflated by serial dependence (see trajectory_variance_check.json)",
+ "sigma_s": 0.05,
+ "init_spread": 0.00125,
+ "episodes": 150,
+ "cycles_per_episode": 25,
+ "t_iter": 25,
+ "power_note": "min_detectable_effect_decades is 2.80*SD/sqrt(n), the shift detectable at 80% power and alpha=0.05; a null is reported against it rather than as an unqualified absence of effect",
+ "results": {
+  "levy_f0.10": {
+   "law": "levy",
+   "fraction": 0.1,
+   "n_episodes": 150,
+   "mean_log10_delta": 0.2302705981814513,
+   "median_log10_delta": 0.027065060289210408,
+   "paired_sd": 1.3898355702335183,
+   "wilcoxon_p": 0.05364249460148182,
+   "min_detectable_effect_decades": 0.31774287752127317,
+   "better": 66,
+   "worse": 84
+  },
+  "levy_f0.25": {
+   "law": "levy",
+   "fraction": 0.25,
+   "n_episodes": 150,
+   "mean_log10_delta": 0.35744111859864447,
+   "median_log10_delta": 0.038166682891863424,
+   "paired_sd": 1.476571365795752,
+   "wilcoxon_p": 0.004384728055890119,
+   "min_detectable_effect_decades": 0.33757233206704396,
+   "better": 59,
+   "worse": 91
+  },
+  "levy_f0.50": {
+   "law": "levy",
+   "fraction": 0.5,
+   "n_episodes": 150,
+   "mean_log10_delta": 0.10429936885363487,
+   "median_log10_delta": 0.011599941305989736,
+   "paired_sd": 1.1539851066419726,
+   "wilcoxon_p": 0.23682143697068092,
+   "min_detectable_effect_decades": 0.2638229703241126,
+   "better": 66,
+   "worse": 84
+  },
+  "gauss_f0.10": {
+   "law": "gauss",
+   "fraction": 0.1,
+   "n_episodes": 150,
+   "mean_log10_delta": 0.18101341111520364,
+   "median_log10_delta": 0.0032065957231663944,
+   "paired_sd": 1.4834013976820475,
+   "wilcoxon_p": 0.462614965676414,
+   "min_detectable_effect_decades": 0.33913380741822446,
+   "better": 73,
+   "worse": 77
+  },
+  "gauss_f0.25": {
+   "law": "gauss",
+   "fraction": 0.25,
+   "n_episodes": 150,
+   "mean_log10_delta": 0.24079998239937653,
+   "median_log10_delta": 0.006070373112686767,
+   "paired_sd": 1.4620135163855206,
+   "wilcoxon_p": 0.3087445325777628,
+   "min_detectable_effect_decades": 0.3342441304716918,
+   "better": 73,
+   "worse": 77
+  },
+  "gauss_f0.50": {
+   "law": "gauss",
+   "fraction": 0.5,
+   "n_episodes": 150,
+   "mean_log10_delta": 0.2910285791572054,
+   "median_log10_delta": 0.040254700517002195,
+   "paired_sd": 1.4945412604433028,
+   "wilcoxon_p": 0.004623131010415406,
+   "min_detectable_effect_decades": 0.34168059217806385,
+   "better": 60,
+   "worse": 90
+  }
+ }
+}

@@ -1,0 +1,182 @@
+{
+ "what": "optimization success and component ablation on the COMPILED search kernel (validation_success_kernel.c), scored by system_metric.system_success; same trial protocol, seeds and paired draws as measure_all.py part_ablation/part_baselines",
+ "criterion": "post-EGC system ABER <= 1e-06 at 38 dB, strong turbulence, all four sigma_s",
+ "tau_o_us": 600.0,
+ "rank_stages": 1,
+ "trials_per_cell": 50,
+ "n_trials": 200,
+ "reference_interpreted": {
+  "full": "50/200",
+  "pso": "47/200",
+  "random": "50/200",
+  "note": "Tables alg_summary/ablation: every population arm 50/200 at both budgets, median 1 iteration at tau_O=600us"
+ },
+ "results": {
+  "full": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 15.0,
+   "per_sigma": {
+    "0.05": 50,
+    "0.1": 0,
+    "0.2": 0,
+    "0.3": 0
+   }
+  },
+  "no_chaos": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 15.0,
+   "per_sigma": {
+    "0.05": 50,
+    "0.1": 0,
+    "0.2": 0,
+    "0.3": 0
+   },
+   "b": 0,
+   "c": 0,
+   "p_mcnemar": 1.0,
+   "median_log10_delta_vs_full": 3.077636433368447e-06,
+   "arm_better": 100,
+   "arm_worse": 100,
+   "tie": 0,
+   "wilcoxon_p": 0.86052609484021,
+   "wilcoxon_n": 200
+  },
+  "no_levy": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 25.0,
+   "per_sigma": {
+    "0.05": 50,
+    "0.1": 0,
+    "0.2": 0,
+    "0.3": 0
+   },
+   "b": 0,
+   "c": 0,
+   "p_mcnemar": 1.0,
+   "median_log10_delta_vs_full": -1.8150202766853418e-05,
+   "arm_better": 102,
+   "arm_worse": 98,
+   "tie": 0,
+   "wilcoxon_p": 0.67378523056958,
+   "wilcoxon_n": 200
+  },
+  "no_ga": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 16.0,
+   "per_sigma": {
+    "0.05": 50,
+    "0.1": 0,
+    "0.2": 0,
+    "0.3": 0
+   },
+   "b": 0,
+   "c": 0,
+   "p_mcnemar": 1.0,
+   "median_log10_delta_vs_full": 6.794936626697279e-07,
+   "arm_better": 99,
+   "arm_worse": 100,
+   "tie": 1,
+   "wilcoxon_p": 0.8277439030214444,
+   "wilcoxon_n": 199
+  },
+  "no_ladder": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 15.0,
+   "per_sigma": {
+    "0.05": 50,
+    "0.1": 0,
+    "0.2": 0,
+    "0.3": 0
+   },
+   "b": 0,
+   "c": 0,
+   "p_mcnemar": 1.0,
+   "median_log10_delta_vs_full": 0.0,
+   "arm_better": 59,
+   "arm_worse": 34,
+   "tie": 107,
+   "wilcoxon_p": 0.016202367931731156,
+   "wilcoxon_n": 93
+  },
+  "random": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 25.0,
+   "per_sigma": {
+    "0.05": 50,
+    "0.1": 0,
+    "0.2": 0,
+    "0.3": 0
+   },
+   "b": 0,
+   "c": 0,
+   "p_mcnemar": 1.0,
+   "median_log10_delta_vs_full": -2.6097942907088445e-05,
+   "arm_better": 102,
+   "arm_worse": 98,
+   "tie": 0,
+   "wilcoxon_p": 0.7874236747475369,
+   "wilcoxon_n": 200
+  },
+  "pso": {
+   "k": 50,
+   "n": 200,
+   "rate": 0.25,
+   "ci95": [
+    0.19160716962258748,
+    0.315962833329869
+   ],
+   "median_iterations": 25.0,
+   "per_sigma": {
+    "0.05": 50,
+    "0.1": 0,
+    "0.2": 0,
+    "0.3": 0
+   },
+   "b": 0,
+   "c": 0,
+   "p_mcnemar": 1.0,
+   "median_log10_delta_vs_full": -3.800838093614978e-05,
+   "arm_better": 107,
+   "arm_worse": 93,
+   "tie": 0,
+   "wilcoxon_p": 0.7161487246895232,
+   "wilcoxon_n": 200
+  }
+ }
+}
