@@ -192,7 +192,9 @@ class BeamSteeringMPC:
                  slew_limit=0.05, lambda_u=2.0,
                  steering=True, manuscript_box=True, strict_admissibility=True,
                  h_in_aber=True, link_length=LINK_LENGTH, rank_stages=None,
-                 tau_o=TAU_O):
+                 tau_o=TAU_O, rank_stages_trigger_z=None, rank_stages_deep=None,
+                 rank_stages_ref_wz=None, rank_stages_trigger_theta=None,
+                 rank_stages_trigger_theta_off=None):
         self.alpha, self.beta = alpha, beta
         self.sigma_s, self.gbar = sigma_s, gbar
         self.horizon = horizon
@@ -215,6 +217,61 @@ class BeamSteeringMPC:
         # optimise different objectives and their optima need not coincide.
         # Both are measured in the release rather than one being assumed.
         self.rank_stages = rank_stages
+        # Event-triggered stage horizon (deep-fade-recovery extension of the
+        # rank_stages switch above). Fixed rank_stages picks ONE Tr for every
+        # cycle: rank_stages=1 is cheap but blind to the T-2 forecast steps
+        # h_pred already carries (KalmanAR1.predict already returns them; this
+        # switch is the difference between computing that forecast and using
+        # it), while rank_stages=None/large pays 20x the per-cycle cost even
+        # during quiescent tracking, when the extra stages change nothing (the
+        # per-stage cost is unimodal there, Sec. V-A / landscape_probe.py).
+        # `rank_stages_trigger_z`, when set, checks the conditioning parameter
+        # z (eq. `z_def`) at a REFERENCE beam and the CURRENT predicted stage-0
+        # SNR before every cycle's optimisation: if it exceeds the threshold --
+        # the channel is heading toward the z_max admissibility boundary this
+        # cycle's forecast already sees coming -- the horizon widens to
+        # `rank_stages_deep` stages for that cycle only, so the search gets
+        # genuine multi-stage lookahead exactly when a single-stage view would
+        # not see the approaching fade. Below the threshold, Tr falls back to
+        # `rank_stages` unchanged, so steady-state cost is untouched.
+        # `rank_stages_ref_wz` is the beam used to form that reference z; None
+        # defaults to the box centre (the reference does not need to be the
+        # optimum -- it only needs to move with the SAME predicted SNR the
+        # candidates will be scored under, so the trigger fires before the
+        # optimum itself becomes inadmissible, not after).
+        # Off by default (rank_stages_trigger_z=None): every existing caller
+        # (landscape_probe.py, run_campaign.py, bench_cycle.py) is unaffected.
+        self.rank_stages_trigger_z = rank_stages_trigger_z
+        self.rank_stages_deep = rank_stages_deep
+        self.rank_stages_ref_wz = rank_stages_ref_wz
+        # Second, independent trigger. `_stage_rd`'s stage-0 radial offset is
+        # exactly `self.theta0` (the CURRENT measured state) for every
+        # candidate, regardless of u_ptr -- stage 0's own ABER carries no
+        # dependence on the steering decision at all. At rank_stages=1 the
+        # ranked cost therefore gives the steering blocks no correction
+        # incentive beyond the smoothness penalty `lambda_u * pen`; only
+        # stages k>=1, whose r_d already reflects cumsum(u_0..u_{k-1}), make
+        # steering matter to the ranked cost, and rank_stages=1 never reaches
+        # them. Measured in closed loop (rank_stages_trigger_demo.py): under
+        # a large sway excursion, rank_stages=1 alone lets the true pointing
+        # offset GROW cycle over cycle instead of shrinking. This trigger
+        # widens the horizon on offset magnitude directly, independently of
+        # the z-based (channel-conditioning) trigger above, which cannot see
+        # a pointing excursion at all -- z depends on A0 and predicted SNR,
+        # never on theta0.
+        self.rank_stages_trigger_theta = rank_stages_trigger_theta
+        # Release threshold for (ii), strictly below the engage threshold
+        # (hysteresis). Without it, a bang-bang trigger latches on and off
+        # every cycle the offset oscillates across the single threshold --
+        # measured directly: on the same excursion, a single-threshold
+        # trigger toggles Tr on 10 of 18 cycles and the offset regrows every
+        # time it drops back to Tr=1, leaving cumulative P_e,sys 2.2x worse
+        # than rank_stages=None despite spending the deep horizon on more
+        # than half the cycles. None reuses `rank_stages_trigger_theta` as
+        # the release point too, i.e. no hysteresis, matching the untested
+        # single-threshold behaviour above.
+        self.rank_stages_trigger_theta_off = rank_stages_trigger_theta_off
+        self._deep_latched = False
         # Wall-clock budget for the solver, Sec. VI-A. None disables the
         # checkpoint and runs the full iteration budget, which is what the
         # released code did unconditionally.
@@ -244,6 +301,22 @@ class BeamSteeringMPC:
         self.act_delay_samples = int(round(TAU_ACT / T_U))
         self.guard_stats = dict(z=0, range=0, threshold=0)
         self.theta0 = np.zeros(2)
+        # Inter-cycle memory of the actually-published steering command
+        # (theta_az, theta_el), read by `repair` and advanced by the caller
+        # after each cycle resolves its final admitted-or-fallback command.
+        # Section VI's eq. (14)/(slew_const) binds the command published this
+        # cycle to the one published last, not only stage-to-stage inside one
+        # horizon; before this, `repair` swept forward from stage 1 only, so
+        # stage 0 of a fresh cycle was never checked against u(t-1) at all.
+        #
+        # Default None, not zero: a single-realization campaign (measure_all.py,
+        # ablation_continuous.py) constructs a fresh instance per trial with no
+        # actual previous cycle to be continuous with, and anchoring stage 0 to
+        # an assumed zero would silently narrow that campaign's search box for a
+        # reason that has nothing to do with it. The anchor activates only when
+        # a genuine closed-loop caller (bench_cycle.py's CycleRunner, guard_audit)
+        # sets it explicitly each cycle to the command actually published last.
+        self.u_prev = None
 
     # -- decision-vector layout ---------------------------------------
     @property
@@ -289,15 +362,29 @@ class BeamSteeringMPC:
         projection order or sweep direction; a forward sweep -- the causal
         rate-limiter, each stage pulled to within one slew step of the stage
         before it -- is the standard realisation and is applied here.
+
+        Stage 0 of the steering blocks is additionally pulled to within one
+        slew step of `self.u_prev`, the command actually published last
+        cycle: eq. (14) binds u(t) to u(t-1) across cycles, not only stage to
+        stage inside one horizon, and stage 0 of a fresh horizon has no
+        in-horizon predecessor to be checked against otherwise. Without this,
+        `repair` enforces the within-trajectory half of the constraint only
+        and the search is free to plan a stage-0 command arbitrarily far
+        from what was actually last commanded, which the safety guard then
+        rejects downstream rather than the search ever avoiding it.
         """
         X = np.atleast_2d(np.asarray(X, dtype=float))
         X = np.clip(X, self.lower(), self.upper()).copy()
         # after the box clip every stage is inside the box, and pulling a stage
         # toward its in-box predecessor keeps it there, so the sweep preserves
         # both constraints simultaneously.
-        for (s, e), lim in zip(self.blocks(), self.block_slew()):
-            for k in range(s + 1, e):
-                X[:, k] = np.clip(X[:, k], X[:, k - 1] - lim, X[:, k - 1] + lim)
+        for bi, ((s, e), lim) in enumerate(zip(self.blocks(), self.block_slew())):
+            if self.steering and bi > 0 and self.u_prev is not None:
+                prev = self.u_prev[bi - 1]
+                X[:, s] = np.clip(X[:, s], prev - lim, prev + lim)
+            if self.steering and bi > 0:
+                for k in range(s + 1, e):
+                    X[:, k] = np.clip(X[:, k], X[:, k - 1] - lim, X[:, k - 1] + lim)
         return X
 
     # -- state handling ------------------------------------------------
@@ -342,6 +429,52 @@ class BeamSteeringMPC:
         h = np.clip(h, 1e-3, None)
         return self.gbar * h ** 2
 
+    # -- event-triggered stage horizon ----------------------------------
+    def _effective_rank_stages(self, h_pred):
+        """Tr for THIS cycle: `rank_stages` unless one of two independent
+        triggers fires and `rank_stages_deep` is set.
+
+        (i) `rank_stages_trigger_z`: the reference beam's conditioning z, at
+            the predicted stage-0 SNR, has crossed it -- a channel heading
+            toward the z_max admissibility boundary. See the constructor
+            comment for why a reference beam, not a candidate, is checked.
+        (ii) `rank_stages_trigger_theta`: the CURRENT measured pointing
+            offset ||theta0|| has crossed it. Necessary because (i) cannot
+            see this: z depends on A0 and predicted SNR, never on theta0, and
+            at rank_stages=1 the ranked stage's own r_d is theta0 itself,
+            unaffected by any candidate's steering decision (see the
+            constructor comment) -- so without this trigger a large pointing
+            excursion is invisible to the event mechanism entirely.
+        """
+        if self.rank_stages_trigger_z is None and self.rank_stages_trigger_theta is None:
+            return self.rank_stages
+        if self.rank_stages_deep is None:
+            return self.rank_stages
+        fire = False
+        if self.rank_stages_trigger_z is not None:
+            ref_wz = (self.wz_lo + self.wz_hi) / 2.0 if self.rank_stages_ref_wz is None \
+                else self.rank_stages_ref_wz
+            A0_ref, _ = beam_geometry(np.array([ref_wz]))
+            g0 = float(self._stage_gbar(h_pred)[0]) if self.h_in_aber else self.gbar
+            z_ref = float(z_of(self.alpha, self.beta, A0_ref[0], g0))
+            fire = fire or (z_ref > self.rank_stages_trigger_z)
+
+        theta_trig = self.rank_stages_trigger_theta
+        if theta_trig is not None:
+            theta_norm = float(np.linalg.norm(self.theta0))
+            off = (self.rank_stages_trigger_theta_off if
+                   self.rank_stages_trigger_theta_off is not None else theta_trig)
+            # Hysteresis latch: engage above `theta_trig`, hold until it drops
+            # below the (lower) release point `off`, rather than re-testing
+            # the single threshold every cycle -- see the constructor comment
+            # for the measured cost of not doing this.
+            if theta_norm > theta_trig:
+                self._deep_latched = True
+            elif theta_norm < off:
+                self._deep_latched = False
+            fire = fire or self._deep_latched
+        return self.rank_stages_deep if fire else self.rank_stages
+
     # -- objective ----------------------------------------------------
     def _objective(self, X, state, h_pred):
         """Receding-horizon cost, eq. (`eq:mpc_problem`):
@@ -366,7 +499,8 @@ class BeamSteeringMPC:
         # any geometry is computed, not after: beam_geometry, xi_effective and
         # the kernel then all see n*Tr elements instead of n*T. Slicing after the
         # geometry would leave the dominant cost untouched.
-        Tr = T if self.rank_stages is None else min(int(self.rank_stages), T)
+        rank_stages_now = self._effective_rank_stages(h_pred)
+        Tr = T if rank_stages_now is None else min(int(rank_stages_now), T)
         Wr = W[:, :Tr]
         rdr = r_d[:, :Tr]
 
@@ -408,12 +542,25 @@ class BeamSteeringMPC:
             cost = np.nansum(pe, axis=1) / Tr
 
         # control penalty and the hard slew-rate constraint, eqs. (13)-(14)
+        #
+        # The violation test carries a relative floating-point tolerance.
+        # `repair` (and, for the steering blocks, the inter-cycle anchor
+        # against u_prev) realises the bound via a chain of up to T-1
+        # sequential np.clip calls; a trajectory whose feasible corridor
+        # forces it to ramp at exactly the slew limit for many consecutive
+        # stages accumulates rounding of order 1e-16 relative per hop, which
+        # a bare `d > lim` (no tolerance) can and does flag as a spurious
+        # violation once that chain runs ~15-20 stages deep -- a floating
+        # point artefact of the construction, not an unmet constraint. The
+        # tolerance below (1e-9 relative) is eight orders of magnitude
+        # looser than the observed rounding and eight orders tighter than
+        # anything that could matter to a physical actuator.
         pen = np.zeros(n)
         viol = np.zeros(n, dtype=bool)
         for (s, e), lim in zip(self.blocks(), self.block_slew()):
             d = np.abs(np.diff(X[:, s:e], axis=1))
             pen = pen + np.sum(d ** 2, axis=1) / max(T - 1, 1)
-            viol |= np.any(d > lim, axis=1)
+            viol |= np.any(d > lim * (1.0 + 1e-9), axis=1)
         cost = cost + self.lambda_u * pen
         cost = np.where(viol, np.inf, cost)
 
