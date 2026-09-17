@@ -46,7 +46,7 @@ It is not the campaign driver that produced the tabulated results.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import time
 
@@ -194,7 +194,8 @@ class BeamSteeringMPC:
                  h_in_aber=True, link_length=LINK_LENGTH, rank_stages=None,
                  tau_o=TAU_O, rank_stages_trigger_z=None, rank_stages_deep=None,
                  rank_stages_ref_wz=None, rank_stages_trigger_theta=None,
-                 rank_stages_trigger_theta_off=None):
+                 rank_stages_trigger_theta_off=None, warm_start=False,
+                 warm_start_spread=0.02, sigma_crit_sq=None):
         self.alpha, self.beta = alpha, beta
         self.sigma_s, self.gbar = sigma_s, gbar
         self.horizon = horizon
@@ -276,6 +277,41 @@ class BeamSteeringMPC:
         # checkpoint and runs the full iteration budget, which is what the
         # released code did unconditionally.
         self.tau_o = tau_o
+
+        # MPC warm-start (Sec. limitations, "specified and not yet deployed"
+        # until this switch). Off by default: every existing caller
+        # (landscape_probe.py, measure_all.py, bench_cycle.py) is unaffected
+        # and reproduces its prior numbers bit for bit. When on, `step`
+        # anchors HCLPSOGA's initial swarm on the PREVIOUS cycle's solved
+        # trajectory, shifted one stage forward (stage 0 dropped, the final
+        # stage repeated to fill the horizon) -- exactly the receding-horizon
+        # candidate Lemma 5's terminal law already assumes is available, now
+        # actually handed to the swarm instead of only to the stability proof.
+        # `warm_start_spread` is HCLPSOGA's `init_spread` (box-fraction radius
+        # of the chaotic cloud placed around that anchor); it reuses the
+        # solver's own already-tested warm-start code path (`init_centre` in
+        # `hclpso_ga.SolverConfig`) rather than adding a second one here.
+        self.warm_start = bool(warm_start)
+        self.warm_start_spread = float(warm_start_spread)
+        self.x_prev = None
+
+        # Predictor-failure fallback (Sec. safety_protocols, "illustrative and
+        # not yet implemented" until this switch). Off by default (None). When
+        # set, `step` compares the one-step-ahead forecast variance
+        # 1 - rho^2 (1 - P) -- eq. (25)'s own sigma_k^2 at k=1 -- against this
+        # threshold and, when it is exceeded, forces this cycle's ranked stage
+        # count to 1 (the existing `rank_stages` mechanism) regardless of
+        # `rank_stages` or the event triggers above: a forecast the filter
+        # itself flags as unreliable should not be chained into a multi-stage
+        # plan. This is Var(h_hat) under `_stage_gbar`'s own h_hat = 1 + x_hat
+        # convention (a shift by 1 leaves variance unchanged), so sigma_crit is
+        # on the same scale as the manuscript's Var(h_a) criterion under this
+        # file's existing point-forecast convention, with no separate MNLT
+        # rescaling needed for a variance (as opposed to a mean) comparison.
+        # `sigma_crit_sq` IS the threshold the manuscript calls sigma_crit^2
+        # (its value, 0.5), not a value to be squared again here.
+        self.sigma_crit_sq = sigma_crit_sq
+        self.predictor_failed_last_cycle = False
 
         # --- faithfulness switches ------------------------------------
         # Each isolates one manuscript feature so `landscape_probe.py` can
@@ -372,6 +408,16 @@ class BeamSteeringMPC:
         and the search is free to plan a stage-0 command arbitrarily far
         from what was actually last commanded, which the safety guard then
         rejects downstream rather than the search ever avoiding it.
+
+        w_z (bi=0) is deliberately NOT forward-swept here: its slew limit is
+        enforced by `_objective`'s own harder check (an out-of-tube stage
+        scores +inf, so PSO/GA simply never selects it), a soft, cost-side
+        enforcement rather than a hard projection. The cold chaotic
+        initialiser's `smooth_span`-bounded construction keeps this
+        essentially unmeasurable in practice; `warm_start`'s own
+        anchor-and-jitter construction (below) is written to respect the
+        same limit directly, rather than changing this shared method (used
+        by every existing campaign) to compensate for one new caller.
         """
         X = np.atleast_2d(np.asarray(X, dtype=float))
         X = np.clip(X, self.lower(), self.upper()).copy()
@@ -429,11 +475,33 @@ class BeamSteeringMPC:
         h = np.clip(h, 1e-3, None)
         return self.gbar * h ** 2
 
+    # -- predictor-failure fallback --------------------------------------
+    def _one_step_forecast_variance(self) -> float:
+        """eq. (25)'s own sigma_k^2 = 1 - rho^(2k)(1-P) at k=1: how uncertain
+        the predictor itself reports its NEXT prediction to be, on the same
+        h_hat = 1 + x_hat scale `_stage_gbar` already uses throughout this
+        controller (a shift by 1 leaves the variance unchanged)."""
+        return float(1.0 - self.kf.rho ** 2 * (1.0 - self.kf.P))
+
+    def _predictor_failed(self) -> bool:
+        """Sec. safety_protocols: an atmospheric anomaly driving
+        Var(h_hat) > sigma_crit^2 disables the MPC prediction horizon. Off
+        (always False) unless `sigma_crit_sq` is set, so every existing
+        caller is unaffected."""
+        if self.sigma_crit_sq is None:
+            return False
+        return self._one_step_forecast_variance() > self.sigma_crit_sq
+
     # -- event-triggered stage horizon ----------------------------------
     def _effective_rank_stages(self, h_pred):
-        """Tr for THIS cycle: `rank_stages` unless one of two independent
-        triggers fires and `rank_stages_deep` is set.
+        """Tr for THIS cycle: `rank_stages` unless the predictor-failure
+        fallback or one of two independent deep-fade triggers fires.
 
+        (0) Predictor failure (`sigma_crit_sq`): takes priority over every
+            other rule below, since a forecast the filter itself flags as
+            unreliable should not be chained into a multi-stage plan at all
+            -- collapsing to the immediate stage is the one response that
+            does not depend on trusting the forecast that just failed.
         (i) `rank_stages_trigger_z`: the reference beam's conditioning z, at
             the predicted stage-0 SNR, has crossed it -- a channel heading
             toward the z_max admissibility boundary. See the constructor
@@ -446,6 +514,9 @@ class BeamSteeringMPC:
             constructor comment) -- so without this trigger a large pointing
             excursion is invisible to the event mechanism entirely.
         """
+        self.predictor_failed_last_cycle = self._predictor_failed()
+        if self.predictor_failed_last_cycle:
+            return 1
         if self.rank_stages_trigger_z is None and self.rank_stages_trigger_theta is None:
             return self.rank_stages
         if self.rank_stages_deep is None:
@@ -655,6 +726,19 @@ class BeamSteeringMPC:
                     exploit_gain=float(gain),
                     scanned=int(W.shape[0]))
 
+    # -- warm start ------------------------------------------------------
+    def _shifted_centre(self, x_prev):
+        """The receding-horizon candidate Lemma 5 already assumes exists:
+        drop the published stage 0, keep stages 1..T-1, and repeat the last
+        stage once to refill the horizon (no terminal law is assumed beyond
+        holding the last commanded value). Applied per block, since w_z,
+        theta_az and theta_el each occupy their own contiguous slice."""
+        out = np.empty_like(x_prev)
+        for (s, e) in self.blocks():
+            block = x_prev[s:e]
+            out[s:e] = np.concatenate([block[1:], block[-1:]])
+        return out
+
     # -- one control cycle ---------------------------------------------
     def step(self, state, h_meas: float = None):
         """Run one control cycle over the horizon; returns the solver result.
@@ -669,7 +753,23 @@ class BeamSteeringMPC:
             self.kf.update(float(h_meas))
         h_pred = self.kf.predict(self.horizon)
         self.theta0 = self._as_theta(state, self.L)
-        solver = HCLPSOGA(self.lower(), self.upper(), self.cfg,
+
+        cfg = self.cfg
+        if self.warm_start and self.x_prev is not None:
+            # Anchor the swarm on last cycle's solved trajectory, shifted one
+            # stage forward, instead of the cold chaotic draw over the whole
+            # box -- the mechanism Sec. limitations records as specified but,
+            # until now, never wired into a real MPC path. init_law="smooth"
+            # (not the config's own default "chaotic") is required here: a
+            # per-stage-independent cloud around a multi-block trajectory
+            # anchor reliably breaks the divergence block's slew tube (see
+            # hclpso_ga.SolverConfig.init_law), leaving no admissible
+            # candidate at all -- measured, not assumed, while developing
+            # this switch.
+            cfg = replace(self.cfg, init_centre=self._shifted_centre(self.x_prev),
+                         init_spread=self.warm_start_spread, init_law="smooth")
+
+        solver = HCLPSOGA(self.lower(), self.upper(), cfg,
                           seed=int(self.rng.integers(1 << 31)),
                           blocks=self.blocks(), repair=self.repair)
 
@@ -691,7 +791,11 @@ class BeamSteeringMPC:
         # previously called `minimise` with no checkpoint at all, so tau_O was a
         # number in the text and nothing in the code.
         if self.tau_o is None:
-            return solver.minimise(obj, guard=guard)
-        t_end = time.perf_counter() + self.tau_o
-        return solver.minimise(obj, guard=guard,
-                               checkpoint=lambda it, bf: time.perf_counter() >= t_end)
+            res = solver.minimise(obj, guard=guard)
+        else:
+            t_end = time.perf_counter() + self.tau_o
+            res = solver.minimise(obj, guard=guard,
+                                  checkpoint=lambda it, bf: time.perf_counter() >= t_end)
+        if res.best_x is not None:
+            self.x_prev = res.best_x
+        return res

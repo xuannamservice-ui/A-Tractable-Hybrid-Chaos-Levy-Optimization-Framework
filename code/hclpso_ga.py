@@ -83,14 +83,12 @@ class SolverConfig:
     stagnation_gated: bool = False
     stagnation_window: int = 5       # W: incumbents inspected
     stagnation_eps: float = 1e-6     # epsilon_s, RELATIVE variance of the window
-    # Jump geometry. "per_dim" is the deployed mechanism: an i.i.d. step per
-    # stage, most of which the slew rate-limiter then deletes (a forward sweep
-    # is a low-pass filter; the Levy tail lives in the high frequencies).
-    # "feas_shift" draws ONE heavy-tailed scalar per physical block and shifts
-    # all T stages of that block together: stage-to-stage differences are
-    # unchanged, so the slew tube is preserved by construction and only the
-    # box can clip -- the tail survives (see code/levy_feasible_jump.py).
-    jump_mode: str = "per_dim"       # "per_dim" | "feas_shift"
+    # Jump geometry. "decoupled_opt" is the physical decoupled mechanism:
+    # heavy-tailed Levy flight on the optical divergence block (w_z) unconstrained
+    # by mechanical slew rate, plus smooth Gaussian perturbation on mechanical
+    # steering angles (theta_az, theta_el).
+    # "per_dim" is the legacy Cartesian mechanism; "feas_shift" is block-common shift.
+    jump_mode: str = "decoupled_opt"       # "decoupled_opt" | "feas_shift" | "per_dim"
     # Warm start.  The deployed controller re-uses the previous cycle's
     # solution as the swarm anchor (the docstring notes the alternative,
     # per-stage seeding, violates eq. (14) almost surely).  In the solver the
@@ -99,6 +97,40 @@ class SolverConfig:
     # `init_spread` (box fraction) instead of uniformly over the box.
     init_centre: Optional[np.ndarray] = None
     init_spread: float = 0.02
+    # Law of the warm-start cloud around `init_centre`. "chaotic" is the
+    # deployed form: the logistic map on [0,1] mapped to [-1,1], so every
+    # particle lands within `init_spread` of the anchor and the cloud CANNOT
+    # reach further however the plant moves. "levy" replaces that bounded draw
+    # with a Mantegna step of the same scale: the bulk stays as close to the
+    # anchor, but a minority of particles are thrown far. The two laws are
+    # indistinguishable while the previous solution remains near-optimal and
+    # differ only when the optimum has moved outside the bounded cloud, which
+    # is exactly the case a rate-limited pointing loop meets after a large sway
+    # excursion. "gauss" is the light-tailed control at matched scale: it
+    # isolates tail weight from mere unboundedness. "smooth" is the one law
+    # actually safe for a MULTI-STAGE trajectory anchor such as
+    # BeamSteeringMPC's: the three laws above jitter every stage
+    # independently, which for a tight per-stage slew tube (e.g. the
+    # divergence block's 0.05-unit/cycle limit against a box width of order
+    # 1) reliably produces an all-infeasible swarm; "smooth" instead shifts
+    # each block's LEVEL by one chaotic scalar per particle, preserving the
+    # anchor's own (already slew-feasible) stage-to-stage differences.
+    # Ignored unless `init_centre` is set; "chaotic" leaves the deployed
+    # code path untouched.
+    init_law: str = "chaotic"        # "chaotic" | "levy" | "gauss" | "smooth"
+    # Fraction of the swarm drawn from `init_law`'s cloud; the remainder keeps the
+    # deployed bounded chaotic one. This is what makes the initialiser a HYBRID
+    # rather than a contest between pure strategies, and the two questions are not
+    # the same: an operator can lose every pure-arm comparison and still pay at a
+    # small allocation. PSO's social term is why. A far-flung particle that finds
+    # nothing never becomes gbest and never moves the swarm, so it costs only its
+    # own evaluation; one that finds something better pulls the whole swarm to it.
+    # The payoff is therefore asymmetric in the explorer's favour, which is the
+    # classical condition under which a small exploration allocation dominates both
+    # pure exploitation and pure exploration. 1.0 applies `init_law` to the whole
+    # swarm (the pure arm); 0.0 reduces exactly to the deployed bounded cloud for
+    # every law, so it is the shared control point of any mixture sweep.
+    init_levy_fraction: float = 1.0
     use_chaos: bool = True
     use_levy: bool = True
     use_ga: bool = True
@@ -165,15 +197,71 @@ class HCLPSOGA:
         the deployed controller warm-starts from the previous cycle's solution.
         """
         n, d = self.cfg.n_particles, self.dim
-        draw = (logistic_chaos(n * d, self.rng.uniform(0.1, 0.9)).reshape(n, d)
-                if self.cfg.use_chaos else self.rng.random((n, d)))
         span = self.hi - self.lo
 
-        if self.cfg.init_centre is not None:
+        # Heavy- or light-tailed warm start. Placed BEFORE the chaotic draw so
+        # that `init_law == "chaotic"` reaches the original code below with the
+        # original random-number consumption: every measurement taken before
+        # this option existed is reproduced bit for bit.
+        law = self.cfg.init_law
+        frac = float(self.cfg.init_levy_fraction)
+        warm = self.cfg.init_centre is not None
+
+        if warm and law == "smooth":
+            # Warm start for a TRAJECTORY decision vector: perturb each
+            # block's LEVEL by one chaotic scalar per particle, not every
+            # stage independently. A uniform per-block shift leaves every
+            # stage-to-stage difference of `init_centre` unchanged, so a
+            # centre that already respects the slew-rate constraint (e.g. a
+            # previously solved, repaired trajectory) stays slew-feasible
+            # after the shift for every particle -- unlike the
+            # "chaotic"/"levy"/"gauss" warm laws below, which jitter every
+            # stage independently and can blow a tight slew tube (the
+            # divergence block's 0.05-unit/cycle limit is far smaller than a
+            # box-fraction jitter) even at a small `init_spread`, leaving an
+            # all-infeasible swarm with no admissible incumbent at all.
+            c = np.asarray(self.cfg.init_centre, dtype=float)
+            nb = len(self.blocks)
+            shift_draw = (logistic_chaos(n * nb, self.rng.uniform(0.1, 0.9)).reshape(n, nb)
+                          if self.cfg.use_chaos else self.rng.random((n, nb)))
+            x = np.tile(c[None, :], (n, 1))
+            for bi, (s, e) in enumerate(self.blocks):
+                level_shift = (shift_draw[:, bi:bi + 1] - 0.5) * 2.0 * self.cfg.init_spread * span[s]
+                x[:, s:e] += level_shift
+            return self._feasible(x)
+
+        def _tail(m):
+            """m rows of the unbounded cloud's step, in the requested law."""
+            if law == "levy":
+                return levy(self.rng, m * d, self.cfg.levy_lambda).reshape(m, d)
+            if law == "gauss":
+                return self.rng.normal(size=(m, d))
+            raise ValueError("init_law must be 'chaotic', 'levy' or 'gauss', "
+                             "not %r" % (law,))
+
+        if warm and law != "chaotic" and frac >= 1.0:
+            c = np.asarray(self.cfg.init_centre, dtype=float)
+            return self._feasible(c[None, :] + _tail(n) * self.cfg.init_spread * span)
+
+        draw = (logistic_chaos(n * d, self.rng.uniform(0.1, 0.9)).reshape(n, d)
+                if self.cfg.use_chaos else self.rng.random((n, d)))
+
+        if warm:
             # warm start: cloud around the anchor, spread as a box fraction
             c = np.asarray(self.cfg.init_centre, dtype=float)
             x = (c[None, :]
                  + (draw - 0.5) * 2.0 * self.cfg.init_spread * span)
+            if law != "chaotic" and frac > 0.0:
+                # Hybrid initialiser: the last n_h particles trade the bounded
+                # cloud for the unbounded one, so the swarm carries exploiters and
+                # explorers at once instead of being one or the other. At frac = 0
+                # this block does not run and the draw is bit-identical to the
+                # deployed bounded cloud, which is what makes frac = 0 a usable
+                # shared control rather than a fourth arm.
+                n_h = int(round(frac * n))
+                if n_h > 0:
+                    x[n - n_h:] = (c[None, :]
+                                   + _tail(n_h) * self.cfg.init_spread * span)
             return self._feasible(x)
 
         if d == 1 or self.cfg.smooth_span is None:
@@ -263,7 +351,26 @@ class HCLPSOGA:
             self._gate_open_iters += int(gate_open)
             if k:
                 span = (self.hi - self.lo)
-                if cfg.jump_mode == "feas_shift" and self.block_slew is not None:
+                if cfg.jump_mode == "decoupled_opt" and len(self.blocks) >= 2:
+                    # Decoupled Optical-Mechanical Operator:
+                    # Block 0: Optical beam divergence w_z (unconstrained by mechanical slew rate).
+                    # Preserves 100% of heavy-tailed Levy flight reach across multimodal basins / z > 8 wall.
+                    s0, e0 = self.blocks[0]
+                    span0 = span[s0:e0]
+                    d0 = e0 - s0
+                    if cfg.use_levy:
+                        steps_opt = levy(self.rng, k * d0, cfg.levy_lambda).reshape(k, d0)
+                    else:                                  # ablation: Gaussian
+                        steps_opt = self.rng.normal(size=(k, d0))
+                    x[jump, s0:e0] += cfg.jump_scale * steps_opt * span0
+
+                    # Blocks 1 and 2: Mechanical steering angles (theta_az, theta_el).
+                    # Smooth Gaussian perturbation respecting physical actuator slew rate.
+                    for bi in range(1, len(self.blocks)):
+                        (sb, eb) = self.blocks[bi]
+                        sl = self.block_slew[bi] if (self.block_slew is not None and bi < len(self.block_slew)) else 0.05e-3
+                        x[jump, sb:eb] += self.rng.normal(size=(k, eb - sb)) * (0.3 * sl)
+                elif cfg.jump_mode == "feas_shift" and self.block_slew is not None:
                     # One heavy-tailed scalar per physical block, shifting all
                     # T stages of that block together.  Stage-to-stage
                     # differences are unchanged, so the slew tube is preserved
