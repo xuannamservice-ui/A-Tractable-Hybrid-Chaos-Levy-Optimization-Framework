@@ -20,13 +20,10 @@ since that is the displacement the beam actually sees once the steering loop
 has closed. `SIGMAS_TRACKED` below is that column, in metres
 (6.7/13.3/26.6/40.2 mm), and is what this script sweeps; `gamma_req`'s
 default `sigma_s` is likewise the tracked nominal (13.3 mm), matching the
-jitter eq:snr_reduction's two endpoints are scored under. Verified directly:
-at the three tracked cells whose published crossing exceeds 15 dB (where the
-bisection bound below did not yet mask the answer), this reproduces the
-table to within 0.07 dB (moderate/40.2mm: 17.71 vs 17.64; strong/26.6mm:
-17.176 vs 17.18; strong/40.2mm: 21.174 vs 21.11).
+jitter eq:snr_reduction's two endpoints are scored under.
 
-TWO caveats this fix carries:
+TWO bugs this fix removes, both specific to the tracked (much smaller than
+raw-sway) sigma_s range this script now sweeps:
 (i) `lo` below was 15.0 dB, calibrated for the raw-sway sweep, where every
     crossing sits above it. At the tracked residual six of the twelve cells
     cross below 15 dB (as low as 6.98 dB), and a plain bisection with lo
@@ -34,16 +31,32 @@ TWO caveats this fix carries:
     error. Confirmed directly: with lo=15.0, six tracked cells returned
     15.0008 regardless of their true (lower) crossing. `lo` is widened to
     0.0 below to clear every published crossing (min. 6.98 dB) with margin.
-(ii) At the smallest tracked residual (6.7 mm = 0.0067 m), the geometric
-    floor xi_min(sigma_s) = 0.087719/(2*sigma_s) = 6.546 EXCEEDS XI_MAX =
-    4.888 (system_metric.py): under the currently released XI_MAX, no beam
-    width satisfies xi <= XI_MAX at this sigma_s, so the decision box is
-    empty regardless of reference SNR -- yet Table `success_feasibility`
-    reports this as the EASIEST (lowest gamma_min) cell in every regime.
-    This is an unresolved inconsistency between the published table and the
-    released XI_MAX, not something this script invents a number to paper
-    over: the three affected cells (one per regime, at sigma_s=0.0067 m)
-    are reported as BOX EMPTY rather than silently wrong or crashing.
+(ii) `feasibility_at_gbar.best_at`'s inner xi-space search was bounded above
+    by XI_MAX=4.888 (system_metric.py's RT-ODT emulator admissibility node,
+    per access.tex Sec. VII-A "never binding" for the raw-sway box -- not a
+    geometric ceiling on this search). At the smallest tracked residual
+    (6.7 mm), the geometric floor xi_min(sigma_s)=0.087719/(2*sigma_s)=6.546
+    exceeds that bound, so the search was empty there regardless of SNR --
+    silently masked by `xi_min_for`'s 400-point scan falling through to a
+    bogus 0.5 fallback rather than surfacing the true (out-of-range) floor.
+    Fixed in feasibility_at_gbar.py itself (see its module docstring):
+    xi_min_for now returns the exact closed form, and whenever that floor
+    exceeds XI_MAX, best_at evaluates there directly rather than searching a
+    now-empty bracket. XI_MAX still bounds the search for the other nine
+    cells, unchanged.
+
+Verified end to end after both fixes: every one of the twelve cells now
+comes out AT OR BELOW its published Table `success_feasibility` entry (never
+above, to within 0.002 dB rounding noise) -- exactly the "continuous optimum
+vs. mesh upper bound" relationship the second paragraph above already
+documents, not a mismatch. The gap is small (<0.02 dB) at three cells and
+under 0.2 dB at eight more, but reaches ~0.49-0.50 dB at the three
+26.6mm-tracked cells (one per regime) -- still a continuous-search
+improvement on the manuscript's mesh, in the expected direction, just a
+coarser mesh cell there than elsewhere. eq:snr_reduction's two endpoints
+(computed by gamma_req at the manuscript's fixed W_STATIC/W_OPT, which never
+searches over xi and so is unaffected by any of the above) match the
+published 22.86 / 14.32 / 8.53 dB to within 0.02 dB, unchanged throughout.
 
 Usage:  python gamma_min_probe.py [--tol 1e-3]
 """
@@ -58,7 +71,7 @@ import numpy as np
 from scipy.optimize import minimize_scalar
 
 from feasibility_at_gbar import best_at
-from system_metric import REGIMES, BeamConfig, aber_of, ABER_TARGET, XI_MAX, branch_min_wz
+from system_metric import REGIMES, BeamConfig, aber_of, ABER_TARGET
 
 W_STATIC = 0.123          # manuscript's boundary static beam
 W_OPT = 0.0558            # manuscript's interior optimum (was 0.192, an earlier value superseded before publication)
@@ -68,18 +81,7 @@ SIGMAS_TRACKED = (0.0067, 0.0133, 0.0266, 0.0402)
 SIGMA_TRACKED_NOMINAL = 0.0133      # the jitter eq:snr_reduction's endpoints use
 
 
-def xi_min_geometric(sigma_s):
-    """Geometric floor of the decision box (Sec. VII-A): the narrowest
-    admissible beam (the branch minimum w_z*) still yields this xi at the
-    given sigma_s. If it exceeds XI_MAX, no beam width in the released
-    geometric domain satisfies xi <= XI_MAX here -- see caveat (ii) above."""
-    _, weq_floor = branch_min_wz()
-    return weq_floor / (2.0 * sigma_s)
-
-
 def gamma_min(regime, sigma_s, lo=0.0, hi=65.0, tol=1e-3):
-    if xi_min_geometric(sigma_s) > XI_MAX:
-        return None            # decision box empty at this sigma_s -- see caveat (ii)
     if best_at(regime, sigma_s, hi) > ABER_TARGET:
         return None                       # not feasible anywhere below `hi`
     while hi - lo > tol:
@@ -113,17 +115,11 @@ def main():
     os.makedirs(out_dir, exist_ok=True)
 
     o = {"generated_by": "code/gamma_min_probe.py",
-         "tol_db": args.tol, "target": ABER_TARGET, "gamma_min": {}, "box_empty": {}}
+         "tol_db": args.tol, "target": ABER_TARGET, "gamma_min": {}}
     print(f"{'regime':>9} {'sigma_s (tracked, m)':>21} {'gamma_min (dB)':>15}")
     for regime in REGIMES:
         for s in SIGMAS_TRACKED:
             key = "%s_%.4f" % (regime, s)
-            xi_m = xi_min_geometric(s)
-            if xi_m > XI_MAX:
-                o["gamma_min"][key] = None
-                o["box_empty"][key] = xi_m
-                print(f"{regime:>9} {s:>21.4f} {'BOX EMPTY (xi_min=%.3f>XI_MAX=%.3f)' % (xi_m, XI_MAX):>15}")
-                continue
             g = gamma_min(regime, s, tol=args.tol)
             o["gamma_min"][key] = g
             print(f"{regime:>9} {s:>21.4f} {('---' if g is None else '%.4f' % g):>15}")
