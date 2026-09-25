@@ -1,39 +1,39 @@
 {
   "generated_by": "code/jitter_accounting_probe.py",
   "gbar_db": 38.0,
-  "w_z": 0.192,
+  "w_z": 0.0558,
   "cells": [
     {
       "sigma_s": 0.05,
       "stationary_urad": 25.0,
       "tracked_residual_urad": 3.567022755168574,
       "tracked_residual_m": 0.007134045510337148,
-      "aber_as_scored": 1.210150017356417e-09,
-      "aber_coherent": 7.617059355845619e-11
+      "aber_as_scored": 9.299459482161386e-12,
+      "aber_coherent": 1.2554883721374692e-20
     },
     {
       "sigma_s": 0.1,
       "stationary_urad": 50.0,
       "tracked_residual_urad": 7.134045510337148,
       "tracked_residual_m": 0.014268091020674296,
-      "aber_as_scored": 1.5252414115631797e-06,
-      "aber_coherent": 9.004657951023838e-11
+      "aber_as_scored": 0.00022413230334637467,
+      "aber_coherent": 3.648481619815146e-20
     },
     {
       "sigma_s": 0.2,
       "stationary_urad": 100.0,
       "tracked_residual_urad": 14.268091020674296,
       "tracked_residual_m": 0.02853618204134859,
-      "aber_as_scored": 0.006771115584552039,
-      "aber_coherent": 1.769029365022206e-10
+      "aber_as_scored": 0.04630991417551069,
+      "aber_coherent": 7.892083745200101e-18
     },
     {
       "sigma_s": 0.3,
       "stationary_urad": 150.0,
       "tracked_residual_urad": 21.45554442193231,
       "tracked_residual_m": 0.042911088843864624,
-      "aber_as_scored": 0.0707627980402325,
-      "aber_coherent": 5.599166465381757e-10
+      "aber_as_scored": 0.00601490072808468,
+      "aber_coherent": 7.076620915057746e-14
     }
   ]
 }

@@ -45,15 +45,15 @@
     },
     {
       "name": "interior optimum",
-      "w_z": 0.192,
-      "w_z_over_a": 3.84,
-      "rel_err_hp_at_zero": 0.002960992045934876,
-      "max_rel_err_hp": 0.02618914670219244,
-      "max_rel_err_hp_significant": 0.02618914670219244,
+      "w_z": 0.0558,
+      "w_z_over_a": 1.1159999999999999,
+      "rel_err_hp_at_zero": 0.013955902540241975,
+      "max_rel_err_hp": 861262175.584019,
+      "max_rel_err_hp_significant": 8.565795380409686,
       "aber_ratio": {
-        "weak": 0.9951535754041317,
-        "moderate": 0.9976897217794437,
-        "strong": 0.9987135608199462
+        "weak": 0.7741538136990407,
+        "moderate": 0.798469235317993,
+        "strong": 0.82369294930207
       }
     },
     {

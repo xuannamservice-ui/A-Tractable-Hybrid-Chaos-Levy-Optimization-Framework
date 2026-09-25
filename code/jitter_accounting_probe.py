@@ -33,7 +33,7 @@ GAIN = 0.8
 F_C, T_U = 1.0, 1e-3
 SIGMAS = (0.05, 0.10, 0.20, 0.30)
 GBAR_DB = 38.0
-W_OPT = 0.192
+W_OPT = 0.0558             # manuscript's interior optimum (was 0.192, an earlier value superseded before publication)
 
 
 def tracked_residual(sigma_s, cycles=400, burn=100, seed=11):

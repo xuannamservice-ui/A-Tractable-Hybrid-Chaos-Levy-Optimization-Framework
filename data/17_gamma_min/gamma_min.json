@@ -39,12 +39,12 @@
   "required_snr": {
     "w_static": 0.123,
     "gamma_req_static_db": 41.38092041015625,
-    "w_opt": 0.192,
-    "gamma_req_opt_db": 38.423004150390625,
-    "delta_db": 2.957916259765625,
+    "w_opt": 0.0558,
+    "gamma_req_opt_db": 54.167022705078125,
+    "delta_db": -12.786102294921875,
     "aber_static_at_41db": 1.2668298915104993e-06,
-    "aber_opt_at_38db": 1.419200421221036e-06,
+    "aber_opt_at_38db": 0.0002078619746740804,
     "slope_static_db_per_decade": 3.7083986193777423,
-    "slope_opt_db_per_decade": 2.782121607591741
+    "slope_opt_db_per_decade": 6.975233732837711
   }
 }

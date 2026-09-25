@@ -112,8 +112,10 @@ def main():
     os.makedirs(out_dir, exist_ok=True)
 
     # The waists this paper commands, plus the ratio Farid-Hranilovic quote.
+    # "interior optimum" was 0.192 (an earlier value superseded before publication);
+    # now 0.0558 m to match the certified optimum reported in the manuscript.
     cases = [("guard floor", 0.054869), ("boundary static", 0.123),
-             ("xi_safe fallback", 0.157), ("interior optimum", 0.192),
+             ("xi_safe fallback", 0.157), ("interior optimum", 0.0558),
              ("F-H nominal", 6.0 * args.a)]
     sigma_s = 0.10
     regimes = {"weak": (4.2, 3.0), "moderate": (2.1, 1.5), "strong": (1.2, 1.1)}

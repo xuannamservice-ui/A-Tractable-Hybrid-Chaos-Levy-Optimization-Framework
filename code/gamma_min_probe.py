@@ -13,6 +13,15 @@ The second half recomputes the two endpoints of the reported required-SNR
 reduction on the same evaluator: the boundary static beam (widened just until
 its pointing floor clears 1e-6) and the interior divergence optimum.
 
+NOTE on sigma_s: `SIGMAS`, imported from `system_metric`, are the raw
+building-sway sweep levels (Sec. VII-A), not the steering loop's tracked
+pointing residual. The published Table `success_feasibility` reports
+gamma_min at the TRACKED residual (sigma_s = 6.7/13.3/26.6/40.2 mm), so the
+rows this script prints under the raw SIGMAS values (0.05/0.10/0.20/0.30 m)
+do not reproduce that table as released; a caller wanting the published
+figures must substitute the tracked-residual values for `sigma_s` explicitly
+(the same applies to `gamma_req`'s default `sigma_s=0.10`, also raw).
+
 Usage:  python gamma_min_probe.py [--tol 1e-3]
 """
 from __future__ import annotations
@@ -29,7 +38,7 @@ from feasibility_at_gbar import best_at
 from system_metric import REGIMES, SIGMAS, BeamConfig, aber_of, ABER_TARGET
 
 W_STATIC = 0.123          # manuscript's boundary static beam
-W_OPT = 0.192             # manuscript's interior optimum
+W_OPT = 0.0558            # manuscript's interior optimum (was 0.192, an earlier value superseded before publication)
 
 
 def gamma_min(regime, sigma_s, lo=15.0, hi=65.0, tol=1e-3):
@@ -91,6 +100,10 @@ def main():
                                        "opt_endpoint": "gamma_min at sigma_s=0.10"}
         print(f"{regime:>9} {g_s:>12.4f} {g_o:>10.4f} {d:>10.4f}")
 
+    # Both calls below use gamma_req's default sigma_s=0.10 (raw sway, see the
+    # module NOTE above). W_OPT is sized for the TRACKED residual, so scoring
+    # it at raw sway understates it relative to W_STATIC and this section's
+    # gs - go does NOT reproduce the manuscript's reported required-SNR gain.
     gs = gamma_req(W_STATIC, tol=args.tol)
     go = gamma_req(W_OPT, tol=args.tol)
     a_s41 = aber_of(BeamConfig(regime="strong", w_z=W_STATIC, sigma_s=0.10, r_d=0.0), 41.0)
